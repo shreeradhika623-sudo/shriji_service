@@ -1,0 +1,7 @@
+rachna add(a, b) {
+    wapas a + b
+}
+
+mavi x = add(5, 7)
+
+bolo x

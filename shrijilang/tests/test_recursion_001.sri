@@ -1,0 +1,12 @@
+rachna count(n) {
+
+    agar n == 0 {
+        bolo 0
+    }
+
+    bolo n
+
+    count(n - 1)
+}
+
+count(5)

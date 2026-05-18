@@ -1,0 +1,6 @@
+rachna jodo(a, b) {
+
+    bolo a + b
+}
+
+jodo(5, 7)

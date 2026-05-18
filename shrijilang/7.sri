@@ -1,0 +1,10 @@
+rachna test(n) {
+
+    agar n == 1 {
+        wapas 100
+    }
+
+    bolo 999
+}
+
+bolo test(1)

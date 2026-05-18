@@ -1,0 +1,7 @@
+*.o
+sri
+
+build/
+dist/
+
+.vscode/

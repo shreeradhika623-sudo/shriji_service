@@ -1,0 +1,7 @@
+mavi data = {
+    "user": {
+        "name": "radha"
+    }
+}
+
+bolo data["user"]["name"]

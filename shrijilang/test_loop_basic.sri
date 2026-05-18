@@ -1,0 +1,6 @@
+mavi x = 0
+
+jabtak (x < 5) {
+    bolo x
+    x = x + 1
+}

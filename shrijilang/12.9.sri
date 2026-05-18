@@ -1,0 +1,10 @@
+rachna fact(n) {
+
+    agar n == 0 {
+        wapas 1
+    }
+
+    wapas n * fact(n - 1)
+}
+
+bolo fact(5)

@@ -1,0 +1,23 @@
+mavi x = 0
+
+bolo x < 5
+
+x = x + 1
+
+bolo x < 5
+
+x = x + 1
+
+bolo x < 5
+
+x = x + 1
+
+bolo x < 5
+
+x = x + 1
+
+bolo x < 5
+
+x = x + 1
+
+bolo x < 5

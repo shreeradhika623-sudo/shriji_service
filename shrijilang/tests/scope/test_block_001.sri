@@ -1,0 +1,12 @@
+mavi x = 1
+
+agar sahi {
+
+    mavi y = 100
+
+    bolo x
+    bolo y
+}
+
+bolo x
+bolo y

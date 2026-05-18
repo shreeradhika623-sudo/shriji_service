@@ -1,0 +1,9 @@
+rachna add(a, b) {
+    wapas a + b
+}
+
+rachna mul(x) {
+    wapas x * 2
+}
+
+bolo mul(add(5, 7))

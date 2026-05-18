@@ -1,0 +1,7 @@
+mavi x = 0
+
+jabtak x < 3
+{
+    bolo x
+    x = x + 1
+}

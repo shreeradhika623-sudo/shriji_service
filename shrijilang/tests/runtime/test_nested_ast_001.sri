@@ -1,0 +1,5 @@
+mavi user = {
+    "nums": [1, 2]
+}
+
+bolo user["nums"][0]

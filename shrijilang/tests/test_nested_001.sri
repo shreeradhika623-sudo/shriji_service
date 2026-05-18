@@ -1,0 +1,12 @@
+mavi x = 0
+
+jabtak x < 2 {
+
+    agar x == 1 {
+        bolo 100
+    }
+
+    bolo x
+
+    x = x + 1
+}

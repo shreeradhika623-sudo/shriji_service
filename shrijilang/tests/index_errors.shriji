@@ -1,0 +1,3 @@
+mavi x = [1,2,3]
+bolo x[5]
+bolo x[0][0]

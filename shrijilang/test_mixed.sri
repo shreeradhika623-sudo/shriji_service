@@ -1,0 +1,9 @@
+mavi x = [
+1,
+"hello",
+true,
+{"a": 1},
+[9, 8]
+]
+
+bolo x

@@ -1,0 +1,12 @@
+mavi user = {
+    "nums": [1, 2, 3]
+}
+
+user["nums"][0] = 999
+user["nums"][1] = 888
+user["nums"][2] = 777
+
+bolo user
+bolo user["nums"][0]
+bolo user["nums"][1]
+bolo user["nums"][2]

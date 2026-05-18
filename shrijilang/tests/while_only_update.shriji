@@ -1,0 +1,8 @@
+mavi x = 0
+
+jabtak x < 5
+{
+    x = x + 1
+}
+
+bolo x

@@ -1,0 +1,13 @@
+mavi x = 10
+
+rachna test(a) {
+
+    mavi x = 99
+
+    bolo x
+    bolo a
+}
+
+test(5)
+
+bolo x

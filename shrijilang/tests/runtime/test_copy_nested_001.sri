@@ -1,0 +1,10 @@
+mavi x = {
+    "nums": [1, 2]
+}
+
+mavi y = x
+
+y["nums"][0] = 999
+
+bolo x
+bolo y

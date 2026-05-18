@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Shriji SaaS</title>
+
+<style>
+
+/* 🌑 DARK THEME BODY */
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+/* 🧱 MAIN LAYOUT */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* 📁 FILE PANEL */
+.files {
+    width: 20%;
+    background: #020617;
+    padding: 15px;
+    border-right: 1px solid #1e293b;
+}
+
+.files h3 {
+    color: #38bdf8;
+}
+
+/* 📄 FILE ITEMS */
+li {
+    cursor: pointer;
+    margin: 8px 0;
+    color: #cbd5f5;
+}
+
+li:hover {
+    color: #38bdf8;
+}
+
+/* ✏️ EDITOR */
+.left {
+    width: 40%;
+    padding: 20px;
+}
+
+/* 📤 OUTPUT */
+.right {
+    width: 30%;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 📝 TEXTAREA */
+textarea {
+    width: 100%;
+    height: 70%;
+    background: #020617;
+    color: #38bdf8;
+    border: 1px solid #1e293b;
+    padding: 10px;
+    font-size: 16px;
+}
+
+/* 🔘 BUTTON */
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background: #38bdf8;
+    border: none;
+    color: black;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0ea5e9;
+}
+
+/* 🟢 RESULT */
+#resultBox {
+    font-size: 22px;
+    font-weight: bold;
+    color: #22c55e;
+    margin-bottom: 10px;
+}
+
+/* 🔵 CORRECTION */
+#correctBox {
+    color: #38bdf8;
+    margin-bottom: 10px;
+}
+
+/* 🔴 ERROR */
+#errorBox {
+    color: #ef4444;
+    margin-bottom: 10px;
+}
+
+/* 💡 HINT */
+#hintBox {
+    color: #94a3b8;
+}
+
+/* 📦 RIGHT PANELS */
+.panel {
+
+    flex: 1;
+
+    background: #020617;
+
+    border: 1px solid #1e293b;
+
+    border-radius: 10px;
+
+    padding: 15px;
+
+    overflow: auto;
+}
+
+/* 📘 EXPLAIN */
+#explainBox {
+
+    color: #cbd5e1;
+
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
+
+</style>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- 📁 FILE LIST -->
+    <div class="files">
+        <h3>📁 demo</h3>
+        <ul id="fileList"></ul>
+    </div>
+
+    <!-- 🧠 EDITOR -->
+    <div class="left">
+        <h2>Code Editor</h2>
+
+        <textarea id="code"></textarea>
+
+        <br><br>
+
+        <button onclick="saveFile()">💾 Save</button>
+        <button onclick="runCode()">▶ Run</button>
+    </div>
+
+    <!-- 🌸 OUTPUT -->
+   <div class="right">
+
+    <!-- OUTPUT PANEL -->
+    <div class="panel">
+
+        <h2>Output</h2>
+
+      <div id="resultBox"></div>
+
+      <div id="correctBox"></div>
+
+
+      <div id="hintBox"></div>        
+
+    </div>
+
+    <!-- EXPLAIN PANEL -->
+    <div class="panel">
+
+        <h2>Explanation</h2>
+
+        <div id="explainBox">
+            Shriji language explanation panel.
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+
+<script>
+
+/* =========================
+   ⚡ AUTO RUN SYSTEM
+========================= */
+let timeout = null;
+
+function autoRun() {
+
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        runCode();
+    }, 500);
+}
+
+/* =========================
+   📁 LOAD FILES
+========================= */
+async function loadFiles() {
+
+    const res = await fetch("/list-files?projectName=demo");
+    const data = await res.json();
+
+    const list = document.getElementById("fileList");
+    list.innerHTML = "";
+
+    data.files.forEach(file => {
+
+        const li = document.createElement("li");
+        li.textContent = file;
+
+        li.onclick = async () => {
+
+            window.currentFile = file;
+
+            const res = await fetch(`/read-file?projectName=demo&fileName=${file}`);
+            const data = await res.json();
+
+            editor.setValue(data.content);
+        };
+
+        list.appendChild(li);
+    });
+}
+
+/* =========================
+   💾 SAVE FILE
+========================= */
+async function saveFile() {
+
+    if (!window.currentFile) {
+        alert("Select file first");
+        return;
+    }
+
+    const content = editor.getValue();
+
+    await fetch("/save-file", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            projectName: "demo",
+            fileName: window.currentFile,
+            content: content
+        })
+    });
+
+    alert("Saved!");
+}
+
+/* =========================
+   ▶ RUN CODE
+========================= */
+function runCode() {
+
+    const code = editor.getValue();
+
+    // 🧹 EMPTY CHECK
+    if (!code.trim()) {
+        document.getElementById("resultBox").innerText = "";
+        document.getElementById("correctBox").innerText = "";
+        document.getElementById("errorBox").innerText = "";
+        document.getElementById("hintBox").innerText = "";
+        return;
+    }
+
+    // ⏳ LOADING
+    document.getElementById("resultBox").innerText = "Running...";
+
+    fetch("/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: code })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+ document.getElementById("resultBox").innerText =
+    data.output || "";
+
+document.getElementById("correctBox").innerText =
+    "";
+
+let explainText = "";
+
+if (data.corrected)
+{
+    explainText +=
+        "Corrected:\n" +
+        data.corrected +
+        "\n\n";
+}
+
+if (data.explain)
+{
+    explainText +=
+        data.explain + "\n\n";
+}
+
+if (data.error)
+{
+    explainText +=
+        "Error:\n" +
+        data.error;
+}
+
+document.getElementById("explainBox").innerText =
+    explainText || "No explanation";
+    
+    
+    });
+}
+
+/* =========================
+   ⌨️ CTRL + ENTER RUN
+========================= */
+document.getElementById("code").addEventListener("keydown", function(e) {
+    if (e.ctrlKey && e.key === "Enter") {
+        runCode();
+    }
+});
+
+/* 🚀 START */
+loadFiles();
+
+const editor = CodeMirror.fromTextArea(
+    document.getElementById("code"),
+    {
+        lineNumbers: true,
+        theme: "dracula",
+        mode: "javascript"
+    }
+);
+
+</script>
+
+</body>
+</html>

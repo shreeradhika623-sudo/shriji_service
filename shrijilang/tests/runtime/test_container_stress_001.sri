@@ -1,0 +1,16 @@
+rachna make() {
+
+    mavi user = {
+        "name": "shiv",
+        "nums": [1, 2, 3]
+    }
+
+    wapas user
+}
+
+mavi x = make()
+
+bolo x["name"]
+bolo x["nums"][0]
+bolo x["nums"][1]
+bolo x["nums"][2]

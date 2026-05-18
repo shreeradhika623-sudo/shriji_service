@@ -1,0 +1,6 @@
+rachna boom(n) {
+
+    boom(n + 1)
+}
+
+boom(0)

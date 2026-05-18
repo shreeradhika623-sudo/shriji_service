@@ -1,0 +1,5 @@
+mavi d = {
+"name": "shriji"
+}
+
+bolo d["age"]

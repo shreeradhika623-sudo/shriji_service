@@ -1,0 +1,17 @@
+mavi d = {
+"name": "shriji",
+"age": 10,
+"nested": {
+"x": [1, 2, 3]
+}
+}
+
+bolo d
+
+bolo d["name"]
+
+bolo d["nested"]
+
+bolo d["nested"]["x"]
+
+bolo d["nested"]["x"][1]

@@ -1,0 +1,7 @@
+mavi user = {
+    "name": "krishna"
+}
+
+user["name"] = "mahadev"
+
+bolo user

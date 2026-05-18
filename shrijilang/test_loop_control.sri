@@ -1,0 +1,16 @@
+mavi x = 0
+
+jabtak (x < 10) {
+
+    x = x + 1
+
+    agar (x == 3) {
+        continue
+    }
+
+    agar (x == 6) {
+        rukja
+    }
+
+    bolo x
+}

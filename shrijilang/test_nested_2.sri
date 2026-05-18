@@ -1,0 +1,7 @@
+mavi a = [1, 2, [3, 4]]
+
+bolo a
+
+bolo a[2]
+
+bolo a[2][1]

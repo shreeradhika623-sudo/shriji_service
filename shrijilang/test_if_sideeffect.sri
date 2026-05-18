@@ -1,0 +1,8 @@
+mavi x = 10
+
+agar sahi {
+    mavi y = 99
+    bolo y
+}
+
+bolo 777

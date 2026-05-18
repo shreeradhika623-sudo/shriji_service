@@ -1,0 +1,19 @@
+mavi x = [1, 2, 3]
+
+bolo x
+
+x[0] = 99
+
+bolo x
+
+mavi nested = [[1,2],[3,4]]
+
+bolo nested
+
+mavi name = "shriji"
+
+bolo name
+
+mavi flag = true
+
+bolo flag

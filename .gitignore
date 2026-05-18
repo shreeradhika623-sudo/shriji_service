@@ -1,0 +1,23 @@
+# binaries
+*.o
+sri
+
+# temp
+*.log
+*.tmp
+
+# node
+node_modules/
+
+# vscode
+.vscode/
+
+# build
+dist/
+build/
+
+# cache
+.cache/
+
+# system
+.DS_Store

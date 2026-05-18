@@ -1,0 +1,8 @@
+mavi x = {
+    "nums": [1, 2]
+}
+
+x["nums"][1] = 555
+
+bolo x["nums"][0]
+bolo x["nums"][1]

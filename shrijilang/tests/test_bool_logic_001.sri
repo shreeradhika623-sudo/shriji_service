@@ -1,0 +1,9 @@
+mavi x = 5
+
+agar x == 5 {
+    bolo 111
+}
+
+agar x == 6 {
+    bolo 222
+}

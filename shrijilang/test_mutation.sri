@@ -1,0 +1,17 @@
+mavi a = [1, 2, 3]
+
+bolo a
+
+a[1] = 99
+
+bolo a
+
+mavi d = {
+"name": "shriji"
+}
+
+bolo d
+
+d["name"] = "radha"
+
+bolo d
