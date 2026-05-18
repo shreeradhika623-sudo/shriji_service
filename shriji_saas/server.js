@@ -4,8 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
-
+const PORT = process.env.PORT || 3000;
 // 📁 Base directory for projects
 const BASE_DIR = path.join(__dirname, "data/projects");
 
@@ -28,78 +27,88 @@ app.post("/run", (req, res) => {
         });
     }
 
-    const runtime = exec(
-        `../shriji_lang/shrijilang`,
+    const tempFile = path.join(__dirname, "temp.sri");
+
+    fs.writeFileSync(tempFile, input);
+
+    exec(
+        `../shrijilang/sri ${tempFile}`,
         (error, stdout, stderr) => {
+
+            fs.unlinkSync(tempFile);
 
             if (error) {
                 return res.json({
                     output: "",
                     explain: "",
-                    error: "Execution error"
+                    error: stderr || "Execution error"
                 });
             }
 
-            const jsonLines = stdout
-                .split("\n")
-                .filter(line =>
-                    line.trim().startsWith("{") &&
-                    line.trim().endsWith("}")
-                );
+         const lines = stdout.split("\n");
 
-            if (!jsonLines.length) {
-                return res.json({
-                    output: "",
-                    explain: "",
-                    error: "Runtime JSON response missing"
-                });
-            }
+let output = [];
+let explain = [];
+let errorText = [];
 
-            const outputs = [];
-            const explains = [];
-            const errors = [];
-            const corrected = [];
+let mode = "";
 
-            for (const line of jsonLines)
-            {
-                const data = JSON.parse(line);
+for (const line of lines)
+{
+    const clean = line.trim();
 
-
-      if (data.output !== undefined && data.output !== "")
-   {
-            outputs.push(data.output);
-   }
-
-       if (data.explain !== undefined && data.explain !== "")
-   {
-            explains.push(data.explain);
-   }
-
-        if (data.error !== undefined && data.error !== "")
+    if (clean.startsWith("OUTPUT:"))
     {
-            errors.push(data.error);
+        mode = "output";
+        continue;
     }
 
-        if (data.corrected !== undefined && data.corrected !== "")
-     {
-             corrected.push(data.corrected);
-     }
-        }
+    if (clean.startsWith("EXPLAIN:"))
+    {
+        mode = "explain";
+        continue;
+    }
 
-            res.json({
-                  output: outputs.join("\n"),
-                  explain: explains.join("\n\n"),
-                  error: errors.join("\n"),
-                  corrected: corrected.join("\n")
-               });
+    if (clean.startsWith("ERROR:"))
+    {
+        mode = "error";
+        continue;
+    }
+
+    if (
+        clean.startsWith("DETAILS:") ||
+        clean.startsWith("SUGGESTION:") ||
+        clean.startsWith("JSON:")
+    )
+    {
+        continue;
+    }
+
+    if (mode === "output" && clean)
+    {
+        output.push(clean);
+    }
+
+    if (mode === "explain" && clean)
+    {
+        explain.push(clean);
+    }
+
+    if (mode === "error" && clean)
+    {
+        errorText.push(clean);
+    }
+}
+
+res.json({
+    output: output.join("\n"),
+    explain: explain.join("\n"),
+    error: errorText.join("\n")
+});
 
         }
     );
-
-    runtime.stdin.write(input + "\n");
-    runtime.stdin.end();
 });
-
 /* =========================
    📁 CREATE PROJECT
 ========================= */
@@ -124,7 +133,6 @@ app.post("/create-project", (req, res) => {
         project: projectName
     });
 });
-
 
 /* =========================
    📄 CREATE FILE
