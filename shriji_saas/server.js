@@ -29,21 +29,22 @@ app.post("/run", (req, res) => {
 
     const tempFile = path.join(__dirname, "temp.sri");
 
+     const sriPath = path.join(
+         __dirname,
+           "../shrijilang/sri"
+  );
+
     fs.writeFileSync(tempFile, input);
 
-    exec(
-        `../shrijilang/sri ${tempFile}`,
+       exec(
+           `${sriPath} ${tempFile}`,
         (error, stdout, stderr) => {
 
             fs.unlinkSync(tempFile);
 
-            if (error) {
-                return res.json({
-                    output: "",
-                    explain: "",
-                    error: stderr || "Execution error"
-                });
-            }
+          if (stderr) {
+          stdout += "\nERROR:\n" + stderr;
+    }
 
          const lines = stdout.split("\n");
 
@@ -81,6 +82,12 @@ for (const line of lines)
         clean.startsWith("JSON:")
     )
     {
+        continue;
+    }
+
+        if (clean === "")
+    {
+        mode = "";
         continue;
     }
 

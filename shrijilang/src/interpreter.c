@@ -197,9 +197,16 @@ return result;
 
 Value eval(ASTNode *node, Env *env, ShrijiRuntime *rt)
 {
-    /*  GLOBAL HARD STOP — NO DUPLICATE EXECUTION */
-    if (error_reported || (rt && rt->error_flag))
-        return value_null();
+     /* HARD STOP ONLY FOR FATAL PARSER ERRORS */
+     if (error_reported)
+           return value_null();
+
+  /* runtime return stop */
+     if (rt &&
+            rt->return_flag)
+ {
+            return value_null();
+ }
 
     static int state_initialized = 0;
 
@@ -618,16 +625,27 @@ if (fnv.type != VAL_FUNCTION) {
 
 ASTNode *fn = fnv.function;
 
-    /* validate arg count */
-    if (fn->rachna_param_count != node->arg_count) {
-        shriji_error(
-            E_PARSE_02,
-            node->function_name,
-            "argument count mismatch",
-            "call with correct number of args"
-        );
-        return value_null();
-    }
+  /* validate arg count */
+int expected_args = 0;
+
+if (fn->type == AST_RACHNA)
+    expected_args = fn->rachna_param_count;
+
+else if (fn->type == AST_FUNCTION)
+    expected_args = fn->param_count;
+
+if (expected_args != node->arg_count) {
+
+    shriji_error(
+        E_PARSE_02,
+        node->function_name,
+        "argument count mismatch",
+        "call with correct number of args"
+    );
+
+    return value_null();
+}
+
 
     /* save outer return state (nested calls safe) */
     int old_return_flag = rt->return_flag;
@@ -640,12 +658,19 @@ ASTNode *fn = fnv.function;
     env_push_scope(env);
 
     /* bind params */
-       for (int i = 0; i < fn->rachna_param_count; i++) {
-    ASTNode *p = fn->rachna_params[i];
-        Value av = eval(node->args[i], env, rt);
-        env_set(env, p->name, av);
-    }
+for (int i = 0; i < expected_args; i++) {
 
+    ASTNode *p;
+
+    if (fn->type == AST_RACHNA)
+        p = fn->rachna_params[i];
+    else
+        p = fn->params[i];
+
+    Value av = eval(node->args[i], env, rt);
+
+    env_set(env, p->name, av);
+} 
     /* run body */
 Value result = eval(fn->rachna_body, env, rt);
 
@@ -1021,13 +1046,18 @@ case AST_IDENTIFIER: {
         return v;
     }
 
-    /*  FINAL ERROR */
-    shriji_error(
-        E_ASSIGN_01,
-        "runtime",
-        "Variable define nahi hai",
-        name
-    );
+  /*  FINAL ERROR */
+       shriji_error(
+     E_ASSIGN_01,
+      "runtime",
+      "Variable define nahi hai",
+       name
+   );
+      fprintf(
+    stderr,
+    "HINT: pehle mavi %s = value likhiye\n",
+    name
+   );
 
     if (rt)
         rt->error_flag = 1;
@@ -1289,7 +1319,19 @@ case AST_BLOCK: {
 
     for (int i = 0; i < node->stmt_count; i++) {
 
+         error_reported = 0;
+
+        if (rt)
+         rt->error_flag = 0;
+
         Value temp = eval(node->statements[i], env, rt);
+
+        if (rt->error_flag) {
+
+            rt->error_flag = 0;
+
+            continue;
+        }
 
         value_free(&last);
 

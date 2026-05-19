@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Shriji SaaS</title>
 
 <style>
@@ -16,15 +19,17 @@ body {
 /* 🧱 MAIN LAYOUT */
 .container {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    background: #0f172a;
 }
 
 /* 📁 FILE PANEL */
 .files {
-    width: 20%;
+    width: 240px;
     background: #020617;
     padding: 15px;
     border-right: 1px solid #1e293b;
+    overflow-y: auto;
 }
 
 .files h3 {
@@ -44,15 +49,15 @@ li:hover {
 
 /* ✏️ EDITOR */
 .left {
-    width: 40%;
+    flex: 1;
     padding: 20px;
+    min-width: 0;
 }
 
 /* 📤 OUTPUT */
 .right {
-    width: 30%;
+    width: 380px;
     padding: 20px;
-
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -61,12 +66,12 @@ li:hover {
 /* 📝 TEXTAREA */
 textarea {
     width: 100%;
-    height: 70%;
+    height: 70vh;
     background: #020617;
     color: #38bdf8;
     border: 1px solid #1e293b;
-    padding: 10px;
-    font-size: 16px;
+    padding: 16px;
+    font-size: 20px;
 }
 
 /* 🔘 BUTTON */
@@ -85,10 +90,20 @@ button:hover {
 
 /* 🟢 RESULT */
 #resultBox {
+
     font-size: 22px;
+
     font-weight: bold;
+
     color: #22c55e;
+
     margin-bottom: 10px;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: break-word;
+
+    line-height: 1.6;
 }
 
 /* 🔵 CORRECTION */
@@ -132,6 +147,41 @@ button:hover {
     line-height: 1.6;
 
     white-space: pre-wrap;
+
+    overflow-wrap: break-word;
+}
+
+@media (max-width: 900px) {
+
+    .container {
+        flex-direction: column;
+    }
+
+    .files {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #1e293b;
+    }
+
+    .left {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .right {
+        width: 100%;
+        padding: 15px;
+    }
+
+    textarea {
+        font-size: 22px;
+        height: 50vh;
+    }
+
+    button {
+        width: 140px;
+        font-size: 18px;
+    }
 }
 
 </style>
@@ -324,9 +374,17 @@ if (data.explain)
 
 if (data.error)
 {
+    let cleanError = data.error;
+
+    if (cleanError.includes("{"))
+    {
+        cleanError =
+        cleanError.split("{")[0];
+    }
+
     explainText +=
         "Error:\n" +
-        data.error;
+        cleanError.trim();
 }
 
 document.getElementById("explainBox").innerText =
