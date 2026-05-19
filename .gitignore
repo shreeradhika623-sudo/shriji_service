@@ -21,3 +21,6 @@ build/
 
 # system
 .DS_Store
+
+shriji_saas/backup/
+shrijilang/rachna
