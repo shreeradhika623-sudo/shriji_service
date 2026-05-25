@@ -37,6 +37,7 @@ static ASTNode *parse_if(void);
 static ASTNode *parse_while(void);
 static ASTNode *parse_return(void);
 static ASTNode *parse_function(void);
+static ASTNode *parse_command_statement(void);
 
 static ASTNode *parse_rachna_definition(void);
 
@@ -146,6 +147,19 @@ static void parser_sync(void)
     }
 }
 
+static void parser_error_once(
+    Token token,
+    ShrijiErrorCode code,
+    const char *ctx,
+    const char *msg,
+    const char *hint)
+{
+    if (error_reported)
+        return;
+
+    shriji_error_at(token, code, ctx, msg, hint);
+    error_reported = 1;
+}
 /*──────────────────────────────────────────────
  | PROGRAM
  *──────────────────────────────────────────────*/
@@ -189,16 +203,13 @@ if (!s && !error_reported) {
 /*  STEP 2: FINAL FAIL → ERROR */
 if (!s) {
 
-    if (!error_reported) {
-        shriji_error_at(
-            current,
-            E_PARSE_INVALID_TOKEN,
-            "program",
-            "Invalid ya incomplete input",
-            "check syntax"
-        );
-        error_reported = 1;
-    }
+parser_error_once(
+    current,
+    E_PARSE_INVALID_TOKEN,
+    "program",
+    "Invalid ya incomplete input",
+    "check syntax"
+);
 
     /* CLEANUP ALL PREVIOUS STATEMENTS */
     for (int i = 0; i < count; i++) {
@@ -237,21 +248,16 @@ if (!s) {
 /*──────────────────────────────────────────────*/
 static ASTNode *parse_statement(void)
 {
-    ASTNode *node = NULL;
-
     /* HANDLE TOKEN_ERROR (CRITICAL FIX) */
     if (current.type == TOKEN_ERROR) {
 
-        if (!error_reported) {
-            shriji_error_at(
-                current,
-                E_PARSE_INVALID_TOKEN,
-                "lexer",
-                "Invalid token mila hai",
-                "invalid character hatao"
-            );
-            error_reported = 1;
-        }
+             parser_error_once(
+    current,
+    E_PARSE_INVALID_TOKEN,
+    "lexer",
+    "Invalid token mila hai",
+    "invalid character hatao"
+     );
 
         advance();   // skip bad token
         return NULL;
@@ -297,52 +303,11 @@ static ASTNode *parse_statement(void)
         return new_continue_node();
     }
 
+    ASTNode *cmd = parse_command_statement();
 
-/* bolo <expr> */
-if (current.type == TOKEN_BOLO) {
-    advance();
-    skip_separators();
+    if (cmd)
+        return cmd;
 
-    node = parse_expression();
-
-    if (!node) {
-        return NULL;
-    }
-
-    return new_command_node("bolo", node);
-}
-
-/* AI commands */
-if (current.type == TOKEN_SAKHI ||
-    current.type == TOKEN_NIYU  ||
-    current.type == TOKEN_MIRA  ||
-    current.type == TOKEN_KAVYA ||
-    current.type == TOKEN_SHIRI) {
-
-
-char cmd[32];
-int len = current.length;
-
-if (len >= (int)sizeof(cmd))
-    len = (int)sizeof(cmd) - 1;
-
-strncpy(cmd, current.start, len);
-cmd[len] = '\0';
-
-advance();
-skip_separators();
-
-/*  OPTIONAL ARG */
-ASTNode *arg = NULL;
-
-if (!is_separator(current.type)) {
-arg = parse_expression();
-}
-
-skip_separators();
-
-return new_command_node(cmd, arg);
-}
 
 /* '=' can never start a statement */
 if (current.type == TOKEN_EQUAL) {
@@ -350,17 +315,13 @@ if (current.type == TOKEN_EQUAL) {
     char example[64];
     shriji_build_example(current_source, example, sizeof(example));
 
-    if (!error_reported)
-    {
-        shriji_error_at(
-            current,
-            E_PARSE_INVALID_TOKEN,
-            "statement",
-            "Assignment yahin se start nahi ho sakta. Variable aur '=' ek hi line me likho.",
-            example
-        );
-        error_reported = 1;   //  CRITICAL
-    }
+          parser_error_once(
+    current,
+    E_PARSE_INVALID_TOKEN,
+    "statement",
+    "Assignment yahin se start nahi ho sakta. Variable aur '=' ek hi line me likho.",
+    example
+   );
 
     return NULL;
 }
@@ -390,6 +351,56 @@ if (!error_reported) {
 return NULL;
 
 }
+
+static ASTNode *parse_command_statement(void)
+{
+    /* bolo */
+    if (current.type == TOKEN_BOLO) {
+
+        advance();
+        skip_separators();
+
+        ASTNode *node = parse_expression();
+
+        if (!node)
+            return NULL;
+
+        return new_command_node("bolo", node);
+    }
+
+    /* AI commands */
+    if (current.type == TOKEN_SAKHI ||
+        current.type == TOKEN_NIYU  ||
+        current.type == TOKEN_MIRA  ||
+        current.type == TOKEN_KAVYA ||
+        current.type == TOKEN_SHIRI) {
+
+        char cmd[32];
+        int len = current.length;
+
+        if (len >= (int)sizeof(cmd))
+            len = (int)sizeof(cmd) - 1;
+
+        strncpy(cmd, current.start, len);
+        cmd[len] = '\0';
+
+        advance();
+        skip_separators();
+
+        ASTNode *arg = NULL;
+
+        if (!is_separator(current.type)) {
+            arg = parse_expression();
+        }
+
+        skip_separators();
+
+        return new_command_node(cmd, arg);
+    }
+
+    return NULL;
+}
+
 /*──────────────────────────────────────────────
  | BLOCK { ... }
  *──────────────────────────────────────────────*/

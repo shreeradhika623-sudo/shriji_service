@@ -40,7 +40,7 @@ typedef struct {
 
 /* create */
 Env *new_env(void);
-
+void free_env(Env *env);
 /* scope control */
 void env_push_scope(Env *env);
 void env_pop_scope(Env *env);

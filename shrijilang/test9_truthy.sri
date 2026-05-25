@@ -1,0 +1,7 @@
+mavi x = "ram"
+
+agar (x) {
+
+    bolo "true"
+
+}

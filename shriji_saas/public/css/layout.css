@@ -1,0 +1,535 @@
+/* =========================
+   🌌 GLOBAL
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    background: #050816;
+
+    color: white;
+
+    font-family: sans-serif;
+
+    height: 100vh;
+
+    overflow: hidden;
+}
+
+/* =========================
+   🌸 MAIN APP
+========================= */
+
+.container {
+
+    display: flex;
+
+    flex-direction: column;
+
+    height: 100vh;
+}
+
+/* =========================
+   🔝 TOPBAR
+========================= */
+
+.topbar {
+
+    height: 60px;
+
+    background: #081120;
+
+    border-bottom: 1px solid #16213a;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: 0 15px;
+
+    gap: 15px;
+
+    flex-shrink: 0;
+}
+
+.brand {
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    color: #4fc3ff;
+}
+
+/* =========================
+   📂 TABS
+========================= */
+
+.file-tabs {
+
+    display: flex;
+
+    gap: 10px;
+
+    overflow-x: auto;
+
+    flex: 1;
+}
+
+.file-tab {
+
+    background: #0d1730;
+
+    border: 1px solid #1f2d4d;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    transition: 0.2s;
+}
+
+.file-tab:hover {
+
+    background: #132347;
+}
+
+.file-tab.active {
+
+    background: #39b8ff;
+
+    color: black;
+
+    font-weight: bold;
+}
+
+/* =========================
+   🌌 MAIN LAYOUT
+========================= */
+
+.top-layout {
+
+    flex: 1;
+
+    display: grid;
+
+    grid-template-columns: 220px 1fr 420px;
+
+    overflow: hidden;
+}
+
+/* =========================
+   📁 SIDEBAR
+========================= */
+.files {
+
+    width: 240px;
+
+    background: #07101f;
+
+    border-right: 1px solid #16213a;
+
+    padding: 18px;
+
+    overflow-y: auto;
+
+    flex-shrink: 0;
+}
+
+.files h3 {
+
+    margin-bottom: 25px;
+
+    color: #ffd166;
+
+    font-size: 24px;
+
+    font-weight: bold;
+}
+
+.files ul {
+
+    list-style: none;
+}
+
+.files li {
+
+    background: #0d1730;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    margin-bottom: 10px;
+
+    cursor: pointer;
+
+    border: 1px solid #1c2c4c;
+
+    transition: 0.2s;
+}
+
+.files li:hover {
+
+    background: #132347;
+}
+
+/* =========================
+   🧠 EDITOR
+========================= */
+
+.left {
+
+    padding: 20px;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+}
+
+.left h2 {
+
+    margin-bottom: 15px;
+}
+
+.CodeMirror {
+
+    flex: 1;
+
+    height: 100% !important;
+
+    border-radius: 14px;
+
+    font-size: 18px;
+
+    background: #1f2437;
+}
+
+/* =========================
+   🔘 BUTTONS
+========================= */
+
+.button-row {
+
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 15px;
+}
+
+.button-row button {
+
+    background: #39b8ff;
+
+    border: none;
+
+    color: black;
+
+    padding: 12px 18px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    font-weight: bold;
+
+    transition: 0.2s;
+}
+
+.button-row button:hover {
+
+    transform: scale(1.03);
+}
+
+/* =========================
+   📤 RIGHT PANEL
+========================= */
+
+.right {
+
+    background: #07101f;
+
+    border-left: 1px solid #16213a;
+
+    padding: 20px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 20px;
+
+    overflow-y: auto;
+}
+
+.panel {
+
+    background: #0b1327;
+
+    border: 1px solid #1d2d4d;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    overflow: auto;
+}
+
+/* 📤 OUTPUT PANEL */
+
+.output-panel {
+
+    height: 45%;
+}
+
+/* 💡 EXPLAIN PANEL */
+
+.explain-panel {
+
+    flex: 1;
+}
+
+.panel h2 {
+
+    margin-bottom: 15px;
+}
+
+/* =========================
+   🖥 OUTPUT
+========================= */
+
+#resultBox {
+
+    color: #4dff88;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+
+    font-size: 24px;
+
+    line-height: 1.7;
+}
+
+/* =========================
+   💡 EXPLAIN
+========================= */
+
+#explainBox {
+
+    white-space: pre-wrap;
+
+    line-height: 1.8;
+
+    color: #d7d7d7;
+}
+
+/* =========================
+   📱 MOBILE
+========================= */
+
+@media (max-width: 900px) {
+
+    .top-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .files {
+
+        display: none;
+    }
+
+    .right {
+
+        border-left: none;
+
+        border-top: 1px solid #16213a;
+    }
+
+    .CodeMirror {
+
+        height: 350px !important;
+    }
+
+    .panel {
+
+        min-height: 180px;
+    }
+}
+
+
+/* =========================
+   🖥 BOTTOM DEBUG PANEL
+========================= */
+
+.bottom-debug {
+
+    height: 140px;
+
+    background: #081120;
+
+    border-top: 1px solid #1d2d4d;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+/* =========================
+   📑 DEBUG TABS
+========================= */
+
+.debug-tabs {
+
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 0 20px;
+
+    border-bottom: 1px solid #1d2d4d;
+
+    flex-shrink: 0;
+}
+
+.debug-tab {
+
+    padding: 8px 14px;
+
+    border-radius: 8px;
+
+    background: #0d1730;
+
+    color: #cbd5e1;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.debug-tab:hover {
+
+    background: #132347;
+}
+
+.debug-tab.active {
+
+    background: #39b8ff;
+
+    color: black;
+
+    font-weight: bold;
+}
+
+/* =========================
+   📜 DEBUG CONTENT
+========================= */
+
+.debug-content {
+
+    flex: 1;
+
+    padding: 20px;
+
+    overflow: auto;
+
+    color: #9ca3af;
+
+    font-size: 15px;
+
+    line-height: 1.8;
+}
+
+/* =========================
+   📚 SIDEBAR UPGRADE
+========================= */
+
+.sidebar-section {
+
+    margin-top: 25px;
+}
+
+.sidebar-title {
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+    margin-bottom: 10px;
+
+    letter-spacing: 1px;
+}
+
+.sidebar-item {
+
+    background: #0d1730;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    margin-bottom: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    color: #d1d5db;
+}
+
+.sidebar-item:hover {
+
+    background: #132347;
+}
+
+/* =========================
+   ➕ NEW FILE BUTTON
+========================= */
+
+#newTabButton {
+
+    background: #39b8ff;
+
+    color: black;
+
+    border: none;
+
+    padding: 10px 16px;
+
+    border-radius: 10px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+
+    flex-shrink: 0;
+}
+
+#newTabButton:hover {
+
+    transform: scale(1.04);
+
+    background: #57c5ff;
+}

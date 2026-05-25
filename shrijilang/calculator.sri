@@ -1,0 +1,12 @@
+mavi a = 10
+mavi b = 5
+
+mavi add = a + b
+mavi sub = a - b
+mavi mul = a * b
+mavi div = a / b
+
+bolo add
+bolo sub
+bolo mul
+bolo div

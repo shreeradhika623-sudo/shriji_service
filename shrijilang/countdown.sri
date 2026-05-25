@@ -1,0 +1,9 @@
+mavi x = 10
+
+jabtak (x >= 1) {
+
+    bolo x
+
+    x = x - 1
+
+}

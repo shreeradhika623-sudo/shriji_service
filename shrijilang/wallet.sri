@@ -1,0 +1,17 @@
+mavi balance = 1000
+
+mavi withdraw = 300000000
+
+agar (withdraw <= balance) {
+
+    balance = balance - withdraw
+
+    bolo balance
+
+}
+
+agar (withdraw > balance) {
+
+    bolo "insufficient balance"
+
+}

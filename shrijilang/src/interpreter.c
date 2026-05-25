@@ -3,8 +3,6 @@
 
 #include <stdlib.h>
 
-#include <stdlib.h>
-
 #define MAX_IMPORT_DEPTH 256
 
 static char import_stack[MAX_IMPORT_DEPTH][256];
@@ -127,6 +125,35 @@ static double safe_mod(double a, double b)
     return (double)(ai % bi);
 }
 
+/* YAHAA SE NAYA FUNCTION START */
+
+static int value_equals(Value a, Value b)
+{
+    if (a.type != b.type)
+        return 0;
+
+    switch (a.type) {
+
+        case VAL_NUMBER:
+            return a.number == b.number;
+
+        case VAL_BOOL:
+            return a.boolean == b.boolean;
+
+        case VAL_STRING:
+
+            if (!a.string || !b.string)
+                return 0;
+
+            return strcmp(a.string, b.string) == 0;
+
+        case VAL_NULL:
+            return 1;
+
+        default:
+            return 0;
+    }
+}
 /*──────────────────────────────────────────────────────────────
  | Value → number helper
  *──────────────────────────────────────────────────────────────*/
@@ -1175,6 +1202,27 @@ case AST_BINARY: {
         value_free(&Rv);
         return value_bool(res);
     }
+
+/* ================= EQUALITY ================= */
+if (op == '=') {
+
+    int result = value_equals(Lv, Rv);
+
+    value_free(&Lv);
+    value_free(&Rv);
+
+    return value_bool(result);
+}
+
+if (op == '!') {
+
+    int result = !value_equals(Lv, Rv);
+
+    value_free(&Lv);
+    value_free(&Rv);
+
+    return value_bool(result);
+}
 
     /* ================= NUMBER ================= */
     if (Lv.type == VAL_NUMBER) {

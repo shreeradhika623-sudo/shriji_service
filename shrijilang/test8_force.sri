@@ -1,0 +1,7 @@
+mavi mass = 10
+
+mavi acceleration = 5
+
+mavi force = mass * acceleration
+
+bolo force

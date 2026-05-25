@@ -182,3 +182,29 @@ Value env_get(Env *env, const char *name)
 
     return value_null();
 }
+
+/*──────────────────────────────────────────────
+ | DESTROY ENVIRONMENT
+ *──────────────────────────────────────────────*/
+void free_env(Env *env)
+{
+    if (!env)
+        return;
+
+    /* free all scopes */
+    for (int f = 0; f < env->depth; f++)
+    {
+        for (int i = 0; i < env->frames[f].count; i++)
+        {
+            value_free(
+                &env->frames[f].vars[i].value
+            );
+        }
+
+        env->frames[f].count = 0;
+    }
+
+    env->depth = 0;
+
+    free(env);
+}

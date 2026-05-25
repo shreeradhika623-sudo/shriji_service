@@ -1,0 +1,9 @@
+mavi x = 0
+
+jabtak (x < 10000000) {
+
+    x = x + 1
+
+}
+
+bolo x

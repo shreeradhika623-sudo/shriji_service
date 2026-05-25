@@ -1,0 +1,7 @@
+mavi x = -5.5
+
+bolo x
+
+mavi y = x + 2.5
+
+bolo y

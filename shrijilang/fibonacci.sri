@@ -1,0 +1,17 @@
+mavi a = 0
+mavi b = 1
+mavi count = 0
+
+jabtak (count < 10) {
+
+    bolo a
+
+    mavi temp = a + b
+
+    a = b
+
+    b = temp
+
+    count = count + 1
+
+}

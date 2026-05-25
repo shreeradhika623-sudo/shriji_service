@@ -1,0 +1,15 @@
+mavi x = 0
+
+jabtak (x < 100000) {
+
+    agar (x > 50000) {
+
+        mavi y = x * 2
+
+    }
+
+    x = x + 1
+
+}
+
+bolo x

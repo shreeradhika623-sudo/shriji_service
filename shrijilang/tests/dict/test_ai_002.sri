@@ -1,0 +1,9 @@
+mavi user = {
+    "name": "old",
+    "age": 20
+}
+
+user["name"] = "new"
+
+bolo user["name"]
+bolo user["age"]

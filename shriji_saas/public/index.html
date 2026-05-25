@@ -1,190 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Shriji SaaS</title>
 
-<style>
-
-/* 🌑 DARK THEME BODY */
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #0f172a;
-    color: #e2e8f0;
-}
-
-/* 🧱 MAIN LAYOUT */
-.container {
-    display: flex;
-    min-height: 100vh;
-    background: #0f172a;
-}
-
-/* 📁 FILE PANEL */
-.files {
-    width: 240px;
-    background: #020617;
-    padding: 15px;
-    border-right: 1px solid #1e293b;
-    overflow-y: auto;
-}
-
-.files h3 {
-    color: #38bdf8;
-}
-
-/* 📄 FILE ITEMS */
-li {
-    cursor: pointer;
-    margin: 8px 0;
-    color: #cbd5f5;
-}
-
-li:hover {
-    color: #38bdf8;
-}
-
-/* ✏️ EDITOR */
-.left {
-    flex: 1;
-    padding: 20px;
-    min-width: 0;
-}
-
-/* 📤 OUTPUT */
-.right {
-    width: 380px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* 📝 TEXTAREA */
-textarea {
-    width: 100%;
-    height: 70vh;
-    background: #020617;
-    color: #38bdf8;
-    border: 1px solid #1e293b;
-    padding: 16px;
-    font-size: 20px;
-}
-
-/* 🔘 BUTTON */
-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    background: #38bdf8;
-    border: none;
-    color: black;
-    cursor: pointer;
-}
-
-button:hover {
-    background: #0ea5e9;
-}
-
-/* 🟢 RESULT */
-#resultBox {
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    color: #22c55e;
-
-    margin-bottom: 10px;
-
-    white-space: pre-wrap;
-
-    overflow-wrap: break-word;
-
-    line-height: 1.6;
-}
-
-/* 🔵 CORRECTION */
-#correctBox {
-    color: #38bdf8;
-    margin-bottom: 10px;
-}
-
-/* 🔴 ERROR */
-#errorBox {
-    color: #ef4444;
-    margin-bottom: 10px;
-}
-
-/* 💡 HINT */
-#hintBox {
-    color: #94a3b8;
-}
-
-/* 📦 RIGHT PANELS */
-.panel {
-
-    flex: 1;
-
-    background: #020617;
-
-    border: 1px solid #1e293b;
-
-    border-radius: 10px;
-
-    padding: 15px;
-
-    overflow: auto;
-}
-
-/* 📘 EXPLAIN */
-#explainBox {
-
-    color: #cbd5e1;
-
-    line-height: 1.6;
-
-    white-space: pre-wrap;
-
-    overflow-wrap: break-word;
-}
-
-@media (max-width: 900px) {
-
-    .container {
-        flex-direction: column;
-    }
-
-    .files {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #1e293b;
-    }
-
-    .left {
-        width: 100%;
-        padding: 15px;
-    }
-
-    .right {
-        width: 100%;
-        padding: 15px;
-    }
-
-    textarea {
-        font-size: 22px;
-        height: 50vh;
-    }
-
-    button {
-        width: 140px;
-        font-size: 18px;
-    }
-}
-
-</style>
+<link rel="stylesheet" href="/css/layout.css">
+<link rel="stylesheet" href="/css/editor.css">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
@@ -198,224 +23,257 @@ href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.mi
 
 <div class="container">
 
-    <!-- 📁 FILE LIST -->
-    <div class="files">
-        <h3>📁 demo</h3>
-        <ul id="fileList"></ul>
+<!-- =========================
+     🔷 TOPBAR
+========================= -->
+
+<div class="topbar">
+
+    <div class="brand">
+
+        🕉 Shriji IDE
+
     </div>
 
-    <!-- 🧠 EDITOR -->
+    <div class="file-tabs"
+    id="tabsContainer">
+
+    </div>
+
+    <button id="newTabButton">
+
+        + New File
+
+    </button>
+
+</div>
+
+<!-- =========================
+     🔥 MAIN LAYOUT
+========================= -->
+
+<div class="top-layout">
+
+    <!-- =========================
+         📁 LEFT SIDEBAR
+    ========================= -->
+
+    <div class="files">
+
+<h3>📚 Examples</h3>
+
+<div class="sidebar-section">
+
+    <div class="sidebar-title">
+
+        FAVORITES
+
+    </div>
+
+    <div class="sidebar-item">
+
+        ⭐ Basic Math
+
+    </div>
+
+    <div class="sidebar-item">
+
+        ⭐ Hello World
+
+    </div>
+
+</div>
+
+<div class="sidebar-section">
+
+    <div class="sidebar-title">
+
+        RECENT
+
+    </div>
+
+    <div class="sidebar-item">
+
+        🕒 Variables Demo
+
+    </div>
+
+    <div class="sidebar-item">
+
+        🕒 Conditions
+
+    </div>
+
+</div>
+
+<div class="sidebar-section">
+
+    <div class="sidebar-title">
+
+        FILES
+
+    </div>
+
+    <ul id="fileList">
+
+        <li onclick="switchFile('main.shriji')">
+            📄 main.shriji
+        </li>
+
+        <li onclick="switchFile('file2.shriji')">
+            📄 file2.shriji
+        </li>
+
+        <li onclick="switchFile('file3.shriji')">
+            📄 file3.shriji
+        </li>
+
+    </ul>
+
+</div>
+
+    </div>
+
+    <!-- =========================
+         🧠 EDITOR
+    ========================= -->
+
     <div class="left">
-        <h2>Code Editor</h2>
+
+        <h2 id="editorTitle">
+
+         main.shriji
+
+        </h2>
 
         <textarea id="code"></textarea>
 
         <br><br>
 
-        <button onclick="saveFile()">💾 Save</button>
-        <button onclick="runCode()">▶ Run</button>
+        <div class="button-row">
+
+            <button onclick="saveFile()">
+
+                💾 Save
+
+            </button>
+
+            <button
+            id="runButton"
+            onclick="runCode()">
+
+                ▶ Run
+
+            </button>
+
+        </div>
+
     </div>
 
-    <!-- 🌸 OUTPUT -->
-   <div class="right">
+    <!-- =========================
+         🌸 RIGHT PANEL
+    ========================= -->
 
-    <!-- OUTPUT PANEL -->
-    <div class="panel">
+    <div class="right">
 
-        <h2>Output</h2>
+        <!-- OUTPUT -->
 
-      <div id="resultBox"></div>
+        <div class="panel output-panel">
 
-      <div id="correctBox"></div>
+            <h2>Output</h2>
 
+            <div id="resultBox"></div>
 
-      <div id="hintBox"></div>        
+            <div id="correctBox"></div>
 
-    </div>
+            <div id="hintBox"></div>
 
-    <!-- EXPLAIN PANEL -->
-    <div class="panel">
+        </div>
 
-        <h2>Explanation</h2>
+        <!-- EXPLAIN -->
 
-        <div id="explainBox">
-            Shriji language explanation panel.
+        <div class="panel explain-panel">
+
+            <h2>Explanation</h2>
+
+            <div id="explainBox">
+
+                Shriji language explanation panel.
+
+            </div>
+
         </div>
 
     </div>
 
 </div>
 
+<!-- =========================
+     🖥 DEBUG PANEL
+========================= -->
+
+<div class="bottom-panel">
+
+    <!-- TABS -->
+
+    <div class="console-tabs">
+
+        <div class="console-tab active">
+
+            Exceptions
+
+        </div>
+
+        <div class="console-tab">
+
+            Runtime
+
+        </div>
+
+        <div class="console-tab">
+
+            Logs
+
+        </div>
+
+        <div class="console-tab">
+
+            Variables
+
+        </div>
+
+    </div>
+
+    <!-- CONTENT -->
+
+    <div class="console-content">
+
+        🚀 Shriji Runtime Ready...
+
+    </div>
+
 </div>
+
+</div>
+
+<!-- =========================
+     📦 SCRIPTS
+========================= -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
 
-<script>
+<script src="/js/runtime.js"></script>
 
-/* =========================
-   ⚡ AUTO RUN SYSTEM
-========================= */
-let timeout = null;
+<script src="/js/editor.js"></script>
 
-function autoRun() {
+<script src="/js/files.js"></script>
 
-    clearTimeout(timeout);
+<script src="/js/app.js"></script>
 
-    timeout = setTimeout(() => {
-        runCode();
-    }, 500);
-}
-
-/* =========================
-   📁 LOAD FILES
-========================= */
-async function loadFiles() {
-
-    const res = await fetch("/list-files?projectName=demo");
-    const data = await res.json();
-
-    const list = document.getElementById("fileList");
-    list.innerHTML = "";
-
-    data.files.forEach(file => {
-
-        const li = document.createElement("li");
-        li.textContent = file;
-
-        li.onclick = async () => {
-
-            window.currentFile = file;
-
-            const res = await fetch(`/read-file?projectName=demo&fileName=${file}`);
-            const data = await res.json();
-
-            editor.setValue(data.content);
-        };
-
-        list.appendChild(li);
-    });
-}
-
-/* =========================
-   💾 SAVE FILE
-========================= */
-async function saveFile() {
-
-    if (!window.currentFile) {
-        alert("Select file first");
-        return;
-    }
-
-    const content = editor.getValue();
-
-    await fetch("/save-file", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            projectName: "demo",
-            fileName: window.currentFile,
-            content: content
-        })
-    });
-
-    alert("Saved!");
-}
-
-/* =========================
-   ▶ RUN CODE
-========================= */
-function runCode() {
-
-    const code = editor.getValue();
-
-    // 🧹 EMPTY CHECK
-    if (!code.trim()) {
-        document.getElementById("resultBox").innerText = "";
-        document.getElementById("correctBox").innerText = "";
-        document.getElementById("errorBox").innerText = "";
-        document.getElementById("hintBox").innerText = "";
-        return;
-    }
-
-    // ⏳ LOADING
-    document.getElementById("resultBox").innerText = "Running...";
-
-    fetch("/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code })
-    })
-    .then(res => res.json())
-    .then(data => {
-
- document.getElementById("resultBox").innerText =
-    data.output || "";
-
-document.getElementById("correctBox").innerText =
-    "";
-
-let explainText = "";
-
-if (data.corrected)
-{
-    explainText +=
-        "Corrected:\n" +
-        data.corrected +
-        "\n\n";
-}
-
-if (data.explain)
-{
-    explainText +=
-        data.explain + "\n\n";
-}
-
-if (data.error)
-{
-    let cleanError = data.error;
-
-    if (cleanError.includes("{"))
-    {
-        cleanError =
-        cleanError.split("{")[0];
-    }
-
-    explainText +=
-        "Error:\n" +
-        cleanError.trim();
-}
-
-document.getElementById("explainBox").innerText =
-    explainText || "No explanation";
-    
-    
-    });
-}
-
-/* =========================
-   ⌨️ CTRL + ENTER RUN
-========================= */
-document.getElementById("code").addEventListener("keydown", function(e) {
-    if (e.ctrlKey && e.key === "Enter") {
-        runCode();
-    }
-});
-
-/* 🚀 START */
-loadFiles();
-
-const editor = CodeMirror.fromTextArea(
-    document.getElementById("code"),
-    {
-        lineNumbers: true,
-        theme: "dracula",
-        mode: "javascript"
-    }
-);
-
-</script>
+<script src="/js/ui.js"></script>
 
 </body>
+
 </html>

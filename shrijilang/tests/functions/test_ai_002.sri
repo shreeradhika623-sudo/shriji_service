@@ -1,0 +1,11 @@
+mavi x = 5
+
+rachna test()
+{
+    mavi x = 100
+    bolo x
+}
+
+test()
+
+bolo x

@@ -1,0 +1,9 @@
+mavi a = "shriji"
+
+mavi b = "shriji"
+
+agar (a == b) {
+
+    bolo "match"
+
+}

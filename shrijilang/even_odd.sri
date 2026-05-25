@@ -1,0 +1,13 @@
+mavi x = 8
+
+agar (x % 2 == 0) {
+
+    bolo "EVEN"
+
+}
+
+agar (x % 2 != 0) {
+
+    bolo "ODD"
+
+}

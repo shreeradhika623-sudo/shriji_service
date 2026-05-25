@@ -81,18 +81,14 @@ EngineResult shriji_engine_execute(const char *input, Env *env)
 
       res.ast = ast;
 
-      if (DEV_MODE)
-    {
-     printf("\n=== AST ===\n");
-     ast_print(ast);
-     printf("===========\n\n");
-    }
-
-    if (!ast || error_reported)
-    {
-        res.status = ENGINE_PARSE_ERROR;
-        return res;
-    }
+    /*
+        if (DEV_MODE)
+   {
+        printf("\n=== AST ===\n");
+        ast_print(ast);
+        printf("===========\n\n");
+   }
+   */
 
     /* ================= RUNTIME ================= */
 

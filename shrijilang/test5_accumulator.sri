@@ -1,0 +1,13 @@
+mavi i = 1
+
+mavi total = 0
+
+jabtak (i <= 5) {
+
+    total = total + i
+
+    i = i + 1
+
+}
+
+bolo total

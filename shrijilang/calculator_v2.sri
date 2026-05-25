@@ -1,0 +1,28 @@
+mavi a = 20
+mavi b = 10
+
+mavi op = 1
+
+agar (op == 1) {
+
+    bolo a + b
+
+}
+
+agar (op == 2) {
+
+    bolo a - b
+
+}
+
+agar (op == 3) {
+
+    bolo a * b
+
+}
+
+agar (op == 4) {
+
+    bolo a / b
+
+}

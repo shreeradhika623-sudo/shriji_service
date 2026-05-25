@@ -1,0 +1,5 @@
+mavi nums = [1, 2, 3]
+
+bolo nums[0]
+bolo nums[1]
+bolo nums[2]

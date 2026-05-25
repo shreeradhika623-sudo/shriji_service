@@ -61,7 +61,7 @@ SRC = \
 	src/normalize_engine.c \
 	src/nirman_flow_engine.c \
 	src/value_print.c \
-    src/ast_debug.c
+   #  src/ast_debug.c
 # ============================================================
 # OBJECT FILES
 # ============================================================

@@ -1,0 +1,12 @@
+rachna add(a, b)
+{
+    bolo a + b
+}
+
+rachna run()
+{
+    add(1, 2)
+    add(5, 6)
+}
+
+run()

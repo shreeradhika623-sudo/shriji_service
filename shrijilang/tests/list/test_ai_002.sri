@@ -1,0 +1,7 @@
+mavi nums = [10, 20, 30]
+
+nums[1] = 99
+
+bolo nums[0]
+bolo nums[1]
+bolo nums[2]

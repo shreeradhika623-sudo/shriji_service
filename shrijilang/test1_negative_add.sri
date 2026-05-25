@@ -1,0 +1,7 @@
+mavi a = 10
+
+mavi b = -5
+
+mavi c = a + b
+
+bolo c

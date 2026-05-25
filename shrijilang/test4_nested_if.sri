@@ -1,0 +1,11 @@
+mavi marks = 85
+
+agar (marks > 50) {
+
+    agar (marks > 80) {
+
+        bolo "excellent"
+
+    }
+
+}

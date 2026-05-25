@@ -1,0 +1,14 @@
+mavi a = 20
+mavi b = 0
+
+agar (b == 0) {
+
+    bolo "divide by zero"
+
+}
+
+agar (b != 0) {
+
+    bolo a / b
+
+}

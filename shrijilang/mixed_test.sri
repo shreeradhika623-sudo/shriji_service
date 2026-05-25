@@ -1,0 +1,5 @@
+mavi a = "hello"
+
+mavi b = 5
+
+bolo a + b

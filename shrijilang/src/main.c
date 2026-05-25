@@ -147,9 +147,14 @@ int main(int argc, char **argv)
     else
         run_repl_mode();
 
-    smriti_session_clear();
+   smriti_session_clear();
 
-    return 0;
+   free_env(GLOBAL_ENV);
+
+    GLOBAL_ENV = NULL;
+
+     return 0;
+
 }
 
 /* MR_MR. MANIKPURI */

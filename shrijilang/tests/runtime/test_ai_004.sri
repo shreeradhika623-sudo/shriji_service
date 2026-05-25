@@ -1,0 +1,8 @@
+mavi a = [1, 2]
+
+mavi b = a
+
+b[0] = 999
+
+bolo a[0]
+bolo b[0]

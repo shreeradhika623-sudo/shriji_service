@@ -1,0 +1,15 @@
+mavi rice = 50
+
+mavi oil = 120
+
+mavi soap = 40
+
+mavi total = rice + oil + soap
+
+bolo total
+
+agar (total > 200) {
+
+    bolo "discount available"
+
+}

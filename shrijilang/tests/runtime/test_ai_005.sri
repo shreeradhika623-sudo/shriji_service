@@ -1,0 +1,10 @@
+mavi d = {
+    "x": 1
+}
+
+mavi e = d
+
+e["x"] = 500
+
+bolo d["x"]
+bolo e["x"]

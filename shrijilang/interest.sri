@@ -1,0 +1,15 @@
+mavi balance = 1000
+mavi rate = 10
+mavi year = 1
+
+jabtak (year <= 5) {
+
+    mavi interest = (balance * rate) / 100
+
+    balance = balance + interest
+
+    bolo balance
+
+    year = year + 1
+
+}

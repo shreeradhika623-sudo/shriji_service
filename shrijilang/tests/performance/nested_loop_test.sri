@@ -1,0 +1,17 @@
+mavi x = 0
+
+jabtak (x < 1000) {
+
+    mavi y = 0
+
+    jabtak (y < 1000) {
+
+        y = y + 1
+
+    }
+
+    x = x + 1
+
+}
+
+bolo x

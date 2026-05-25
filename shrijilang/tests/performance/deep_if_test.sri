@@ -1,0 +1,23 @@
+mavi x = 10
+
+agar (x > 1) {
+
+    agar (x > 2) {
+
+        agar (x > 3) {
+
+            agar (x > 4) {
+
+                agar (x > 5) {
+
+                    bolo x
+
+                }
+
+            }
+
+        }
+
+    }
+
+}

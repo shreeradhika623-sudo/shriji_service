@@ -1,0 +1,9 @@
+mavi x = 0
+
+jabtak (x < 20000) {
+
+    bolo "shriji benchmark"
+
+    x = x + 1
+
+}

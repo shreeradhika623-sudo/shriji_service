@@ -1,0 +1,7 @@
+mavi i = 0
+
+jabtak (i < 3) {
+
+    i = i + 1
+
+}

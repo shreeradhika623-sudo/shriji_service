@@ -1,0 +1,15 @@
+mavi password = "shriji"
+
+mavi entered = "wrong"
+
+agar (password == entered) {
+
+    bolo "login success"
+
+}
+
+agar (password != entered) {
+
+    bolo "wrong password"
+
+}

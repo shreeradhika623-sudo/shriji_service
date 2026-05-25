@@ -1,0 +1,25 @@
+mavi marks = 75
+
+agar (marks < 50) {
+
+    bolo "FAIL"
+
+}
+
+agar (marks >= 50) {
+
+    bolo "C"
+
+}
+
+agar (marks >= 75) {
+
+    bolo "B"
+
+}
+
+agar (marks >= 90) {
+
+    bolo "A"
+
+}

@@ -1,0 +1,9 @@
+mavi a = "ram"
+
+mavi b = "ram"
+
+agar (a == b) {
+
+    bolo "same"
+
+}

@@ -1,0 +1,8 @@
+mavi a = [[1]]
+
+mavi b = a
+
+b[0][0] = 777
+
+bolo a[0][0]
+bolo b[0][0]

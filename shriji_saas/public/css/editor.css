@@ -1,0 +1,80 @@
+/* =========================
+   🧠 CODEMIRROR EDITOR
+========================= */
+
+.CodeMirror {
+
+    height: 75vh;
+
+    font-size: 18px;
+
+    border-radius: 12px;
+
+    padding-top: 10px;
+
+    background: #020617;
+
+    border: 1px solid #1e293b;
+}
+
+/* =========================
+   🧾 GUTTER
+========================= */
+
+.CodeMirror-gutters {
+
+    background: #020617;
+
+    border-right: 1px solid #1e293b;
+}
+
+/* =========================
+   🔢 LINE NUMBERS
+========================= */
+
+.CodeMirror-linenumber {
+
+    color: #64748b;
+}
+
+/* =========================
+   ✨ CURSOR
+========================= */
+
+.CodeMirror-cursor {
+
+    border-left: 2px solid #38bdf8;
+}
+
+/* =========================
+   🖱️ ACTIVE LINE
+========================= */
+
+.CodeMirror-activeline-background {
+
+    background: rgba(56, 189, 248, 0.08);
+}
+
+/* =========================
+   📦 EDITOR PANEL
+========================= */
+
+.left {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+}
+
+/* =========================
+   🎛️ BUTTON ROW
+========================= */
+
+.button-row {
+
+    display: flex;
+
+    gap: 10px;
+}

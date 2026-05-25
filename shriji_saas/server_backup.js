@@ -28,103 +28,117 @@ app.post("/run", (req, res) => {
         });
     }
 
-    const uniqueName =
-    "temp_" + Date.now() + ".sri";
-
-     const tempFile =
-         path.join(__dirname, uniqueName);
+    const tempFile = path.join(__dirname, "temp.sri");
 
      const sriPath = path.join(
          __dirname,
            "../shrijilang/sri"
   );
 
-fs.writeFileSync(tempFile, input);
+     const codeLines = input
+    .split("\n")
+    .filter(line => line.trim() !== "");
 
-exec(
+let finalOutput = [];
+let finalExplain = [];
+let finalError = [];
 
-    `${sriPath} ${tempFile}`,
-
+function runLine(index)
+{
+    if (index >= codeLines.length)
     {
-        timeout: 3000,
-        maxBuffer: 1024 * 1024
-    },
+        fs.unlinkSync(tempFile);
 
-    (error, stdout, stderr) => {
-
-    fs.unlinkSync(tempFile);
-
-    if (stderr)
-    {
-        stdout += "\nERROR:\n" + stderr;
+        return res.json({
+            output: finalOutput.join("\n"),
+            explain: finalExplain.join("\n"),
+            error: finalError.join("\n")
+        });
     }
 
-    const lines = stdout.split("\n");
+    const line = codeLines[index];
+    const lineNumber = index + 1;
 
-    let output = [];
-    let explain = [];
-    let errorText = [];
+    fs.writeFileSync(tempFile, line);
 
-    let mode = "";
+    exec(`${sriPath} ${tempFile}`, (error, stdout, stderr) => {
 
-    for (const raw of lines)
-    {
-        const clean = raw.trim();
-
-        if (clean.startsWith("OUTPUT:"))
+        if (stderr)
         {
-            mode = "output";
-            continue;
+            stdout += "\nERROR:\n" + stderr;
         }
 
-        if (clean.startsWith("EXPLAIN:"))
+        const lines = stdout.split("\n");
+
+        let mode = "";
+
+        for (const raw of lines)
         {
-            mode = "explain";
-            continue;
+            const clean = raw.trim();
+
+            if (clean.startsWith("OUTPUT:"))
+            {
+                mode = "output";
+                continue;
+            }
+
+            if (clean.startsWith("EXPLAIN:"))
+            {
+                mode = "explain";
+                continue;
+            }
+
+            if (clean.startsWith("ERROR:"))
+            {
+                mode = "error";
+                continue;
+            }
+
+            if (
+                clean.startsWith("DETAILS:") ||
+                clean.startsWith("SUGGESTION:") ||
+                clean.startsWith("JSON:")
+            )
+            {
+                continue;
+            }
+
+            if (clean === "")
+            {
+                continue;
+            }
+
+            if (mode === "output")
+            {
+                finalOutput.push(`[${lineNumber}] ${clean}`);
+            }
+
+            if (mode === "explain")
+            {
+                finalExplain.push(clean);
+            }
+
+            if (mode === "error")
+            {
+                if (
+                    clean.startsWith("Do ") ||
+                    clean.startsWith("Variable") ||
+                    clean.startsWith("Expression")
+                )
+                {
+                    finalError.push(
+                        `[Line ${lineNumber}] ${clean}`
+                    );
+                }
+            }
         }
 
-        if (clean.startsWith("ERROR:"))
-        {
-            mode = "error";
-            continue;
-        }
-
-        if (
-            clean.startsWith("DETAILS:") ||
-            clean.startsWith("SUGGESTION:") ||
-            clean.startsWith("JSON:")
-        )
-        {
-            continue;
-        }
-
-        if (clean === "")
-        {
-            continue;
-        }
-
-        if (mode === "output")
-        {
-            output.push(clean);
-        }
-
-        if (mode === "explain")
-        {
-            explain.push(clean);
-        }
-
-        if (mode === "error")
-        {
-            errorText.push(clean);
-        }
-    }
-
-    res.json({
-        output: output.join("\n"),
-        explain: explain.join("\n"),
-        error: errorText.join("\n")
+        runLine(index + 1);
     });
-  });
+}
+
+runLine(0);
+
 });
 
 /* =========================
