@@ -1,0 +1,25 @@
+bolo "=== FIXED GUESS GAME ==="
+
+mavi secret = 7
+mavi guess = 1
+
+jabtak guess <= 100 {
+
+    bolo "Try:"
+    bolo guess
+
+    agar guess == secret {
+        bolo "WIN"
+        guess = 101   
+    } warna {
+        agar guess < secret {
+            bolo "Too Small"
+        } warna {
+            bolo "Too Big"
+        }
+    }
+
+    guess = guess + 1
+}
+
+bolo "GAME OVER"

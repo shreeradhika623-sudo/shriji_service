@@ -1,0 +1,123 @@
+bolo "====== BUBU AGRICULTURE INVESTIGATION ======"
+
+bolo "BUBU Minister mode me hai"
+bolo "Raw data analysis shuru..."
+
+bolo "----- INPUT DATA -----"
+
+mavi loss_rupees = 70000000
+mavi rate_per_bori = 1965
+mavi kg_per_bori = 35
+
+mavi rat_yearly = 7.3
+
+bolo "Loss (₹):"
+bolo loss_rupees
+
+bolo "Rate per bori:"
+bolo rate_per_bori
+
+bolo "KG per bori:"
+bolo kg_per_bori
+
+bolo "Rat yearly consumption (kg):"
+bolo rat_yearly
+
+bolo "----- RATE CALCULATION -----"
+
+mavi rate_per_kg = rate_per_bori / kg_per_bori
+
+bolo "Rate per KG:"
+bolo rate_per_kg
+
+bolo "----- TOTAL PADDY WEIGHT -----"
+
+mavi total_kg = loss_rupees / rate_per_kg
+
+bolo "Total Paddy (KG):"
+bolo total_kg
+
+mavi total_ton = total_kg / 1000
+
+bolo "Total Paddy (Tonnes):"
+bolo total_ton
+
+bolo "----- RAT REQUIREMENT -----"
+
+mavi required_rats = total_kg / rat_yearly
+
+bolo "Required Rats:"
+bolo required_rats
+
+bolo "----- DAILY CONSUMPTION MODEL -----"
+
+mavi rat_daily = 0.02
+
+mavi daily_total = required_rats * rat_daily
+
+bolo "Total Daily Consumption:"
+bolo daily_total
+
+bolo "----- FEASIBILITY CHECK -----"
+
+mavi realistic_limit = 100000
+
+agar required_rats > realistic_limit {
+
+    bolo "WARNING: Extremely High Rat Population Required"
+
+} warna {
+
+    bolo "Rat Explanation Possible"
+}
+
+bolo "----- SCALE COMPARISON -----"
+
+mavi total_procurement = 14104000000
+
+bolo "Total Procurement (KG):"
+bolo total_procurement
+
+bolo "Loss % of total:"
+mavi percent_loss = (total_kg * 100) / total_procurement
+bolo percent_loss
+
+bolo "----- BUBU ANALYSIS MODE -----"
+
+bolo "Data inconsistent ho sakta hai"
+bolo "Multiple factors possible: storage, leakage, reporting error"
+
+bolo "----- FINAL REPORT -----"
+
+bolo "Loss (₹):"
+bolo loss_rupees
+
+bolo "Total KG:"
+bolo total_kg
+
+bolo "Total Tonnes:"
+bolo total_ton
+
+bolo "Required Rats:"
+bolo required_rats
+
+bolo "Daily Consumption:"
+bolo daily_total
+
+bolo "Loss %:"
+bolo percent_loss
+
+bolo "----- BUBU STATUS -----"
+
+agar required_rats > realistic_limit {
+    bolo "CASE SUSPICIOUS"
+} warna {
+    bolo "CASE POSSIBLE"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Numbers jhoot nahi bolte, par unhe galat samjha ja sakta hai"
+bolo "Investigation me emotion nahi, calculation chalti hai"
+
+bolo "====== REPORT END ======"

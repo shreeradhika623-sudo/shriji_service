@@ -1,0 +1,18 @@
+bolo "FUNCTION TEST START"
+
+mavi a = 10
+mavi b = 5
+
+mavi result = a + b
+bolo result
+
+mavi result = a - b
+bolo result
+
+mavi result = a * b
+bolo result
+
+mavi result = a / b
+bolo result
+
+bolo "FUNCTION TEST END"

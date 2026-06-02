@@ -1,0 +1,5 @@
+mavi leakage_percent = 14.4
+
+agar leakage_percent > 5 {
+    bolo "PASS"
+}

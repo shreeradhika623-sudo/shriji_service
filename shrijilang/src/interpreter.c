@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include <stdlib.h>
+#include <math.h>
 
 #define MAX_IMPORT_DEPTH 256
 
@@ -80,7 +81,7 @@ static int state_allows_execution(ShrijiRuntime *rt)
 /*──────────────────────────────────────────────────────────────
  | SAFE DIVISION
  *──────────────────────────────────────────────────────────────*/
-static double safe_div(double a, double b)
+static double safe_div(double a, double b, ShrijiRuntime *rt)
 {
     if (b == 0) {
         event_fire(EVENT_ERROR, "division by zero");
@@ -92,55 +93,110 @@ static double safe_div(double a, double b)
             "denominator 0 nahi hona chahiye"
         );
 
-        if (current_runtime)
-            current_runtime->error_flag = 1;
-
+        if (rt)
+         rt->error_flag = 1;
         return 0;
     }
 
     return a / b;
 }
+
+static const char* type_name(ValueType t)
+{
+
+    switch (t) {
+
+        case VAL_STRING:
+            return "String (Text)";
+
+        case VAL_INT:
+            return "Integer (Whole Number)";
+
+        case VAL_NUMBER:
+            return "Float (Decimal Number)";
+
+        case VAL_BOOL:
+            return "Boolean (Sahi/Galat Value)";
+
+        case VAL_LIST:
+            return "List";
+
+        case VAL_FUNCTION:
+            return "Function";
+
+        case VAL_DICT:
+            return "Dictionary";
+
+        case VAL_NULL:
+            return "Null";
+
+        default:
+            return "Unknown";
+    }
+}
+
 /*──────────────────────────────────────────────────────────────
  | SAFE MODULO
  *──────────────────────────────────────────────────────────────*/
 static double safe_mod(double a, double b)
 {
     if (b == 0) {
+
         event_fire(EVENT_ERROR, "modulo by zero");
+
         shriji_error(
             E_RUNTIME_DIV_ZERO,
             "modulo",
-            "modulo by zero",
-            "denominator must not be zero"
+            "0 se modulo nahi kar sakte",
+            "denominator 0 nahi hona chahiye"
         );
+
         return 0;
     }
 
-    long long ai = (long long)a;
-    long long bi = (long long)b;
-
-    if (bi == 0)
-        return 0;
-
-    return (double)(ai % bi);
+    return fmod(a, b);
 }
 
 /* YAHAA SE NAYA FUNCTION START */
 
 static int value_equals(Value a, Value b)
 {
-    if (a.type != b.type)
-        return 0;
+  if (
+    (a.type == VAL_INT || a.type == VAL_NUMBER) &&
+    (b.type == VAL_INT || b.type == VAL_NUMBER)
+   ) {
+       /* numeric compare */
+   }
+   else if (a.type != b.type) {
+     return 0;
+    }
 
     switch (a.type) {
 
-        case VAL_NUMBER:
-            return a.number == b.number;
+    case VAL_NUMBER:
 
-        case VAL_BOOL:
-            return a.boolean == b.boolean;
+    if (b.type == VAL_NUMBER)
+        return a.number == b.number;
 
-        case VAL_STRING:
+    if (b.type == VAL_INT)
+        return a.number == b.integer;
+
+    return 0;
+
+ case VAL_INT:
+
+    if (b.type == VAL_INT)
+        return a.integer == b.integer;
+
+    if (b.type == VAL_NUMBER)
+        return a.integer == b.number;
+
+    return 0;
+
+    case VAL_BOOL:
+    return a.boolean == b.boolean;
+
+    case VAL_STRING:
 
             if (!a.string || !b.string)
                 return 0;
@@ -326,6 +382,7 @@ case AST_UNARY:
     int sign = 1;
 
     while (cur && cur->type == AST_UNARY) {
+
         if (cur->op[0] == '-')
             sign *= -1;
 
@@ -334,12 +391,21 @@ case AST_UNARY:
 
     Value v = eval(cur, env, rt);
 
-    if (v.type != VAL_NUMBER)
-        return value_null();
+    if (v.type == VAL_INT) {
 
-    v.number = v.number * sign;
+        v.integer = v.integer * sign;
 
-    return v;
+        return v;
+    }
+
+    if (v.type == VAL_NUMBER) {
+
+        v.number = v.number * sign;
+
+        return v;
+    }
+
+    return value_null();
 }
 
 /*────────────────────────────────────────
@@ -418,19 +484,22 @@ case AST_CALL: {
 /*────────────────────────────
   STACK GUARD (ENTRY)
 ────────────────────────────*/
-rt->call_depth++;
+if (rt->call_depth >= 500) {
 
-if (rt->call_depth > 3000) {
     shriji_error(
         E_RUNTIME_01,
         "recursion",
-        "maximum recursion depth exceeded",
-        "safe limit: 3000"
+        "function khud ko bahut baar call kar raha hai",
+        "safe limit: 500"
     );
 
-    rt->call_depth--;
+    rt->error_flag = 1;
+
     return value_null();
 }
+
+rt->call_depth++;
+
 
    /*──────────────────────────────────────────────
       BUILT-IN FUNCTIONS (FILE I/O)
@@ -635,22 +704,234 @@ if (!fp) {
         return value_number(1);
     }
 
-    /*──────────────────────────────────────────────
+/*──────────────────────────────────────────────
+  MATH BUILTINS
+──────────────────────────────────────────────*/
+
+if (
+    strcmp(node->function_name, "floor") == 0 ||
+    strcmp(node->function_name, "purna") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "floor",
+            "1 argument required",
+            "use: floor(x)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    double n = 0;
+
+    if (v.type == VAL_INT)
+        n = v.integer;
+
+    else if (v.type == VAL_NUMBER)
+        n = v.number;
+
+    else {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "floor",
+            "number required",
+            "use numeric value"
+        );
+
+        return value_null();
+    }
+
+    value_free(&v);
+
+    return value_int((int)floor(n));
+}
+
+if (
+    strcmp(node->function_name, "ceil") == 0 ||
+    strcmp(node->function_name, "upar") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "ceil",
+            "1 argument required",
+            "use: ceil(x)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    double n = 0;
+
+    if (v.type == VAL_INT)
+        n = v.integer;
+
+    else if (v.type == VAL_NUMBER)
+        n = v.number;
+
+    else {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "ceil",
+            "number required",
+            "use numeric value"
+        );
+
+        return value_null();
+    }
+
+    value_free(&v);
+
+    return value_int((int)ceil(n));
+}
+
+
+if (
+    strcmp(node->function_name, "round") == 0 ||
+    strcmp(node->function_name, "gol") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "round",
+            "1 argument required",
+            "use: round(x)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    double n = 0;
+
+    if (v.type == VAL_INT)
+        n = v.integer;
+
+    else if (v.type == VAL_NUMBER)
+        n = v.number;
+
+    else {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "round",
+            "number required",
+            "use numeric value"
+        );
+
+        return value_null();
+    }
+
+    value_free(&v);
+
+    return value_int((int)round(n));
+}
+
+ 
+ if (
+    strcmp(node->function_name, "abs") == 0 ||
+    strcmp(node->function_name, "nirpeksh") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "abs",
+            "1 argument required",
+            "use: abs(x)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    double n = 0;
+
+    if (v.type == VAL_INT)
+        n = v.integer;
+
+    else if (v.type == VAL_NUMBER)
+        n = v.number;
+
+    else {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "abs",
+            "number required",
+            "use numeric value"
+        );
+
+        return value_null();
+    }
+
+  if (v.type == VAL_INT) {
+
+    value_free(&v);
+
+    return value_int((int)fabs(n));
+}
+
+value_free(&v);
+
+return value_number(fabs(n));
+
+}
+
+
+   /*──────────────────────────────────────────────
       NORMAL FUNCTION CALL
     ──────────────────────────────────────────────*/
 Value fnv = env_get(env, node->function_name);
 
 if (fnv.type != VAL_FUNCTION) {
-    shriji_error(
-        E_PARSE_INVALID_TOKEN,
-        "call",
-        "function not found",
-        "check name or define function"
-    );
+
+char err[256];
+
+snprintf(
+    err,
+    sizeof(err),
+    "'%s' function nahi mila.",
+    node->function_name
+);
+
+shriji_error(
+    E_RUNTIME_FUNCTION_NOT_FOUND,
+    "call",
+    err,
+    "Pehle function banaiye."
+);
+
     return value_null();
 }
 
+
 ASTNode *fn = fnv.function;
+
 
   /* validate arg count */
 int expected_args = 0;
@@ -663,16 +944,35 @@ else if (fn->type == AST_FUNCTION)
 
 if (expected_args != node->arg_count) {
 
+    char err[256];
+    char hint[256];
+
+    snprintf(
+        err,
+        sizeof(err),
+        "'%s' ko %d arguments chahiye the, lekin %d mile.",
+        node->function_name,
+        expected_args,
+        node->arg_count
+    );
+
+    snprintf(
+        hint,
+        sizeof(hint),
+        "Sahi number ke arguments pass kijiye."
+    );
+
     shriji_error(
         E_PARSE_02,
         node->function_name,
-        "argument count mismatch",
-        "call with correct number of args"
+        err,
+        hint
     );
+
+    rt->call_depth--;
 
     return value_null();
 }
-
 
     /* save outer return state (nested calls safe) */
     int old_return_flag = rt->return_flag;
@@ -697,9 +997,17 @@ for (int i = 0; i < expected_args; i++) {
     Value av = eval(node->args[i], env, rt);
 
     env_set(env, p->name, av);
-} 
+}
+
     /* run body */
-Value result = eval(fn->rachna_body, env, rt);
+ASTNode *body;
+
+if (fn->type == AST_RACHNA)
+    body = fn->rachna_body;
+else
+    body = fn->body;
+
+Value result = eval(body, env, rt);
 
 if (rt->return_flag) {
 
@@ -726,6 +1034,12 @@ if (rt->return_flag) {
       CORE VALUES
     ──────────────────────────────────────────────*/
 case AST_NUMBER:
+
+    if (node->is_int) {
+
+     return value_int((long long)node->number_value);
+    }
+
     return value_number(node->number_value);
 
 case AST_STRING:
@@ -801,36 +1115,47 @@ case AST_INDEX: {
             return value_null();
         }
 
-        if (iv.type != VAL_NUMBER) {
-            shriji_error(
-                E_RUNTIME_01,
-                "list",
-                "List index number hona chahiye",
-                "example: a[0]"
-            );
+   if (iv.type != VAL_NUMBER &&
+    iv.type != VAL_INT) {
 
-               value_free(&tv);
-               value_free(&iv);
-               return value_null();
-        }
+   shriji_error(
+    E_RUNTIME_INDEX_ERROR,
+    "list",
+    "List index out of range",
+    "example: a[0]"
+);
 
-        long long idx = iv.number;
-        value_free(&iv);
+    value_free(&tv);
+    value_free(&iv);
+    return value_null();
+}
 
-        if (idx < 0 || idx >= tv.count) {
-            shriji_error(
-                E_RUNTIME_01,
-                "list",
-                "List index out of range",
-                "example: a[0]"
-            );
-           value_free(&tv);
-           return value_null();
-        }
+long long idx;
 
-        Value out = value_copy(tv.items[(int)idx]);
-        value_free(&tv);
-        return out;
+if (iv.type == VAL_INT)
+    idx = iv.integer;
+else
+    idx = (long long)iv.number;
+
+value_free(&iv);
+
+if (idx < 0 || idx >= tv.count) {
+
+    shriji_error(
+        E_RUNTIME_01,
+        "list",
+        "List index out of range",
+        "example: a[0]"
+    );
+
+    value_free(&tv);
+    return value_null();
+}
+
+Value out = value_copy(tv.items[(int)idx]);
+value_free(&tv);
+return out;
+
     }
 
     /*──────────────────────────────────────────────
@@ -1074,18 +1399,20 @@ case AST_IDENTIFIER: {
     }
 
   /*  FINAL ERROR */
-       shriji_error(
-     E_ASSIGN_01,
-      "runtime",
-      "Variable define nahi hai",
-       name
-   );
-      fprintf(
+shriji_error(
+    E_RUNTIME_UNDEFINED_VAR,
+    "runtime",
+    "Variable abhi tak banaya nahi gaya.",
+    "Variable use karne se pehle usse banaiye."
+);
+
+/*      fprintf(
     stderr,
     "HINT: pehle mavi %s = value likhiye\n",
     name
    );
 
+*/
     if (rt)
         rt->error_flag = 1;
 
@@ -1174,19 +1501,48 @@ case AST_BINARY: {
 
     char op = node->op[0];
 
-    /* ================= TYPE CHECK ================= */
-    if (Lv.type != Rv.type) {
-        value_free(&Lv);
-        value_free(&Rv);
+/* ================= TYPE CHECK ================= */
+if (
+    Lv.type != Rv.type &&
 
-        shriji_error(
-            E_RUNTIME_TYPE_MISMATCH,
-            "binary",
-            "type mismatch in expression",
-            "same type ke values use karein"
-        );
-        return value_null();
-    }
+
+   !(
+
+    (Lv.type == VAL_INT && Rv.type == VAL_INT) ||
+
+    (Lv.type == VAL_INT && Rv.type == VAL_NUMBER) ||
+
+    (Lv.type == VAL_NUMBER && Rv.type == VAL_INT) ||
+
+    (Lv.type == VAL_NUMBER && Rv.type == VAL_NUMBER)
+
+)
+
+) {
+
+char err[256];
+
+snprintf(
+    err,
+    sizeof(err),
+    "%s aur %s ko '%c' ke saath use nahi kar sakte.",
+    type_name(Lv.type),
+    type_name(Rv.type),
+    op
+);
+
+shriji_error(
+    E_RUNTIME_TYPE_MISMATCH,
+    "binary",
+    err,
+    "Dono taraf compatible values use kijiye."
+);
+
+value_free(&Lv);
+value_free(&Rv);
+
+return value_null();
+}
 
     /* ================= LOGICAL ================= */
     if (op == '&') {
@@ -1224,36 +1580,99 @@ if (op == '!') {
     return value_bool(result);
 }
 
-    /* ================= NUMBER ================= */
-    if (Lv.type == VAL_NUMBER) {
+/* ================= INT ================= */
+if (
 
-        double L = Lv.number;
-        double R = Rv.number;
+    (Lv.type == VAL_INT && Rv.type == VAL_INT) ||
 
-        value_free(&Lv);
-        value_free(&Rv);
+    (Lv.type == VAL_INT && Rv.type == VAL_NUMBER) ||
 
-        if (op == '+') return value_number(L + R);
-        if (op == '-') return value_number(L - R);
-        if (op == '*') return value_number(L * R);
-        if (op == '/') return value_number(safe_div(L, R));
-        if (op == '%') return value_number(safe_mod(L, R));
+    (Lv.type == VAL_NUMBER && Rv.type == VAL_INT) ||
 
-        if (op == '>') return value_bool(L > R);
-        if (op == '<') return value_bool(L < R);
-        if (op == 'G') return value_bool(L >= R);
-        if (op == 'L') return value_bool(L <= R);
-        if (op == '=') return value_bool(L == R);
-        if (op == '!') return value_bool(L != R);
+    (Lv.type == VAL_NUMBER && Rv.type == VAL_NUMBER)
+
+)
+
+{
+
+    double L = (Lv.type == VAL_INT) ? Lv.integer : Lv.number;
+    double R = (Rv.type == VAL_INT) ? Rv.integer : Rv.number;
+
+    value_free(&Lv);
+    value_free(&Rv);
+
+if (Lv.type == VAL_INT && Rv.type == VAL_INT) {
+
+    int Li = (int)L;
+    int Ri = (int)R;
+
+    if (op == '+') return value_int(Li + Ri);
+    if (op == '-') return value_int(Li - Ri);
+    if (op == '*') return value_int(Li * Ri);
+
+    if (op == '%') {
+
+        if (Ri == 0) {
+
+            shriji_error(
+                E_RUNTIME_DIV_ZERO,
+                "modulo",
+                "0 se modulo nahi kar sakte",
+                "denominator 0 nahi hona chahiye"
+            );
+
+            return value_null();
+        }
+
+        return value_int(Li % Ri);
+    }
+}
+
+
+    if (op == '+') return value_number(L + R);
+    if (op == '-') return value_number(L - R);
+    if (op == '*') return value_number(L * R);
+
+    if (op == '/') {
+
+        if (R == 0) {
+            shriji_error(
+                E_RUNTIME_DIV_ZERO,
+                "division",
+                "0 se divide nahi kar sakte",
+                "denominator 0 nahi hona chahiye"
+            );
+            return value_null();
+        }
+        return value_number(L / R);
+    }
+     if (op == '%') {
+
+    if (R == 0) {
 
         shriji_error(
-            E_RUNTIME_01,
-            "binary",
-            "unknown numeric operator",
-            NULL
+            E_RUNTIME_DIV_ZERO,
+            "modulo",
+            "0 se modulo nahi kar sakte",
+            "denominator 0 nahi hona chahiye"
         );
+
         return value_null();
     }
+    return value_number(safe_mod(L, R));
+
+}
+
+    if (op == '>') return value_bool(L > R);
+    if (op == '<') return value_bool(L < R);
+    if (op == 'G') return value_bool(L >= R);
+    if (op == 'L') return value_bool(L <= R);
+    if (op == '=') return value_bool(L == R);
+    if (op == '!') return value_bool(L != R);
+
+    return value_null();
+}
+
 
     /* ================= UNSUPPORTED ================= */
     value_free(&Lv);
@@ -1330,6 +1749,11 @@ case AST_WHILE: {
 
         eval(node->body, env, rt);
 
+        if (rt->error_flag) {
+           rt->loop_depth--;
+            return value_null();
+      }
+
         if (rt->return_flag) {
             rt->loop_depth--;
             return value_copy(rt->return_value);
@@ -1367,18 +1791,13 @@ case AST_BLOCK: {
 
     for (int i = 0; i < node->stmt_count; i++) {
 
-         error_reported = 0;
-
-        if (rt)
-         rt->error_flag = 0;
-
         Value temp = eval(node->statements[i], env, rt);
 
-        if (rt->error_flag) {
-
-            rt->error_flag = 0;
-
-            continue;
+        /* STOP immediately on runtime error */
+        if (rt && rt->error_flag) {
+            value_free(&temp);
+            value_free(&last);
+            return value_null();
         }
 
         value_free(&last);
@@ -1513,8 +1932,28 @@ import_depth++;
         return value_null();
     }
 
+     int old_export_count = rt->export_count;
+
+      rt->export_count = 0;
+
+       Env *module_env = new_env();
     /*  RUN FULL PROGRAM */
-    Value result = eval(prog, env, rt);
+    Value result = eval(prog, module_env, rt);
+
+   for (int i = 0; i < rt->export_count; i++)
+{
+
+    Value v = env_get(
+        module_env,
+        rt->exports[i]
+    );
+
+    env_set(
+        env,
+        rt->exports[i],
+        v
+    );
+}
 
     /*  PRINT ALL ERRORS (ONE SHOT) */
     shriji_print_all_errors();
@@ -1522,8 +1961,31 @@ import_depth++;
     /*  BACK TO NORMAL MODE */
     shriji_set_error_mode(ERROR_MODE_IMMEDIATE);
 
-    import_depth--;
-    return result;
+    rt->export_count = old_export_count;
+
+         free_env(module_env);
+
+         import_depth--;
+
+         return result;
+}
+
+case AST_EXPORT:
+{
+    if (rt && rt->export_count < 256)
+    {
+        strncpy(
+            rt->exports[rt->export_count],
+            node->name,
+            63
+        );
+
+        rt->exports[rt->export_count][63] = '\0';
+
+        rt->export_count++;
+    }
+
+    return value_null();
 }
 
 case AST_COMMAND: {
@@ -1554,18 +2016,20 @@ if (cmd == CMD_BOLO)
         return value_null();
     }
 
-   if (rt) {
-    rt->last_output_mode = OUTPUT_EXPLICIT;
-}
+    if (rt) {
+        rt->last_output_mode = OUTPUT_EXPLICIT;
+    }
 
-         smriti_session_set_last(v);
+    smriti_session_set_last(v);
 
-         value_print(v);
+    //  FINAL FIX HERE
+    value_print(v);
+    printf("\n");
+    fflush(stdout);
 
-         value_free(&v);
+    value_free(&v);
 
-         return value_null();
-
+    return value_null();
 }
 
 /* AI MODULES → ai_router (STEP-13 REAL OUTPUT) */

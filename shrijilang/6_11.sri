@@ -1,0 +1,7 @@
+bolo -10
+
+mavi x = -10
+bolo x
+
+bolo abs(-10)
+bolo nirpeksh(-10)

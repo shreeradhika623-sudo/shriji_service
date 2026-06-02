@@ -1,0 +1,106 @@
+bolo "====== AI BANK STORY SYSTEM ======"
+
+bolo "Ek AI hai..."
+bolo "Uski job lag gayi hai bank me"
+
+mavi pin = 1111
+mavi input = 1111
+mavi balance = 1000
+
+bolo "Login Attempt"
+
+agar input > pin {
+    bolo "Wrong PIN"
+} warna {
+    agar input < pin {
+        bolo "Wrong PIN"
+    } warna {
+
+        bolo "AI Logged In"
+        bolo "Welcome to Shriji Bank"
+
+        bolo "----- ACCOUNT OPENING -----"
+
+        mavi new_account = 1
+
+        agar new_account == 1 {
+            bolo "Account Created Successfully"
+            balance = balance + 500
+        }
+
+        bolo "Current Balance:"
+        bolo balance
+
+        bolo "----- MONEY TRANSFER -----"
+
+        mavi transfer = 300
+
+        agar transfer > balance {
+            bolo "Transfer Failed"
+        } warna {
+
+            balance = balance - transfer
+            bolo "Transfer Success"
+            bolo "Balance After Transfer:"
+            bolo balance
+        }
+
+        bolo "----- AI GAME TIME -----"
+
+        bolo "Bank Guess Game Start"
+
+        mavi secret = 6
+        mavi guess = 1
+
+        jabtak guess <= 20 {
+
+            bolo "Try:"
+            bolo guess
+
+            agar guess > secret {
+                bolo "Too Big"
+            } warna {
+                agar guess < secret {
+                    bolo "Too Small"
+                } warna {
+
+                    bolo "AI WIN GAME"
+                    balance = balance + 200
+                    guess = 21
+                }
+            }
+
+            guess = guess + 1
+        }
+
+        bolo "Balance After Game:"
+        bolo balance
+
+        bolo "----- PHYSICS MODE -----"
+
+        bolo "AI ko physics pasand hai"
+
+        mavi m = 10
+        mavi v = 5
+
+        bolo "Mass:"
+        bolo m
+
+        bolo "Velocity:"
+        bolo v
+
+        mavi ke = (m * v * v) / 2
+
+        bolo "Kinetic Energy:"
+        bolo ke
+
+        bolo "Formula: 1/2 * m * v^2"
+
+        bolo "----- FINAL STATUS -----"
+
+        bolo "Final Balance:"
+        bolo balance
+    }
+}
+
+bolo "====== SYSTEM END ======"

@@ -1,0 +1,29 @@
+bolo "=== SMART AI (WORKING) ==="
+
+mavi secret = 73
+mavi guess = 1
+mavi step = 5
+mavi steps = 0
+
+jabtak guess <= 100 {
+
+    bolo "AI Guess:"
+    bolo guess
+
+    steps = steps + 1
+
+    agar guess == secret {
+        bolo "AI WIN"
+        bolo "Steps:"
+        bolo steps
+        rukja
+    }
+
+    agar guess < secret {
+        guess = guess + step
+    } warna {
+        guess = guess - 1
+        step = 1
+    }
+
+

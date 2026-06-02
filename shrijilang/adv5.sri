@@ -1,0 +1,18 @@
+bolo "=== STATE ENGINE ==="
+
+mavi x = 10
+mavi i = 1
+
+jabtak i <= 10 {
+
+    x = x * 2
+
+    agar x > 100 {
+        bolo "RESET"
+        x = 10
+    }
+
+    bolo x
+
+    i = i + 1
+}

@@ -1,0 +1,13 @@
+rachna add(a, b) {
+
+    wapas a + b
+
+}
+
+rachna double(x) {
+
+    wapas x * 2
+
+}
+
+bolo double(add(5, 10))

@@ -1,0 +1,15 @@
+mavi x = 1
+
+agar (sahi) {
+
+    x = 5
+
+    agar (sahi) {
+
+        x = 10
+
+    }
+
+}
+
+bolo x

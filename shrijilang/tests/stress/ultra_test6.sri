@@ -1,0 +1,23 @@
+mavi x = 1
+
+agar x > 0 {
+    agar x > 0 {
+        agar x > 0 {
+            agar x > 0 {
+                agar x > 0 {
+                    agar x > 0 {
+                        agar x > 0 {
+                            agar x > 0 {
+                                agar x > 0 {
+                                    agar x > 0 {
+                                        bolo "Deep OK"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,9 @@
+mavi x = 1
+
+agar x > 0 {
+
+    x = x + 1
+
+}
+
+bolo x

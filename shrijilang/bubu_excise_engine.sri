@@ -1,0 +1,77 @@
+bolo "====== BUBU EXCISE ENGINE ======"
+
+# 🔹 RAW INPUT ONLY
+mavi expected = 12500
+mavi actual = 10700
+mavi shops = 674
+
+# 🔹 CORE CALCULATIONS
+mavi gap = expected - actual
+mavi leakage_percent = (gap * 100) / expected
+
+mavi monthly_loss = gap / 12
+mavi daily_loss = gap / 365
+mavi hourly_loss = daily_loss / 24
+
+mavi per_shop = actual / shops
+
+# 🔹 SIMULATION
+mavi sim_leak = (actual * 5) / 100
+
+# 🔹 DECISION LOGIC (NO PRINT HERE)
+mavi risk = 0
+
+agar leakage_percent > 10 {
+    risk = 2
+} warna {
+    agar leakage_percent > 5 {
+        risk = 1
+    } warna {
+        risk = 0
+    }
+}
+
+mavi issue_type = 0
+
+agar gap > sim_leak {
+    issue_type = 1
+}
+
+# 🔹 FINAL OUTPUT (ONLY HERE PRINT)
+
+bolo "----- RESULT -----"
+
+bolo gap
+bolo leakage_percent
+bolo monthly_loss
+bolo daily_loss
+bolo hourly_loss
+bolo per_shop
+bolo sim_leak
+
+bolo "----- STATUS -----"
+
+agar risk == 2 {
+    bolo "HIGH RISK"
+} warna {
+    agar risk == 1 {
+        bolo "MEDIUM RISK"
+    } warna {
+        bolo "LOW RISK"
+    }
+}
+
+agar issue_type == 1 {
+    bolo "STRUCTURAL ISSUE POSSIBLE"
+}
+
+bolo "----- MORAL -----"
+
+agar risk == 2 {
+    bolo "System me serious problem ho sakti hai"
+    bolo "Numbers ignore nahi karne chahiye"
+} warna {
+    bolo "Monitoring zaroori hai"
+}
+
+bolo "====== END ======"

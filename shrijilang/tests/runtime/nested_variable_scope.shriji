@@ -1,0 +1,8 @@
+mavi x = 5
+
+agar (x == 5) {
+    mavi y = 20
+    bolo y
+}
+
+bolo x

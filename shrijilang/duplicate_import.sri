@@ -1,0 +1,4 @@
+import "math_lib.sri"
+import "math_lib.sri"
+
+bolo square(4)

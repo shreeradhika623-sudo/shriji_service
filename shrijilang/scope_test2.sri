@@ -1,0 +1,10 @@
+mavi x = 1
+
+agar x > 0 {
+
+    mavi x = 999
+
+    bolo x
+}
+
+bolo x

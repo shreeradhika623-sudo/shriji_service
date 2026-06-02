@@ -1,0 +1,13 @@
+rachna a(x) {
+    wapas x + 1
+}
+
+rachna b(x) {
+    wapas a(x) + 1
+}
+
+rachna c(x) {
+    wapas b(x) + 1
+}
+
+bolo c(10)

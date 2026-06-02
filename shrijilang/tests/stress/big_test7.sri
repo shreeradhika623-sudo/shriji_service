@@ -1,0 +1,16 @@
+bolo "==== BIG TEST 7 START ===="
+
+mavi a = 10
+mavi b = 0
+
+agar a > 5 {
+
+    mavi x = a / b
+
+    mavi y = z + 1
+
+    bolo "FAIL"
+
+}
+
+bolo "END"

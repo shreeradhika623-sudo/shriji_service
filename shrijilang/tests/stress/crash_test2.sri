@@ -1,0 +1,10 @@
+mavi x = 1
+
+jabtak x <= 50 {
+
+    mavi x = x + 1
+    mavi x = x * 2
+    mavi x = x - 3
+    mavi x = x / 2
+
+}

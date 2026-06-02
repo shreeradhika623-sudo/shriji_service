@@ -1,0 +1,9 @@
+mavi x = 5
+mavi y = 0
+
+bolo "Before division"
+
+mavi z = x / y
+
+bolo "After division"
+bolo z

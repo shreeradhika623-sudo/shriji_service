@@ -1,0 +1,157 @@
+bolo "=============================="
+bolo "   GAON KA RAHASYA"
+bolo "=============================="
+
+mavi trust = 0
+mavi courage = 0
+mavi clue = 0
+
+bolo ""
+bolo "Tum ek purane gaon me aaye ho."
+bolo "Raat ko mandir se ajeeb awaaz aati hai."
+
+bolo ""
+bolo "Gaon ka buddha tumse madad maangta hai."
+
+mavi help = 1
+
+agar help == 1 {
+
+    bolo ""
+    bolo "Tumne madad accept ki."
+
+    trust = trust + 5
+
+} warna {
+
+    bolo ""
+    bolo "Tumne mana kar diya."
+
+    trust = trust - 5
+}
+
+bolo ""
+bolo "Raat hone lagi..."
+
+bolo ""
+bolo "Tumhare paas 2 raste hain:"
+bolo "1 = Jungle"
+bolo "2 = Purana Kua"
+
+mavi path = 1
+
+agar path == 1 {
+
+    bolo ""
+    bolo "Tum jungle ki taraf chale."
+
+    courage = courage + 5
+
+    bolo "Andhere me ek sadhu milta hai."
+
+    mavi talk = 1
+
+    agar talk == 1 {
+
+        bolo ""
+        bolo "Sadhu bolta hai:"
+        bolo "'Sach mandir ke neeche chhupa hai.'"
+
+        clue = clue + 1
+        trust = trust + 2
+
+    } warna {
+
+        bolo ""
+        bolo "Tum bina baat kiye aage badh gaye."
+    }
+
+} warna {
+
+    bolo ""
+    bolo "Tum purane kua ke paas gaye."
+
+    bolo "Kua ke paas thandi hawa chal rahi hai."
+
+    courage = courage + 2
+
+    mavi inspect = 1
+
+    agar inspect == 1 {
+
+        bolo ""
+        bolo "Tumhe ek purani chaabi mili."
+
+        clue = clue + 2
+    }
+}
+
+bolo ""
+bolo "Subah hone wali hai..."
+
+bolo ""
+bolo "Tum mandir pahuchte ho."
+
+agar clue >= 2 {
+
+    bolo ""
+    bolo "Mandir ke neeche secret room mila."
+
+    agar courage >= 5 {
+
+        bolo ""
+        bolo "Andar ek purana khazana tha."
+
+        bolo "Gaon wale khush ho gaye."
+
+        trust = trust + 10
+
+    } warna {
+
+        bolo ""
+        bolo "Tum darr gaye aur bahar aa gaye."
+    }
+
+} warna {
+
+    bolo ""
+    bolo "Tum sach tak nahi pahuch paye."
+}
+
+bolo ""
+bolo "=============================="
+bolo "FINAL STATUS"
+bolo "=============================="
+
+bolo "Trust:"
+bolo trust
+
+bolo "Courage:"
+bolo courage
+
+bolo "Clue:"
+bolo clue
+
+bolo ""
+
+agar trust >= 10 {
+
+    bolo "ENDING:"
+    bolo "Gaon tumhe rakshak maanta hai."
+
+} warna {
+
+    agar courage >= 5 {
+
+        bolo "ENDING:"
+        bolo "Tum sach ke kareeb the."
+
+    } warna {
+
+        bolo "ENDING:"
+        bolo "Rahasya adhura reh gaya."
+    }
+}
+
+bolo ""
+bolo "===== STORY END ====="

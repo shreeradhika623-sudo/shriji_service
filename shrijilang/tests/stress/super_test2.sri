@@ -1,0 +1,12 @@
+mavi i = 1
+
+jabtak i <= 100 {
+
+    agar i == 50 {
+        mavi x = 10
+        mavi y = 0
+        mavi z = x / y
+    }
+
+    mavi i = i + 1
+}

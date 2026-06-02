@@ -1,0 +1,12 @@
+bolo "START"
+
+agar 1 == 1 {
+
+    bolo "INSIDE"
+
+    rukja
+
+    bolo "BAD"
+}
+
+bolo "END"

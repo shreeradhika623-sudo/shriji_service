@@ -1,0 +1,20 @@
+mavi i = 1
+
+jabtak i <= 20 {
+
+    agar i == 10 {
+        rukja
+    }
+
+    bolo i
+
+    agar i == 5 {
+        mavi x = 10
+        mavi y = 0
+        mavi z = x / y
+    }
+
+    mavi i = i + 1
+}
+
+bolo "END"

@@ -1,0 +1,10 @@
+mavi x = 10
+
+agar x > 0 {
+
+    mavi y = 50
+
+    bolo y
+}
+
+bolo y

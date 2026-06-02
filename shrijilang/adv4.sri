@@ -1,0 +1,17 @@
+bolo "=== PATTERN ==="
+
+mavi i = 1
+
+jabtak i <= 5 {
+
+    mavi j = 1
+
+    jabtak j <= i {
+        bolo "*"
+        j = j + 1
+    }
+
+    bolo "---"
+
+    i = i + 1
+}

@@ -1,0 +1,5 @@
+import "helper.sri"
+
+rachna double(x) {
+    wapas add(x,x)
+}

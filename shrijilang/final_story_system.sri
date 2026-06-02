@@ -1,0 +1,166 @@
+bolo "====== SHRIJI FINAL SYSTEM ======"
+
+bolo "Ek AI hai jisko bank me job mili hai"
+
+mavi system_status = 1
+
+agar system_status == 0 {
+    bolo "SYSTEM LOCKED"
+} warna {
+
+    bolo "----- LOGIN -----"
+
+    mavi user1_pin = 1111
+    mavi user2_pin = 2222
+    mavi input = 1111
+
+    mavi current_user = 0
+
+    agar input == user1_pin {
+        current_user = 1
+    } warna {
+        agar input == user2_pin {
+            current_user = 2
+        } warna {
+            bolo "Invalid Login"
+        }
+    }
+
+    agar current_user == 1 {
+        bolo "User 1 Logged In"
+    }
+
+    agar current_user == 2 {
+        bolo "User 2 Logged In"
+    }
+
+    bolo "----- ACCOUNT SETUP -----"
+
+    mavi balance1 = 1000
+    mavi balance2 = 2000
+
+    bolo "User1 Balance:"
+    bolo balance1
+
+    bolo "User2 Balance:"
+    bolo balance2
+
+    bolo "----- ACCOUNT SWITCH -----"
+
+    mavi switch = 2
+    current_user = switch
+
+    agar current_user == 2 {
+        bolo "Switched to User 2"
+    }
+
+    bolo "----- NORMAL TRANSFER -----"
+
+    mavi transfer = 500
+
+    agar current_user == 2 {
+
+        agar transfer > balance2 {
+            bolo "Transfer Failed"
+        } warna {
+            balance2 = balance2 - transfer
+            bolo "Transfer Success"
+            bolo balance2
+        }
+    }
+
+    bolo "----- AI DISTRACTION GAME -----"
+
+    mavi secret = 6
+    mavi guess = 1
+
+    jabtak guess <= 20 {
+
+        agar guess > secret {
+        } warna {
+            agar guess < secret {
+            } warna {
+                bolo "Game Win"
+                guess = 21
+            }
+        }
+
+        guess = guess + 1
+    }
+
+    bolo "----- HACKER ATTACK -----"
+
+    mavi hacker = 1
+
+    agar hacker == 1 {
+
+        bolo "Unauthorized Access Attempt"
+
+        mavi otp = 4321
+        mavi user_otp = 1111
+
+        agar user_otp > otp {
+            bolo "OTP Failed"
+            bolo "HACK DETECTED"
+        } warna {
+            agar user_otp < otp {
+                bolo "OTP Failed"
+                bolo "HACK DETECTED"
+            } warna {
+                bolo "OTP Verified"
+            }
+        }
+    }
+
+    bolo "----- WRONG TRANSFER (BIG MISTAKE) -----"
+
+    bolo "AI game me busy ho gaya..."
+
+    mavi wrong_amount = 1000000
+
+    bolo "Transferred:"
+    bolo wrong_amount
+
+    agar current_user == 2 {
+
+        agar wrong_amount > balance2 {
+
+            bolo "FRAUD ALERT"
+            bolo "BANK LOSS"
+
+            balance2 = 0
+
+            bolo "Balance Reset:"
+            bolo balance2
+
+            bolo "AI FIRED FROM JOB"
+
+            system_status = 0
+        }
+    }
+
+    bolo "----- PHYSICS MODE -----"
+
+    mavi m = 10
+    mavi v = 5
+    mavi ke = (m * v * v) / 2
+
+    bolo "Kinetic Energy:"
+    bolo ke
+
+    bolo "----- FINAL STATUS -----"
+
+    bolo "User2 Final Balance:"
+    bolo balance2
+
+    bolo "----- HISTORY -----"
+
+    bolo "Login -> Switch -> Transfer -> Game -> Hack -> Fraud -> Fired"
+
+    bolo "----- MORAL -----"
+
+    bolo "Kaam ke time sirf kaam karo"
+    bolo "Nazar hati durghatna ghati"
+}
+
+bolo "====== SYSTEM END ======"

@@ -1,0 +1,14 @@
+mavi i = 0
+
+jabtak (i < 10) {
+
+    i = i + 1
+
+    bolo "I="
+    bolo i
+
+    agar (i == 5) {
+        bolo "MATCH"
+    }
+
+}

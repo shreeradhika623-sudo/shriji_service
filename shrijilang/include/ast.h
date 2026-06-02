@@ -55,6 +55,7 @@ typedef enum {
     AST_BLOCK,
     AST_PROGRAM,     // script / file root
     AST_IMPORT,      // module import
+    AST_EXPORT,
     AST_LOOP,        // future
     AST_WHILE,       // jabtak loop
     AST_BREAK,       // rukja (break)
@@ -92,6 +93,7 @@ typedef struct ASTNode {
       Primitive values
     ────────────────────────*/
     double  number_value;
+    int is_int;
     int  bool_value;     // 1 = true, 0 = false
     char string_value[256];
     char name[128];
@@ -210,7 +212,7 @@ ASTNode *new_kavya_node(ASTNode *msg);
 /* Universal command */
 ASTNode *new_command_node(const char *cmd_name, ASTNode *arg);
 ASTNode *new_import_node(const char *module_name);
-
+ASTNode *new_export_node(const char *name);
 /* Block */
 ASTNode *new_block_node(ASTNode **stmts, int count);
 ASTNode *new_program_node(ASTNode **stmts, int count);

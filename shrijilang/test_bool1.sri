@@ -1,0 +1,14 @@
+mavi age = 20
+mavi citizen = true
+
+agar (age >= 18 && citizen == true) {
+
+    bolo "ALLOWED"
+
+}
+
+warna {
+
+    bolo "DENIED"
+
+}

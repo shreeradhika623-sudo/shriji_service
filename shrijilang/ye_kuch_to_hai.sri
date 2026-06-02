@@ -1,0 +1,42 @@
+bolo "=== NUMERIC V1 TEST ==="
+
+bolo 10 + 5
+bolo 10 - 5
+bolo 10 * 5
+bolo 10 / 5
+bolo 10 % 5
+
+bolo 5.5 + 2
+bolo 5.5 * 2
+bolo 5.5 % 2
+
+bolo -10
+bolo -5.8
+
+bolo floor(5.8)
+bolo purna(5.8)
+
+bolo floor(-5.8)
+bolo purna(-5.8)
+
+bolo ceil(5.1)
+bolo upar(5.1)
+
+bolo ceil(-5.8)
+bolo upar(-5.8)
+
+bolo round(5.4)
+bolo round(5.6)
+
+bolo gol(5.4)
+bolo gol(5.6)
+
+bolo abs(-10)
+bolo nirpeksh(-10)
+
+bolo abs(-5.8)
+bolo nirpeksh(-5.8)
+
+bolo 0 - 10
+
+bolo "=== END ==="

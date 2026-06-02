@@ -1,0 +1,24 @@
+bolo "=== SHRIJI GUESS GAME FIX ==="
+
+mavi secret = 7
+mavi guess = 1
+
+jabtak guess != secret {
+
+    bolo "Try:"
+    bolo guess
+
+    agar guess < secret {
+        bolo "Too Small"
+    } warna {
+        agar guess > secret {
+            bolo "Too Big"
+        } warna {
+            bolo "WIN"
+        }
+    }
+
+    guess = guess + 1
+}
+
+bolo "GAME OVER"

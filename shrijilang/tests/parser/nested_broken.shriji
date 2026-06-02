@@ -1,0 +1,4 @@
+agar (5 > 2) {
+    agar (3 > 1) {
+        bolo "ok"
+}

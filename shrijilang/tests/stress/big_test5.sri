@@ -1,0 +1,15 @@
+bolo "==== BIG TEST 5 START ===="
+
+mavi i = 1
+
+jabtak i <= 5000 {
+
+    agar i % 1000 == 0 {
+        bolo "Checkpoint:"
+        bolo i
+    }
+
+    i = i + 1
+}
+
+bolo "DONE"

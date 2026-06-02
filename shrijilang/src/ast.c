@@ -31,6 +31,7 @@ ASTNode *new_number_node(double value)
 
     node->type = AST_NUMBER;
     node->number_value = value;
+    node->is_int = 0;
     node->chakra_state = CHAKRA_OK;
     return node;
 }
@@ -169,6 +170,23 @@ ASTNode *new_import_node(const char *module_name)
     node->chakra_state = CHAKRA_OK;
     return node;
 }
+
+ASTNode *new_export_node(const char *name)
+{
+    ASTNode *node = calloc(1, sizeof(ASTNode));
+
+    if (!node)
+        return NULL;
+
+    node->type = AST_EXPORT;
+
+    safe_copy(node->name, name, 128);
+
+    node->chakra_state = CHAKRA_OK;
+
+    return node;
+}
+
 
 /*──────────────────────────────────────────────────────────────
  | SECTION D.1 — BLOCK / PROGRAM

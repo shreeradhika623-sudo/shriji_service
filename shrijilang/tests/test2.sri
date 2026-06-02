@@ -1,0 +1,7 @@
+mavi x = 2
+
+agar x > 5 {
+    bolo "bada hai"
+} warna {
+    bolo "chhota hai"
+}

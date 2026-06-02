@@ -1,0 +1,135 @@
+bolo "====== SHRIJI BANK LEVEL 3 ======"
+
+mavi pin = 1111
+mavi input = 1111
+mavi balance = 1000
+
+bolo "Login Attempt"
+
+agar input > pin {
+    bolo "Wrong PIN"
+} warna {
+    agar input < pin {
+        bolo "Wrong PIN"
+    } warna {
+
+        bolo "Login Success"
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- ACCOUNT OPEN -----"
+
+        mavi acc = 1
+
+        agar acc == 1 {
+            balance = balance + 500
+            bolo "Account Created"
+        }
+
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- NORMAL TRANSFER -----"
+
+        mavi transfer = 300
+
+        agar transfer > balance {
+            bolo "Transfer Failed"
+        } warna {
+            balance = balance - transfer
+            bolo "Transfer Success"
+        }
+
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- GAME DISTRACTION -----"
+
+        mavi secret = 6
+        mavi guess = 1
+
+        jabtak guess <= 20 {
+
+            agar guess > secret {
+            } warna {
+                agar guess < secret {
+                } warna {
+                    bolo "Game Win"
+                    guess = 21
+                }
+            }
+
+            guess = guess + 1
+        }
+
+        bolo "----- HACKER ATTACK -----"
+
+        mavi hacker = 1
+
+        agar hacker == 1 {
+
+            bolo "Unauthorized Access Attempt"
+
+            mavi otp_system = 1
+            mavi otp = 4321
+            mavi user_otp = 1111
+
+            agar user_otp > otp {
+                bolo "OTP Failed"
+                bolo "HACK DETECTED"
+            } warna {
+                agar user_otp < otp {
+                    bolo "OTP Failed"
+                    bolo "HACK DETECTED"
+                } warna {
+
+                    bolo "OTP Verified"
+                    bolo "Secure Access"
+                }
+            }
+        }
+
+        bolo "----- WRONG TRANSFER -----"
+
+        bolo "AI busy tha game me"
+
+        mavi wrong_amount = 1000000
+
+        bolo "Transferred:"
+        bolo wrong_amount
+
+        agar wrong_amount > balance {
+
+            bolo "FRAUD ALERT"
+            bolo "BANK LOSS"
+
+            balance = 0
+
+            bolo "Balance Reset:"
+            bolo balance
+
+            bolo "AI FIRED"
+        }
+
+        bolo "----- PHYSICS MODE -----"
+
+        mavi m = 10
+        mavi v = 5
+        mavi ke = (m * v * v) / 2
+
+        bolo "Kinetic Energy:"
+        bolo ke
+
+        bolo "----- FINAL STATUS -----"
+
+        bolo "Final Balance:"
+        bolo balance
+
+        bolo "----- MORAL -----"
+
+        bolo "Kaam ke time focus zaroori hai"
+        bolo "Nazar hati durghatna ghati"
+    }
+}
+
+bolo "====== SYSTEM END ======"

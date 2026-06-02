@@ -1,0 +1,12 @@
+mavi balance = 1000
+
+agar balance > 0 {
+
+    mavi balance = balance - 600
+
+    bolo "Inside:"
+    bolo balance
+}
+
+bolo "Outside:"
+bolo balance

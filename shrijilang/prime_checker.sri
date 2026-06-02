@@ -1,0 +1,29 @@
+mavi n = 17
+mavi i = 2
+mavi prime = true
+
+jabtak (i < n) {
+
+    agar (n % i == 0) {
+
+        prime = false
+
+        rukja
+
+    }
+
+    i = i + 1
+
+}
+
+agar (prime) {
+
+    bolo "PRIME"
+
+}
+
+warna {
+
+    bolo "NOT PRIME"
+
+}

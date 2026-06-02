@@ -1,0 +1,5 @@
+kaam test() {
+    test()
+}
+
+test()

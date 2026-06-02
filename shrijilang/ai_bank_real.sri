@@ -1,0 +1,100 @@
+bolo "====== SHRIJI BANK SYSTEM ======"
+
+mavi pin = 1111
+mavi input = 1111
+mavi balance = 1000
+
+bolo "Login Attempt"
+
+agar input > pin {
+    bolo "Wrong PIN"
+} warna {
+    agar input < pin {
+        bolo "Wrong PIN"
+    } warna {
+
+        bolo "Login Success"
+        bolo "Current Balance:"
+        bolo balance
+
+        bolo "----- ACCOUNT OPENING -----"
+
+        mavi account = 1
+
+        agar account == 1 {
+            bolo "Account Created"
+            balance = balance + 500
+        }
+
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- NORMAL TRANSFER -----"
+
+        mavi transfer = 300
+
+        agar transfer > balance {
+            bolo "Transfer Failed"
+        } warna {
+            balance = balance - transfer
+            bolo "Transfer Success"
+            bolo "Balance:"
+            bolo balance
+        }
+
+        bolo "----- GAME MODE (DISTRACTION) -----"
+
+        mavi secret = 6
+        mavi guess = 1
+
+        jabtak guess <= 20 {
+
+            agar guess > secret {
+            } warna {
+                agar guess < secret {
+                } warna {
+                    bolo "Game Win"
+                    guess = 21
+                }
+            }
+
+            guess = guess + 1
+        }
+
+        bolo "----- WRONG TRANSFER EVENT -----"
+
+        bolo "AI busy tha game me..."
+
+        mavi wrong_amount = 1000000
+
+        bolo "Galat transfer ho gaya:"
+        bolo wrong_amount
+
+        agar wrong_amount > balance {
+
+            bolo "FRAUD ALERT"
+            bolo "Bank Loss Detected"
+
+            bolo "AI FIRED FROM JOB"
+        }
+
+        bolo "----- PHYSICS CHECK -----"
+
+        mavi m = 10
+        mavi v = 5
+        mavi ke = (m * v * v) / 2
+
+        bolo "Kinetic Energy:"
+        bolo ke
+
+        bolo "----- FINAL STATUS -----"
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- MORAL -----"
+        bolo "Kaam ke time sirf kaam karo"
+        bolo "Nazar hati durghatna ghati"
+    }
+}
+
+bolo "====== SYSTEM END ======"

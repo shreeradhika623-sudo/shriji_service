@@ -1,0 +1,17 @@
+bolo "START"
+
+agar 1 == 1 {
+
+    agar 1 == 1 {
+
+        mavi x = 5
+        mavi y = 0
+        mavi z = x / y
+
+        bolo "BAD"
+    }
+
+    bolo "BAD2"
+}
+
+bolo "BAD3"

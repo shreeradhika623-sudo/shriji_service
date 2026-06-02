@@ -1,0 +1,13 @@
+rachna inner() {
+
+    wapas 50
+}
+
+rachna outer() {
+
+    wapas inner()
+}
+
+mavi x = outer()
+
+bolo x

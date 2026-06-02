@@ -1,0 +1,14 @@
+mavi age = 15
+mavi parent = sahi
+
+agar ((age >= 18) || parent) {
+
+    bolo "CAN ENTER"
+
+}
+
+warna {
+
+    bolo "DENIED"
+
+}

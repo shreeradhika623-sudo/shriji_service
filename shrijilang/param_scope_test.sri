@@ -1,0 +1,12 @@
+rachna test(a) {
+
+    a = 999
+
+    bolo a
+}
+
+mavi x = 10
+
+test(x)
+
+bolo x

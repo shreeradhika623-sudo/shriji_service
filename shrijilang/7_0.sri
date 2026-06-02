@@ -1,0 +1,8 @@
+bolo round(5.4)
+bolo round(5.6)
+
+bolo gol(5.4)
+bolo gol(5.6)
+
+bolo abs(-5.8)
+bolo nirpeksh(-5.8)

@@ -1,0 +1,9 @@
+mavi x = 10
+mavi y = 0
+
+jabtak x > 0 {
+
+    bolo x / y
+
+    mavi x = x - 1
+}

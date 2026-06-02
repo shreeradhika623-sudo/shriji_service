@@ -1,0 +1,61 @@
+bolo "===== MASTER TEST START ====="
+
+mavi x = 10
+mavi y = 5
+
+bolo "Arithmetic Test"
+bolo x + y
+bolo x - y
+bolo x * y
+bolo x / y
+
+bolo "Condition Test"
+
+agar x > y {
+    bolo "x bada hai"
+} warna {
+    bolo "y bada hai"
+}
+
+bolo "Loop Test"
+
+mavi i = 1
+
+jabtak i <= 3 {
+    bolo i
+    i = i + 1
+}
+
+bolo "Nested Test"
+
+agar x > 0 {
+    agar y > 0 {
+        bolo "Nested OK"
+    }
+}
+
+bolo "Scope Test"
+
+mavi balance = 1000
+
+agar balance > 0 {
+    mavi balance = balance - 500
+    bolo "Inside:"
+    bolo balance
+}
+
+bolo "Outside:"
+bolo balance
+
+bolo "Error Test (divide by zero)"
+
+mavi a = 5
+mavi b = 0
+
+agar a > 0 {
+    mavi c = a / b
+}
+
+bolo "This should NOT print"
+
+bolo "===== MASTER TEST END ====="

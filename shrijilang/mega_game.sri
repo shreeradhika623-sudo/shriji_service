@@ -1,0 +1,102 @@
+bolo "====== SHRIJI MEGA SYSTEM ======"
+
+mavi pin = 1234
+mavi input = 1234
+mavi balance = 1000
+
+bolo "Login System Start"
+
+agar input > pin {
+    bolo "Wrong PIN"
+} warna {
+    agar input < pin {
+        bolo "Wrong PIN"
+    } warna {
+
+        bolo "Login Success"
+        bolo "Balance:"
+        bolo balance
+
+        bolo "----- ROUND 1: GUESS GAME -----"
+
+        mavi secret = 5
+        mavi guess = 1
+
+        jabtak guess <= 20 {
+
+            bolo "Try:"
+            bolo guess
+
+            agar guess > secret {
+                bolo "Too Big"
+            } warna {
+                agar guess < secret {
+                    bolo "Too Small"
+                } warna {
+
+                    bolo "WIN ROUND 1"
+                    balance = balance + 200
+                    guess = 21
+                }
+            }
+
+            guess = guess + 1
+        }
+
+        bolo "Balance After Round 1:"
+        bolo balance
+
+        bolo "----- ROUND 2: AI GAME -----"
+
+        mavi low = 1
+        mavi high = 100
+        mavi secret2 = 73
+        mavi mid = 0
+
+        jabtak low <= high {
+
+            mid = low + high
+            mid = mid / 2
+
+            bolo "AI Guess:"
+            bolo mid
+
+            agar mid > secret2 {
+                high = mid - 1
+            } warna {
+                agar mid < secret2 {
+                    low = mid + 1
+                } warna {
+
+                    bolo "AI WIN ROUND 2"
+                    balance = balance + 500
+                    low = high + 1
+                }
+            }
+        }
+
+        bolo "Balance After Round 2:"
+        bolo balance
+
+        bolo "----- ROUND 3: TRANSACTION -----"
+
+        mavi withdraw = 300
+
+        agar withdraw > balance {
+            bolo "Not Enough Balance"
+        } warna {
+
+            balance = balance - withdraw
+
+            bolo "Withdraw Success"
+            bolo "Remaining Balance:"
+            bolo balance
+        }
+
+        bolo "----- FINAL STATUS -----"
+        bolo "Final Balance:"
+        bolo balance
+    }
+}
+
+bolo "====== SYSTEM END ======"

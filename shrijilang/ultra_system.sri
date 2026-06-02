@@ -1,0 +1,61 @@
+bolo "=== SHRIJI ULTRA SYSTEM ==="
+
+mavi pin = 1234
+mavi input = 1234
+mavi balance = 1000
+
+bolo "Login Attempt"
+
+agar input > pin {
+    bolo "Wrong PIN"
+} warna {
+    agar input < pin {
+        bolo "Wrong PIN"
+    } warna {
+
+        bolo "Login Success"
+
+        bolo "Balance:"
+        bolo balance
+
+        bolo "Unlocking AI Game..."
+
+        mavi low = 1
+        mavi high = 100
+        mavi secret = 73
+        mavi guess = 0
+        mavi reward = 0
+
+        jabtak low <= high {
+
+            guess = (low + high) / 2
+
+            bolo "AI Guess:"
+            bolo guess
+
+            agar guess > secret {
+                high = guess - 1
+            } warna {
+                agar guess < secret {
+                    low = guess + 1
+                } warna {
+
+                    bolo "AI WIN"
+
+                    reward = 500
+                    balance = balance + reward
+
+                    bolo "Reward Added:"
+                    bolo reward
+
+                    bolo "New Balance:"
+                    bolo balance
+
+                    low = high + 1
+                }
+            }
+        }
+    }
+}
+
+bolo "=== SYSTEM END ==="

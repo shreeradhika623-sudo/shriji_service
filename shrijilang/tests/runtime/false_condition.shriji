@@ -1,0 +1,7 @@
+mavi x = 2
+
+agar (x > 10) {
+    bolo "wrong"
+}
+
+bolo "done"

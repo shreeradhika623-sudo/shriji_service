@@ -1,0 +1,25 @@
+bolo "=== NUMBER ANALYZER ==="
+
+mavi x = 30
+
+agar x % 2 == 0 {
+    bolo "Even"
+} warna {
+    bolo "Odd"
+}
+
+agar x % 3 == 0 {
+    bolo "Divisible by 3"
+}
+
+agar x % 5 == 0 {
+    bolo "Divisible by 5"
+}
+
+agar x % 2 == 0 {
+    agar x % 3 == 0 {
+        agar x % 5 == 0 {
+            bolo "Super Number"
+        }
+    }
+}

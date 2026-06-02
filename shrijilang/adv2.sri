@@ -1,0 +1,24 @@
+bolo "=== TRANSACTION ENGINE ==="
+
+mavi balance = 1500
+mavi i = 1
+
+jabtak i <= 5 {
+
+    mavi amount = i * 200
+
+    bolo "Try Withdraw:"
+    bolo amount
+
+    agar amount <= balance {
+
+        balance = balance - amount
+        bolo "Success"
+        bolo balance
+
+    } warna {
+        bolo "Fail"
+    }
+
+    i = i + 1
+}

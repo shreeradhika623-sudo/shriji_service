@@ -1,0 +1,82 @@
+bolo "===== FUNCTION TEST START ====="
+
+mavi run_add = 0
+mavi run_sub = 0
+
+mavi a = 10
+mavi b = 5
+
+agar a > 0 {
+    run_add = 1
+}
+
+agar b > 0 {
+    run_sub = 1
+}
+
+agar run_add == 1 {
+
+    bolo "ADD FUNCTION"
+
+    mavi result = a + b
+    bolo result
+}
+
+agar run_sub == 1 {
+
+    bolo "SUB FUNCTION"
+
+    mavi result = a - b
+    bolo result
+}
+
+bolo "MULTI CALL TEST"
+
+mavi call = 1
+
+jabtak call <= 2 {
+
+    agar call == 1 {
+
+        mavi result = a * b
+        bolo "MULT:"
+        bolo result
+
+    } warna {
+
+        mavi result = a / b
+        bolo "DIV:"
+        bolo result
+
+    }
+
+    call = call + 1
+}
+
+bolo "SCOPE TEST IN FUNCTION"
+
+mavi x = 100
+
+agar x > 0 {
+
+    mavi x = 50
+    bolo "Inside Function:"
+    bolo x
+}
+
+bolo "Outside Function:"
+bolo x
+
+bolo "ERROR TEST IN FUNCTION"
+
+mavi c = 5
+mavi d = 0
+
+agar c > 0 {
+
+    mavi e = c / d
+}
+
+bolo "This should NOT print"
+
+bolo "===== FUNCTION TEST END ====="

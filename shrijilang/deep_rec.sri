@@ -1,0 +1,11 @@
+rachna count(n) {
+
+    agar (n <= 0) {
+        wapas 0
+    }
+
+    wapas count(n - 1)
+
+}
+
+bolo count(100)

@@ -1,0 +1,34 @@
+bolo "==== BIG TEST 2 START ===="
+
+mavi x = 1
+
+jabtak x <= 20 {
+
+    agar x % 2 == 0 {
+
+        agar x % 3 == 0 {
+
+            agar x % 5 == 0 {
+
+                agar x % 7 == 0 {
+                    bolo "SUPER MATCH"
+                } warna {
+                    bolo "5 match"
+                }
+
+            } warna {
+                bolo "3 match"
+            }
+
+        } warna {
+            bolo "even"
+        }
+
+    } warna {
+        bolo "odd"
+    }
+
+    x = x + 1
+}
+
+bolo "==== END ===="

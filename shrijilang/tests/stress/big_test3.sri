@@ -1,0 +1,29 @@
+bolo "==== BIG TEST 3 START ===="
+
+mavi x = 10
+mavi i = 1
+
+jabtak i <= 20 {
+
+    bolo "Loop:"
+    bolo i
+
+    x = x + i
+    x = x * 2
+    x = x - 5
+
+    agar x % 4 == 0 {
+        x = x / 2
+    }
+
+    bolo x
+
+    agar x > 1000 {
+        bolo "RESET"
+        x = 10
+    }
+
+    i = i + 1
+}
+
+bolo "==== END ===="

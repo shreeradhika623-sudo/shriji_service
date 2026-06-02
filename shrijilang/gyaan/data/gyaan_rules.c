@@ -22,7 +22,7 @@ typedef struct {
 } GyaanRule;
 
 /*=============================================================
-  🧠 RULE DATABASE START
+   RULE DATABASE START
 =============================================================*/
 static GyaanRule GYAAN_RULES[] = {
 
@@ -89,8 +89,13 @@ static GyaanRule GYAAN_RULES[] = {
 
 {E_ASSIGN_01,"runtime","interpreter.c","AST_IDENTIFIER",
 "variable must be declared before use",
-"variable declare nahi hua",
-"use: mavi x = 10"},
+"Aap jis variable ko use kar rahe hain, woh abhi tak banaya nahi gaya.",
+"Example: mavi x = 10"},
+
+{E_RUNTIME_UNDEFINED_VAR,"runtime","interpreter.c","AST_IDENTIFIER",
+"variable must be declared before use",
+"Aap jis variable ko use kar rahe hain, woh abhi tak banaya nahi gaya.",
+"Example: mavi x = 10"},
 
 {E_ASSIGN_02,"parser","parser.c","parse_assignment",
 "assignment must have value",
@@ -106,8 +111,43 @@ static GyaanRule GYAAN_RULES[] = {
 
 {E_PARSE_02,"system","multiple","general",
 "invalid usage",
-"usage galat hai",
-"syntax check karein"},
+"Shri ne function ke liye alag number ke arguments expect kiye the.",
+"Sahi number ke arguments pass kijiye."},
+
+{E_RUNTIME_FUNCTION_NOT_FOUND,
+ "runtime",
+ "interpreter.c",
+ "AST_CALL",
+ "function not found",
+ "Shri ko memory me is naam ka function nahi mila.",
+ "Pehle function banaiye"},
+
+{E_FUNCTION_NAME_INVALID,
+ "parser",
+ "parser.c",
+ "parse_function",
+ "function name missing",
+ "function ka naam missing hai",
+ "example: kaam add(a, b) { ... }"},
+
+{E_FUNCTION_PARAM_INVALID,
+ "parser",
+ "parser.c",
+ "parse_function",
+ "function parameter syntax invalid",
+ "function parameter ya argument format galat hai",
+ "example: add(5, 6)"},
+
+
+/*──────────── DICT / MAP ────────────*/
+
+{E_DICT_KEY_INVALID,
+ "parser",
+ "parser.c",
+ "parse_dict_literal",
+ "dict key must be string",
+ "dictionary key string honi chahiye",
+ "example: {\"a\": 1, \"b\": 2}"},
 
 /*──────────── CONTROL FLOW ────────────*/
 
@@ -137,8 +177,8 @@ static GyaanRule GYAAN_RULES[] = {
 
 {E_RUNTIME_TYPE_MISMATCH,"runtime","interpreter.c","AST_BINARY",
 "type mismatch in expression",
-"different type values use hue hain",
-"same type use karein"},
+"Shri ko expression me alag type ki values mili.",
+"Dono taraf compatible values use kijiye."},
 
 {E_RUNTIME_01,"runtime","interpreter.c","general",
 "runtime error occurred",

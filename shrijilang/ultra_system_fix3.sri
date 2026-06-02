@@ -1,0 +1,30 @@
+bolo "=== ULTRA FIX FINAL ==="
+
+mavi low = 1
+mavi high = 100
+mavi secret = 73
+mavi guess = 0
+
+jabtak low <= high {
+
+    mavi mid = low + high
+    mid = mid / 2
+
+    mid = mid - (mid % 1)
+
+    guess = mid
+
+    bolo "AI Guess:"
+    bolo guess
+
+    agar guess > secret {
+        high = guess - 1
+    } warna {
+        agar guess < secret {
+            low = guess + 1
+        } warna {
+            bolo "AI WIN"
+            low = high + 1
+        }
+    }
+}

@@ -1,9 +1,2 @@
-mavi a = "ram"
-
-mavi b = "ram"
-
-agar (a == b) {
-
-    bolo "same"
-
-}
+mavi A = 1
+export A

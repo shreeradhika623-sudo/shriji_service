@@ -1,0 +1,24 @@
+bolo "==== BIG TEST 4 START ===="
+
+mavi i = 1
+
+jabtak i <= 50 {
+
+    bolo i
+
+    agar i == 20 {
+        bolo "BREAK POINT"
+        rukja
+    }
+
+    agar i == 10 {
+        mavi x = 5
+        mavi y = 0
+        mavi z = x / y
+    }
+
+    i = i + 1
+}
+
+bolo "SHOULD NOT PRINT"
+

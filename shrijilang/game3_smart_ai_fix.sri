@@ -1,0 +1,34 @@
+bolo "=== SMART AI GAME ==="
+
+mavi secret = 73
+
+mavi low = 1
+mavi high = 100
+
+mavi guess = 0
+mavi steps = 0
+
+jabtak low <= high {
+
+    guess = (low + high) / 2
+
+    guess = guess - (guess % 1)
+
+    bolo "AI Guess:"
+    bolo guess
+
+    steps = steps + 1
+
+    agar guess == secret {
+        bolo "AI WIN"
+        bolo "Steps:"
+        bolo steps
+        rukja
+    }
+
+    agar guess < secret {
+        low = guess + 1
+    } warna {
+        high = guess - 1
+    }
+}

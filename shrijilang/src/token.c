@@ -118,35 +118,103 @@ static Token number(void)
 /*──────────────────────────────────────────────
   IDENTIFIER / KEYWORD
 ──────────────────────────────────────────────*/
-
 static TokenType check_keyword(const char *start, int length)
 {
-    if (length == 4 && strncmp(start, "mavi", 4) == 0) return TOKEN_MAVI;
-    if (length == 4 && strncmp(start, "agar", 4) == 0) return TOKEN_AGAR;
-    if (length == 5 && strncmp(start, "warna", 5) == 0) return TOKEN_WARNA;
-    if (length == 4 && strncmp(start, "kaam", 4) == 0) return TOKEN_KAAM;
-    if (length == 6 && strncmp(start, "jabtak", 6) == 0) return TOKEN_JABTAK;
-    if (length == 5 && strncmp(start, "rukja", 5) == 0) return TOKEN_RUKJA;
-    if (length == 5 && strncmp(start, "chalu", 5) == 0) return TOKEN_CHALU;
-    if (length == 4 && strncmp(start, "nahi", 4) == 0) return TOKEN_NAHI;
-    if (length == 4 && strncmp(start, "sahi", 4) == 0) return TOKEN_TRUE;
-    if (length == 5 && strncmp(start, "galat", 5) == 0) return TOKEN_FALSE;
+    if (length == 4 && strncmp(start, "mavi", 4) == 0)
+        return TOKEN_MAVI;
 
+    if (
+        (length == 4 && strncmp(start, "agar", 4) == 0) ||
+        (length == 2 && strncmp(start, "if", 2) == 0)
+    )
+        return TOKEN_AGAR;
 
-    if (length == 4 && strncmp(start, "bolo", 4) == 0) return TOKEN_BOLO;
-    if (length == 6 && strncmp(start, "rachna", 6) == 0) return TOKEN_RACHNA;
-    if (length == 5 && strncmp(start, "wapas", 5) == 0) return TOKEN_WAPAS;
+    if (
+        (length == 5 && strncmp(start, "warna", 5) == 0) ||
+        (length == 4 && strncmp(start, "else", 4) == 0)
+    )
+        return TOKEN_WARNA;
 
+    if (length == 4 && strncmp(start, "kaam", 4) == 0)
+        return TOKEN_KAAM;
 
-    if (length == 5 && strncmp(start, "sakhi", 5) == 0) return TOKEN_SAKHI;
-    if (length == 4 && strncmp(start, "niyu", 4) == 0) return TOKEN_NIYU;
-    if (length == 4 && strncmp(start, "mira", 4) == 0) return TOKEN_MIRA;
-    if (length == 5 && strncmp(start, "kavya", 5) == 0) return TOKEN_KAVYA;
-    if (length == 5 && strncmp(start, "shiri", 5) == 0) return TOKEN_SHIRI;
+    if (
+        (length == 6 && strncmp(start, "jabtak", 6) == 0) ||
+        (length == 5 && strncmp(start, "while", 5) == 0)
+    )
+        return TOKEN_JABTAK;
 
-    if (length == 6 && strncmp(start, "import", 6) == 0) return TOKEN_IMPORT;
+    if (
+        (length == 5 && strncmp(start, "rukja", 5) == 0) ||
+        (length == 5 && strncmp(start, "break", 5) == 0)
+    )
+        return TOKEN_RUKJA;
 
-    return TOKEN_IDENTIFIER;
+    if (
+        (length == 5 && strncmp(start, "chalu", 5) == 0) ||
+        (length == 8 && strncmp(start, "continue", 8) == 0)
+    )
+        return TOKEN_CHALU;
+
+    if (length == 4 && strncmp(start, "nahi", 4) == 0)
+        return TOKEN_NAHI;
+
+    if (
+        (length == 4 && strncmp(start, "sahi", 4) == 0) ||
+        (length == 4 && strncmp(start, "true", 4) == 0)
+    )
+        return TOKEN_TRUE;
+
+    if (
+        (length == 5 && strncmp(start, "galat", 5) == 0) ||
+        (length == 5 && strncmp(start, "false", 5) == 0)
+    )
+        return TOKEN_FALSE;
+
+    if (length == 4 && strncmp(start, "bolo", 4) == 0)
+        return TOKEN_BOLO;
+
+    if (length == 6 && strncmp(start, "rachna", 6) == 0)
+        return TOKEN_RACHNA;
+
+    if (
+    (length == 5 && strncmp(start, "wapas", 5) == 0) ||
+    (length == 6 && strncmp(start, "return", 6) == 0)
+     )
+    return TOKEN_WAPAS;
+
+    if (length == 5 && strncmp(start, "sakhi", 5) == 0)
+        return TOKEN_SAKHI;
+
+    if (length == 4 && strncmp(start, "niyu", 4) == 0)
+        return TOKEN_NIYU;
+
+    if (length == 4 && strncmp(start, "mira", 4) == 0)
+        return TOKEN_MIRA;
+
+    if (length == 5 && strncmp(start, "kavya", 5) == 0)
+        return TOKEN_KAVYA;
+
+    if (length == 5 && strncmp(start, "shiri", 5) == 0)
+        return TOKEN_SHIRI;
+
+    if (
+    (length == 6 && strncmp(start, "import", 6) == 0) ||
+    (length == 3 && strncmp(start, "lao", 3) == 0)
+)
+{
+    return TOKEN_IMPORT;
+}
+
+    if (
+    (length == 6 && strncmp(start, "export", 6) == 0) ||
+    (length == 2 && strncmp(start, "do", 2) == 0)
+)
+{
+    return TOKEN_EXPORT;
+}
+
+return TOKEN_IDENTIFIER;
 }
 
 static Token identifier(void)

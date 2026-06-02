@@ -1,0 +1,7 @@
+rachna add(a, b) {
+
+    wapas a + b
+
+}
+
+bolo add(10, 20)

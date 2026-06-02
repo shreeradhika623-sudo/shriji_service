@@ -1,0 +1,119 @@
+bolo "====== BUBU EXCISE COMMISSION REPORT ======"
+
+bolo "BUBU: Abkari Mantri (Investigation Mode)"
+bolo "Objective: Revenue Analysis & Leakage Detection"
+
+bolo "----- INPUT DATA -----"
+
+mavi expected = 12500
+mavi actual = 10700
+mavi shops = 674
+
+bolo "Expected Revenue (crore):"
+bolo expected
+
+bolo "Actual Revenue (crore):"
+bolo actual
+
+bolo "Total Shops:"
+bolo shops
+
+bolo "----- CORE CALCULATIONS -----"
+
+mavi gap = expected - actual
+mavi leakage_percent = (gap * 100) / expected
+
+bolo "Revenue Gap (crore):"
+bolo gap
+
+bolo "Leakage Percentage (%):"
+bolo leakage_percent
+
+bolo "----- TIME IMPACT ANALYSIS -----"
+
+mavi monthly_loss = gap / 12
+mavi daily_loss = gap / 365
+
+bolo "Monthly Loss (crore):"
+bolo monthly_loss
+
+bolo "Daily Loss (crore):"
+bolo daily_loss
+
+bolo "----- SHOP LEVEL ANALYSIS -----"
+
+mavi avg_per_shop = actual / shops
+
+bolo "Average Revenue per Shop (crore/year):"
+bolo avg_per_shop
+
+bolo "Estimated Impact if 1 Shop Fails:"
+bolo avg_per_shop
+
+bolo "----- LEAKAGE SIMULATION -----"
+
+mavi sim_percent = 5
+mavi simulated_leak = (actual * sim_percent) / 100
+
+bolo "Simulated Leakage (5%):"
+bolo simulated_leak
+
+bolo "----- DEEP COMPARISON -----"
+
+agar gap > simulated_leak {
+
+    bolo "Observation: Actual gap > simulated leakage"
+    bolo "Inference: Issue simple leakage se bada ho sakta hai"
+
+} warna {
+
+    bolo "Observation: Gap within expected leakage range"
+}
+
+bolo "----- SCALING INSIGHT -----"
+
+bolo "Har din approx loss:"
+bolo daily_loss
+
+bolo "Har ghante approx loss:"
+mavi hourly_loss = daily_loss / 24
+bolo hourly_loss
+
+bolo "----- FINAL SUMMARY -----"
+
+bolo "Total Shops:"
+bolo shops
+
+bolo "Expected Revenue:"
+bolo expected
+
+bolo "Actual Revenue:"
+bolo actual
+
+bolo "Gap:"
+bolo gap
+
+bolo "Leakage %:"
+bolo leakage_percent
+
+bolo "Per Shop Avg:"
+bolo avg_per_shop
+
+bolo "Simulated Leakage:"
+bolo simulated_leak
+
+bolo "----- STATUS -----"
+
+agar gap > 1000 {
+    bolo "STATUS: INVESTIGATION REQUIRED"
+} warna {
+    bolo "STATUS: NORMAL VARIATION"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Revenue system me chhoti leak bhi bada nuksaan ban sakti hai"
+bolo "Numbers ko ignore karna sabse bada risk hai"
+bolo "Analysis bina bias ke hona chahiye"
+
+bolo "====== REPORT END ======"

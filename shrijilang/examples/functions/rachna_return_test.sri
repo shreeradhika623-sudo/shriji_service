@@ -1,0 +1,9 @@
+rachna test() {
+
+    wapas 50
+
+}
+
+mavi x = test()
+
+bolo x

@@ -1,0 +1,5 @@
+mavi y = 0
+
+mavi x = 10 / y
+
+bolo "alive"

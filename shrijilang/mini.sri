@@ -1,0 +1,6 @@
+mavi expected = 12500
+mavi actual = 10700
+
+mavi gap = expected - actual
+
+bolo gap

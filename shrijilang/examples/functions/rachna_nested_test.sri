@@ -1,0 +1,13 @@
+rachna hello() {
+
+    bolo "HELLO"
+
+}
+
+rachna run() {
+
+    hello()
+
+}
+
+run()

@@ -1,0 +1,13 @@
+mavi x = galat
+
+agar (x) {
+
+    bolo "PASS"
+
+}
+
+warna {
+
+    bolo "FAIL"
+
+}

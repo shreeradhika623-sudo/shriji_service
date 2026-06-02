@@ -1,0 +1,41 @@
+bolo "=== SMART AI PRO ==="
+
+mavi secret = 73
+
+mavi low = 1
+mavi high = 100
+
+mavi guess = 0
+mavi steps = 0
+
+jabtak low <= high {
+
+    guess = (low + high) / 2
+
+    agar guess % 1 != 0 {
+        guess = guess - 0.5
+    }
+
+    bolo "AI Guess:"
+    bolo guess
+
+    steps = steps + 1
+
+    agar guess == secret {
+        bolo "AI WIN"
+        bolo "Steps:"
+        bolo steps
+        rukja
+    }
+
+    agar guess < secret {
+        low = guess + 1
+    } warna {
+        high = guess - 1
+    }
+
+    agar steps > 20 {
+        bolo "SAFE BREAK"
+        rukja
+    }
+}

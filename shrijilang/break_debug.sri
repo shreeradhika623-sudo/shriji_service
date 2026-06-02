@@ -1,0 +1,16 @@
+mavi i = 0
+
+jabtak (i < 10) {
+
+    i = i + 1
+
+    agar (i == 5) {
+
+        bolo "BREAK HIT"
+
+        rukja
+    }
+
+    bolo i
+
+}

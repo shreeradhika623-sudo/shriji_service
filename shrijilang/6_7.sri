@@ -1,0 +1,5 @@
+bolo ceil(5.1)
+bolo upar(5.1)
+
+bolo ceil(7)
+bolo upar(7)

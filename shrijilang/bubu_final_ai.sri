@@ -1,0 +1,139 @@
+bolo "====== BUBU FINAL AI SYSTEM ======"
+
+bolo "BUBU Smart City Control Room me hai"
+bolo "Multiple crisis ek saath aa gaye hain"
+
+mavi fund = 40000
+mavi patients = 170
+mavi beds = 100
+mavi power = 40
+mavi vehicles = 1200
+
+bolo "----- INITIAL STATE -----"
+
+bolo "Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Beds:"
+bolo beds
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "----- CRISIS ANALYSIS -----"
+
+mavi hospital_risk = 0
+mavi power_risk = 0
+mavi traffic_risk = 0
+
+agar patients > beds {
+    hospital_risk = 1
+    bolo "Hospital Critical"
+}
+
+agar power < 50 {
+    power_risk = 1
+    bolo "Power Critical"
+}
+
+agar vehicles > 1000 {
+    traffic_risk = 1
+    bolo "Traffic Critical"
+}
+
+bolo "----- AI PRIMARY DECISION -----"
+bolo "Rule: Pehle jaan, phir system"
+
+agar hospital_risk == 1 {
+
+    bolo "Decision: Hospital First"
+
+    agar fund >= 10000 {
+
+        fund = fund - 10000
+        beds = beds + 50
+
+        bolo "Beds Increased"
+    }
+}
+
+bolo "----- SECONDARY DECISIONS -----"
+
+jabtak power < 50 {
+
+    agar fund >= 8000 {
+
+        bolo "Power Restore Action"
+
+        fund = fund - 8000
+        power = power + 30
+    } warna {
+        bolo "Power restore failed (low fund)"
+        power = 50
+    }
+}
+
+jabtak vehicles > 1000 {
+
+    agar fund >= 5000 {
+
+        bolo "Traffic Control Action"
+
+        fund = fund - 5000
+        vehicles = vehicles - 300
+    } warna {
+        bolo "Traffic control limited"
+        vehicles = 1000
+    }
+}
+
+bolo "----- PHYSICS SUPPORT -----"
+
+mavi m = 20
+mavi v = 10
+mavi ke = (m * v * v) / 2
+
+bolo "Helicopter KE:"
+bolo ke
+
+bolo "----- FINAL STATE -----"
+
+bolo "Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Beds:"
+bolo beds
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "KE:"
+bolo ke
+
+bolo "----- FINAL AI STATUS -----"
+
+agar fund < 20000 {
+    bolo "CITY AT RISK"
+} warna {
+    bolo "CITY STABLE"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Sahi AI wahi hai jo insaan ko pehle rakhe"
+bolo "Pressure me bhi decision lena zaroori hai"
+bolo "Ek problem solve karna kaafi nahi, system balance zaroori hai"
+
+bolo "====== SYSTEM END ======"

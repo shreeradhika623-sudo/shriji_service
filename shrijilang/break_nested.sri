@@ -1,0 +1,21 @@
+mavi i = 0
+
+jabtak (i < 3) {
+
+    mavi j = 0
+
+    jabtak (j < 5) {
+
+        j = j + 1
+
+        agar (j == 3) {
+            rukja
+        }
+
+        bolo j
+
+    }
+
+    i = i + 1
+
+}

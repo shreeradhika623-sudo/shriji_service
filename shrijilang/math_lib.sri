@@ -1,0 +1,7 @@
+rachna square(x) {
+    wapas x * x
+}
+
+rachna cube(x) {
+    wapas x * x * x
+}

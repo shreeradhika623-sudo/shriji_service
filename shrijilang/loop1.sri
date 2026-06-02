@@ -1,0 +1,9 @@
+mavi i = 1
+
+jabtak (i <= 1000) {
+
+    i = i + 1
+
+}
+
+bolo i

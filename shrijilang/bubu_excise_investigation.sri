@@ -1,0 +1,115 @@
+bolo "====== BUBU EXCISE INVESTIGATION ======"
+
+bolo "BUBU Abkari Mantri bana hai"
+bolo "Revenue analysis shuru..."
+
+bolo "----- INPUT DATA -----"
+
+mavi expected = 12500
+mavi actual = 10700
+mavi shops = 674
+
+bolo "Expected Revenue (crore):"
+bolo expected
+
+bolo "Actual Revenue (crore):"
+bolo actual
+
+bolo "Total Shops:"
+bolo shops
+
+bolo "----- REVENUE GAP -----"
+
+mavi gap = expected - actual
+
+bolo "Revenue Gap:"
+bolo gap
+
+mavi leakage_percent = (gap * 100) / expected
+
+bolo "Leakage %:"
+bolo leakage_percent
+
+bolo "----- TIME ANALYSIS -----"
+
+mavi yearly_loss = gap
+mavi monthly_loss = yearly_loss / 12
+mavi daily_loss = yearly_loss / 365
+
+bolo "Monthly Loss:"
+bolo monthly_loss
+
+bolo "Daily Loss:"
+bolo daily_loss
+
+bolo "----- SHOP ANALYSIS -----"
+
+mavi avg_per_shop = actual / shops
+
+bolo "Average per Shop:"
+bolo avg_per_shop
+
+bolo "----- SINGLE SHOP IMPACT -----"
+
+mavi one_shop_loss = avg_per_shop
+
+bolo "If 1 shop closes, loss:"
+bolo one_shop_loss
+
+bolo "----- LEAKAGE SIMULATION -----"
+
+mavi leakage_rate = 5
+
+mavi leakage_amount = (actual * leakage_rate) / 100
+
+bolo "Leakage (5%):"
+bolo leakage_amount
+
+bolo "----- BUBU ANALYSIS MODE -----"
+
+bolo "Expected vs Actual mismatch detected"
+bolo "Possible leakage ya inefficiency"
+
+bolo "----- FINAL REPORT -----"
+
+bolo "Total Shops:"
+bolo shops
+
+bolo "Revenue:"
+bolo actual
+
+bolo "Expected:"
+bolo expected
+
+bolo "Gap:"
+bolo gap
+
+bolo "Leakage %:"
+bolo leakage_percent
+
+bolo "Monthly Loss:"
+bolo monthly_loss
+
+bolo "Daily Loss:"
+bolo daily_loss
+
+bolo "Per Shop Avg:"
+bolo avg_per_shop
+
+bolo "Leakage Simulated:"
+bolo leakage_amount
+
+bolo "----- STATUS -----"
+
+agar gap > 1000 {
+    bolo "INVESTIGATION REQUIRED"
+} warna {
+    bolo "SYSTEM NORMAL"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Revenue system me chhoti leak bhi bada nuksaan ban sakti hai"
+bolo "Numbers ko samajhna zaroori hai, warna system slip ho jata hai"
+
+bolo "====== BUBU REPORT END ======"

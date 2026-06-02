@@ -1,0 +1,15 @@
+bolo "=== MULTI FLOW ==="
+
+mavi x = 25
+
+agar x > 10 {
+
+    agar x < 50 {
+
+        agar x % 5 == 0 {
+            bolo "Perfect Range"
+        }
+
+    }
+
+}

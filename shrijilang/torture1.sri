@@ -1,0 +1,21 @@
+rachna fact(n) {
+
+    agar (n <= 1) {
+        wapas 1
+    }
+
+    wapas n * fact(n - 1)
+}
+
+mavi i = 1
+
+jabtak (i <= 10) {
+
+    bolo fact(i)
+
+    agar (i == 5) {
+        rukja
+    }
+
+    i = i + 1
+}

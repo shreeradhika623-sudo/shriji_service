@@ -1,0 +1,23 @@
+bolo "=== CHAOS ==="
+
+mavi x = 1
+mavi i = 1
+
+jabtak i <= 15 {
+
+    x = x + i
+    x = x * 2
+
+    agar x % 4 == 0 {
+        x = x / 2
+    }
+
+    agar x > 200 {
+        bolo "RESET"
+        x = 1
+    }
+
+    bolo x
+
+    i = i + 1
+}

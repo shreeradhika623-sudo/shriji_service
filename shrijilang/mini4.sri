@@ -1,0 +1,8 @@
+mavi expected = 12500
+mavi actual = 10700
+
+mavi gap = expected - actual
+
+mavi leakage_percent = (gap * 100) / expected
+
+bolo leakage_percent

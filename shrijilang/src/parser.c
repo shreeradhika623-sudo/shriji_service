@@ -50,6 +50,10 @@ static ASTNode *parse_term(void);
 static ASTNode *parse_unary(void);
 static ASTNode *parse_primary(void);
 
+static ASTNode *parse_logical_and(void);
+static ASTNode *parse_logical_or(void);
+
+
 static ASTNode *parse_value(void);
 
 /* list support */
@@ -58,6 +62,7 @@ static ASTNode *parse_dict_literal(void);
 static ASTNode *parse_postfix(ASTNode *base);
 
 static ASTNode *parse_import(void);
+static ASTNode *parse_export(void);
 
 static Token current;
 
@@ -104,6 +109,29 @@ static int is_separator(TokenType type)
     return (type == TOKEN_NEWLINE ||
             type == TOKEN_SEMICOLON);
     }
+
+
+static int is_expression_start(TokenType t)
+{
+    switch (t) {
+
+        case TOKEN_NUMBER:
+        case TOKEN_IDENTIFIER:
+        case TOKEN_STRING:
+        case TOKEN_TRUE:
+        case TOKEN_FALSE:
+
+        case TOKEN_LEFT_PAREN:
+        case TOKEN_LEFT_BRACKET:
+        case TOKEN_LEFT_BRACE:
+
+        case TOKEN_NAHI:
+            return 1;
+
+        default:
+            return 0;
+    }
+}
 
 static void unescape_into(char *out, int outcap, const char *in, int inlen)
 {
@@ -263,6 +291,21 @@ static ASTNode *parse_statement(void)
         return NULL;
     }
 
+     if (current.type == TOKEN_RIGHT_PAREN ||
+    current.type == TOKEN_RIGHT_BRACE ||
+    current.type == TOKEN_RIGHT_BRACKET)
+{
+    parser_error_once(
+        current,
+        E_PARSE_BRACKET_EXTRA,
+        "bracket",
+        "extra closing bracket",
+        "remove extra bracket"
+    );
+
+    return NULL;
+}
+
     if (current.type == TOKEN_LEFT_BRACE)
         return parse_block();
 
@@ -277,11 +320,13 @@ static ASTNode *parse_statement(void)
         return w;
     }
 
-    if (current.type == TOKEN_WAPAS)      return parse_return();
+   if (current.type == TOKEN_WAPAS)      return parse_return();
     if (current.type == TOKEN_KAAM)       return parse_function();
     if (current.type == TOKEN_RACHNA)    return parse_rachna_definition();
     if (current.type == TOKEN_MAVI)       return parse_assignment();
     if (current.type == TOKEN_IMPORT)     return parse_import();
+    if (current.type == TOKEN_EXPORT)     return parse_export();
+
     /* samay */
     if (current.type == TOKEN_SAMAY) {
         advance();
@@ -360,11 +405,36 @@ static ASTNode *parse_command_statement(void)
         advance();
         skip_separators();
 
+
         ASTNode *node = parse_expression();
 
         if (!node)
             return NULL;
 
+/*
+if (is_expression_start(current.type) &&
+    current.line == prev_token.line)
+{
+    if (!error_reported)
+    {
+        char example[64];
+        shriji_build_example(current_source,
+                             example,
+                             sizeof(example));
+
+        shriji_error_at(
+            current,
+            E_PARSE_MISSING_OPERATOR,
+            "expr",
+            "Do values ke beech operator missing hai",
+            example
+        );
+    }
+
+    return NULL;
+}
+
+*/
         return new_command_node("bolo", node);
     }
 
@@ -570,6 +640,52 @@ if (current.type != TOKEN_STRING) {
 
     skip_separators();
     return new_import_node(mod);
+}
+
+/*──────────────────────────────────────────────
+   | EXPORT "file.sri"
+*──────────────────────────────────────────────*/
+
+static ASTNode *parse_export(void)
+{
+    advance(); /* consume export */
+
+    skip_separators();
+
+    if (current.type != TOKEN_IDENTIFIER)
+    {
+        if (!error_reported)
+        {
+            shriji_error_at(
+                current,
+                E_EXPORT_NAME_INVALID,
+                "export",
+                "expected export name",
+                "export add"
+            );
+
+            error_reported = 1;
+        }
+
+        return NULL;
+    }
+
+    char name[128];
+
+    int len = current.length;
+
+    if (len >= (int)sizeof(name))
+        len = sizeof(name) - 1;
+
+    strncpy(name, current.start, len);
+
+    name[len] = '\0';
+
+    advance();
+
+    skip_separators();
+
+    return new_export_node(name);
 }
 
 /*──────────────────────────────────────────────
@@ -783,7 +899,7 @@ static ASTNode *parse_rachna_definition(void)
 
 static ASTNode *parse_value(void)
 {
-    ASTNode *left = parse_comparison();
+    ASTNode *left = parse_logical_or();
 
     if (!left)
         return NULL;
@@ -973,7 +1089,6 @@ ASTNode *n = parse_value();
 
 
     if (!n) return NULL;
-
 
 /*──────────────────────────────────────────────
  | OPERATOR START DETECTION
@@ -1254,13 +1369,32 @@ if (current.type == TOKEN_PLUS ||
     ASTNode *node = parse_primary();
     if (!node) return NULL;
 
-    /* detect missing operator: 6(5+9) */
-     if (current.type == TOKEN_LEFT_PAREN)
+
+
+/* detect missing operator: 6(5+9)*/
+if (
+
+    prev_token.type != TOKEN_NEWLINE &&
+    prev_token.type != TOKEN_EOF &&
+
+    (
+
+        current.type == TOKEN_NUMBER     ||
+        current.type == TOKEN_STRING     ||
+        current.type == TOKEN_IDENTIFIER ||
+        current.type == TOKEN_LEFT_PAREN
+
+    )
+)
+
 {
+
     if (!error_reported) {
 
         char example[64];
-        shriji_build_example(current_source, example, sizeof(example));
+        shriji_build_example(current_source,
+                             example,
+                             sizeof(example));
 
         shriji_error_at(
             current,
@@ -1274,10 +1408,8 @@ if (current.type == TOKEN_PLUS ||
     return NULL;
 }
 
-
-    return node;
+return node;
 }
-
 
 /*──────────────────────────────────────────────
  | LIST LITERAL: [a, b, c]
@@ -1315,6 +1447,22 @@ static ASTNode *parse_list_literal(void)
 
             if (current.type == TOKEN_RIGHT_BRACKET)
                 break;
+
+       if (current.type == TOKEN_EOF)
+{
+    shriji_error_at(
+        current,
+        E_PARSE_BRACKET_MISSING,
+        "]",
+        "missing ]",
+        "[1, 2, 3]"
+    );
+
+    free(elements);
+    return NULL;
+}
+
+
 
             if (!expect(TOKEN_COMMA, E_LIST_SYNTAX_ERROR, ",", "expected ','", "[1, 2, 3]")) {
                 free(elements);
@@ -1437,12 +1585,24 @@ if (current.type == TOKEN_NUMBER) {
     strncpy(temp, current.start, len);
     temp[len] = '\0';
 
-    double v = atof(temp);
+   double v = atof(temp);
 
-    advance();
+   ASTNode *node = new_number_node(v);
 
-    return new_number_node(v);
-}
+      if (strchr(temp, '.')) {
+
+        node->is_int = 0;
+   }
+   else {
+
+        node->is_int = 1;
+   }
+
+       advance();
+
+        return node;
+
+ }
 
 if (current.type == TOKEN_STRING) {
     char s[256];
@@ -1465,6 +1625,19 @@ if (current.type == TOKEN_LEFT_PAREN)
 {
     advance();  // consume '('
 
+    if (current.type == TOKEN_RIGHT_PAREN)
+    {
+        shriji_error_at(
+            current,
+            E_PARSE_EMPTY_EXPRESSION,
+            "expression",
+            "empty expression",
+            "expression required"
+        );
+
+        return NULL;
+    }
+
     ASTNode *expr = parse_expression();
     if (!expr) return NULL;
 
@@ -1480,7 +1653,7 @@ if (current.type == TOKEN_LEFT_PAREN)
         return NULL;
     }
 
-    advance();  //  consume ')'
+    advance();  // consume ')'
 
     return expr;
 }
@@ -1593,6 +1766,24 @@ if (!node) return NULL;
 return node;
     }
 
+ if (current.type == TOKEN_PLUS  ||
+    current.type == TOKEN_MINUS ||
+    current.type == TOKEN_STAR  ||
+    current.type == TOKEN_SLASH ||
+    current.type == TOKEN_AND   ||
+    current.type == TOKEN_OR)
+{
+    shriji_error_at(
+        current,
+        E_PARSE_OPERATOR_START,
+        "expr",
+        "Expression operator se start nahi ho sakta",
+        "example: bolo 5 + 5"
+    );
+
+    return NULL;
+}
+
     shriji_error_at(current, E_PARSE_INVALID_TOKEN, "expr", "bad token", "check syntax");
     return NULL;
 }
@@ -1682,6 +1873,22 @@ skip_separators();
 /* end? */
 if (current.type == TOKEN_RIGHT_BRACE)
     break;
+
+  if (current.type == TOKEN_EOF)
+{
+    shriji_error_at(
+        current,
+        E_PARSE_BRACKET_MISSING,
+        "}",
+        "missing }",
+        "{\"a\": 1}"
+    );
+
+    free(keys);
+    free(vals);
+    return NULL;
+}
+
 
 if (!expect(TOKEN_COMMA, E_DICT_SYNTAX_ERROR, ",", "expected ','",
             "example: {\"a\": 1, \"b\": 2}")) {

@@ -1,0 +1,14 @@
+mavi x = 10
+mavi y = 5
+
+bolo "Starting program..."
+
+agar x > y {
+    bolo "x bada hai"
+    bolo "x =", x
+} warna {
+    bolo "y bada hai"
+    bolo "y =", y
+}
+
+bolo "Program end"

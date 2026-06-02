@@ -1,0 +1,5 @@
+rachna radhe(x) {
+    wapas x + 1
+}
+
+bolo radhe(10)

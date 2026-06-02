@@ -1,0 +1,21 @@
+bolo "=== PRIME CHECK ==="
+
+mavi n = 17
+mavi i = 2
+mavi flag = 0
+
+jabtak i < n {
+
+    agar n % i == 0 {
+        flag = 1
+        rukja
+    }
+
+    i = i + 1
+}
+
+agar flag == 0 {
+    bolo "Prime"
+} warna {
+    bolo "Not Prime"
+}

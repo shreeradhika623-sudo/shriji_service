@@ -1,0 +1,9 @@
+rachna test() {
+
+    mavi x = 999
+    bolo x
+}
+
+test()
+
+bolo x

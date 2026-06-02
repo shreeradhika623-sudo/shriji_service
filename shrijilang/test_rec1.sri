@@ -1,0 +1,13 @@
+rachna factorial(n) {
+
+    agar (n <= 1) {
+
+        wapas 1
+
+    }
+
+    wapas n * factorial(n - 1)
+
+}
+
+bolo factorial(5)

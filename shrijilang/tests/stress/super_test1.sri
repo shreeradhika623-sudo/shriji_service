@@ -1,0 +1,18 @@
+mavi i = 1
+
+jabtak i <= 5000 {
+
+    mavi j = 1
+
+    jabtak j <= 50 {
+
+        bolo i
+        bolo j
+
+        mavi j = j + 1
+    }
+
+    mavi i = i + 1
+}
+
+bolo "DONE"

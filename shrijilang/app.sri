@@ -1,0 +1,31 @@
+mavi password = "shriji"
+
+mavi entered = "wrong"
+
+agar (password == entered) {
+
+    bolo "login success"
+
+}
+
+agar (password != entered) {
+
+    bolo "wrong password"
+
+}
+mavi balance = 1000
+
+mavi amount = 500
+
+agar amount <= balance {
+
+    balance = balance - amount
+
+    bolo "Withdraw Done"
+    bolo balance
+
+} warna {
+
+    bolo "Fail"
+
+}

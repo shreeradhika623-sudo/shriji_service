@@ -1,0 +1,9 @@
+mavi age = 20
+
+agar (age > 18) {
+    bolo "adult"
+
+    agar (age > 19) {
+        bolo "verified"
+    }
+}

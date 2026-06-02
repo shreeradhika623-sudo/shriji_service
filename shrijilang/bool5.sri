@@ -1,0 +1,14 @@
+mavi vip = galat
+mavi admin = sahi
+
+agar (vip || admin) {
+
+    bolo "ENTRY"
+
+}
+
+warna {
+
+    bolo "BLOCK"
+
+}

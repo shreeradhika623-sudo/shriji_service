@@ -1,0 +1,24 @@
+mavi x = 1
+
+jabtak x <= 100 {
+
+    agar x % 2 == 0 {
+
+        agar x % 3 == 0 {
+
+            agar x % 5 == 0 {
+
+                agar x % 7 == 0 {
+
+                    bolo "Complex Hit"
+
+                }
+
+            }
+
+        }
+
+    }
+
+    mavi x = x + 1
+}

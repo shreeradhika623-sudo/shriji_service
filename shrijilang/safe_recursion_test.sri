@@ -1,0 +1,11 @@
+rachna count(x) {
+
+    bolo x
+
+    agar x > 0 {
+
+        count(x - 1)
+    }
+}
+
+count(5)

@@ -1,0 +1,21 @@
+bolo "=== RISK ENGINE ==="
+
+mavi risk = 0
+mavi i = 1
+
+jabtak i <= 5 {
+
+    mavi amount = i * 300
+
+    agar amount > 700 {
+        bolo "RISK"
+        risk = risk + 1
+    }
+
+    agar risk >= 2 {
+        bolo "BLOCKED"
+        rukja
+    }
+
+    i = i + 1
+}

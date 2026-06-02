@@ -1,0 +1,12 @@
+mavi x = 1
+
+jabtak x <= 100 {
+
+    mavi x = x + 1
+    mavi x = x * x
+    mavi x = x - 10
+    mavi x = x / 2
+    mavi x = x * 3
+    mavi x = x - x / 2
+
+}

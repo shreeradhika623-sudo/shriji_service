@@ -1,0 +1,12 @@
+mavi i = 1
+
+jabtak i <= 10 {
+
+    mavi x = 5
+    mavi y = 0
+    mavi z = x / y
+
+    bolo i
+
+    mavi i = i + 1
+}

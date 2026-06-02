@@ -1,0 +1,5 @@
+mavi x = 14.4
+
+agar x > 5 {
+    bolo "PASS"
+}

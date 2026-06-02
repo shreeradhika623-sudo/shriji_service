@@ -1,0 +1,11 @@
+rachna f1() { wapas 1 }
+rachna f2() { wapas 2 }
+rachna f3() { wapas 3 }
+rachna f4() { wapas 4 }
+rachna f5() { wapas 5 }
+
+bolo f1()
+bolo f2()
+bolo f3()
+bolo f4()
+bolo f5()

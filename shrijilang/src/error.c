@@ -9,7 +9,7 @@
 int error_reported = 0;
 int GYAAN_ALREADY_PRINTED = 0;
 
-int SHRIJI_ERROR_MODE = 0; 
+int SHRIJI_ERROR_MODE = 0;
 // 0 = simple (default)
 // 1 = full (deep insight)
 
@@ -70,6 +70,15 @@ static ShrijiErrorUI ERROR_UI_MAP[] = {
         "pehle variable define karo"
     }
 
+  ,
+{
+    E_RUNTIME_UNDEFINED_VAR,
+    "Variable abhi tak banaya nahi gaya.",
+    "Shri ko is naam ka variable nahi mila.",
+    "Variable use karne se pehle usse banaiye.",
+    "Example: mavi x = 10"
+}
+
 };
 
 static const ShrijiErrorUI* get_error_ui(ShrijiErrorCode code)
@@ -122,6 +131,8 @@ static const char *error_code_str(ShrijiErrorCode code)
         case E_RUNTIME_TYPE_MISMATCH: return "E_RUNTIME_TYPE_MISMATCH";
         case E_RUNTIME_LOOP_LIMIT: return "E_RUNTIME_LOOP_LIMIT";
         case E_RUNTIME_INDEX_ERROR: return "E_RUNTIME_INDEX_ERROR";
+        case E_RUNTIME_UNDEFINED_VAR: return "E_RUNTIME_UNDEFINED_VAR";
+        case E_RUNTIME_FUNCTION_NOT_FOUND: return "E_RUNTIME_FUNCTION_NOT_FOUND";
 
         default: return "E_UNKNOWN";
     }

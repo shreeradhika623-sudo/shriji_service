@@ -1,0 +1,12 @@
+mavi x = 1
+
+jabtak x != 100 {
+
+    mavi x = x + 2
+
+    agar x > 100 {
+        rukja
+    }
+
+    bolo x
+}

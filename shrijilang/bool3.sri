@@ -1,0 +1,7 @@
+mavi x = galat
+
+agar (nahi x) {
+
+    bolo "NOT WORKING"
+
+}

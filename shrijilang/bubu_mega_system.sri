@@ -1,0 +1,138 @@
+# ===== BUBU MEGA SYSTEM =====
+
+# 🔹 RAW INPUT
+mavi fund = 50000
+mavi patients = 180
+mavi beds = 100
+mavi power = 40
+mavi vehicles = 1500
+
+# 🔹 STATE FLAGS
+mavi hospital_risk = 0
+mavi power_risk = 0
+mavi traffic_risk = 0
+
+# 🔹 ANALYSIS
+agar patients > beds {
+    hospital_risk = 1
+}
+
+agar power < 50 {
+    power_risk = 1
+}
+
+agar vehicles > 1000 {
+    traffic_risk = 1
+}
+
+# 🔹 AI LOOP (multi-step decision)
+mavi steps = 0
+
+jabtak steps < 3 {
+
+    # hospital first (ethics)
+    agar hospital_risk == 1 {
+
+        agar fund >= 10000 {
+
+            fund = fund - 10000
+            beds = beds + 50
+
+            hospital_risk = 0
+        }
+
+    } warna {
+
+        # power second
+        agar power_risk == 1 {
+
+            agar fund >= 8000 {
+
+                fund = fund - 8000
+                power = power + 30
+
+                agar power >= 50 {
+                    power_risk = 0
+                }
+            }
+
+        } warna {
+
+            # traffic third
+            agar traffic_risk == 1 {
+
+                agar fund >= 5000 {
+
+                    fund = fund - 5000
+                    vehicles = vehicles - 400
+
+                    agar vehicles <= 1000 {
+                        traffic_risk = 0
+                    }
+                }
+            }
+        }
+    }
+
+    steps = steps + 1
+}
+
+# 🔹 PHYSICS MODULE
+mavi m = 25
+mavi v = 12
+mavi ke = (m * v * v) / 2
+
+# 🔹 FINAL STATUS ENGINE
+mavi risk_score = 0
+
+agar hospital_risk == 1 {
+    risk_score = risk_score + 3
+}
+
+agar power_risk == 1 {
+    risk_score = risk_score + 2
+}
+
+agar traffic_risk == 1 {
+    risk_score = risk_score + 1
+}
+
+# 🔹 OUTPUT (MINIMAL BUT MEANINGFUL)
+
+bolo "----- RESULT -----"
+
+bolo fund
+bolo beds
+bolo power
+bolo vehicles
+bolo ke
+
+bolo "----- STATUS -----"
+
+agar risk_score >= 3 {
+    bolo "CRITICAL"
+} warna {
+    agar risk_score >= 1 {
+        bolo "UNSTABLE"
+    } warna {
+        bolo "STABLE"
+    }
+}
+
+bolo "----- SYSTEM SIGNAL -----"
+
+agar fund < 20000 {
+    bolo "RESOURCE STRESS"
+} warna {
+    bolo "CONTROLLED"
+}
+
+# 🔹 MESSAGE (DEEP)
+
+bolo "----- MESSAGE -----"
+
+bolo "System tabhi stable hota hai jab decision sequence sahi ho"
+bolo "Priority galat hui to resources waste hote hain"
+bolo "Har problem ek baar me nahi, layer me solve hoti hai"
+
+bolo "===== END ====="

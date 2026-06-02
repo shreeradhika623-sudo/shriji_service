@@ -1,0 +1,141 @@
+bolo "====== SHRIJI SMART CITY SYSTEM ======"
+
+bolo "AI BUBU Smart City Control Room me active hai"
+bolo "Saare departments live monitoring me hain"
+
+bolo "----- INITIAL STATUS -----"
+
+mavi fund = 50000
+mavi patients = 150
+mavi beds = 100
+mavi power = 80
+mavi vehicles = 1200
+
+bolo "City Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "----- PRESSURE BUILDING -----"
+bolo "Alerts aa rahe hain... system load badh raha hai..."
+
+bolo "----- HOSPITAL CHECK -----"
+
+agar patients > beds {
+    bolo "Hospital Overflow"
+}
+
+bolo "----- POWER CHECK -----"
+
+agar power < 50 {
+    bolo "Power Crisis"
+}
+
+bolo "----- TRAFFIC CHECK -----"
+
+agar vehicles > 1000 {
+    bolo "Traffic Jam"
+}
+
+bolo "----- EMERGENCY EVENT -----"
+
+mavi disaster = 1
+
+agar disaster == 1 {
+
+    bolo "EMERGENCY DETECTED"
+    bolo "City me disaster aa gaya hai"
+
+    patients = patients + 20
+    power = power - 40
+    fund = fund - 10000
+
+    bolo "Emergency Updates Applied"
+}
+
+bolo "----- POST EMERGENCY STATUS -----"
+
+bolo "Patients:"
+bolo patients
+
+bolo "Power:"
+bolo power
+
+bolo "Fund:"
+bolo fund
+
+bolo "----- CRITICAL CHECK -----"
+
+agar patients > beds {
+    bolo "Hospital Overflow CRITICAL"
+}
+
+agar power < 50 {
+    bolo "Power Crisis CRITICAL"
+}
+
+agar vehicles > 1000 {
+    bolo "Traffic Jam CONTINUES"
+}
+
+bolo "----- PHYSICS SUPPORT -----"
+
+bolo "Helicopter deployed for rescue"
+
+mavi m = 20
+mavi v = 10
+mavi ke = (m * v * v) / 2
+
+bolo "Kinetic Energy:"
+bolo ke
+
+bolo "----- AI DECISION (BUBU) -----"
+
+bolo "BUBU decision le raha hai..."
+
+agar fund < 20000 {
+    bolo "CITY AT RISK"
+} warna {
+    bolo "CITY STABLE"
+}
+
+bolo "----- FINAL REPORT -----"
+
+bolo "Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "KE:"
+bolo ke
+
+bolo "----- END STATUS -----"
+
+agar fund < 20000 {
+    bolo "Final Status: RISK"
+} warna {
+    bolo "Final Status: STABLE"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Pressure ke time panic nahi, decision lena zaroori hai"
+bolo "Har system tabhi stable rehta hai jab har department balance me ho"
+bolo "Responsibility ka matlab hai crisis me bhi sahi faisla lena"
+bolo "====== SYSTEM END ======"
+
+bolo "story by MR_Mr Mnikpuri"

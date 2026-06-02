@@ -1,0 +1,19 @@
+bolo "=== AI GUESS GAME ==="
+
+mavi secret = 9
+mavi guess = 1
+
+jabtak guess <= 10 {
+
+    bolo "AI Guess:"
+    bolo guess
+
+    agar guess == secret {
+        bolo "AI WIN"
+        rukja
+    }
+
+    guess = guess + 1
+}
+
+bolo "AI FAILED"

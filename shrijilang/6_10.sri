@@ -1,0 +1,11 @@
+bolo -10
+
+mavi x = -10
+
+bolo abs(-10)
+
+bolo nirpeksh(-10)
+
+bolo floor(-5.8)
+
+bolo ceil(-5.8)

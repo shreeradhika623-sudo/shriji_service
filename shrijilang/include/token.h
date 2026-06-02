@@ -38,6 +38,7 @@ typedef enum {
     TOKEN_WAPAS,
 
     TOKEN_IMPORT,
+    TOKEN_EXPORT,
     TOKEN_RACHNA,
 
     /* Operators */

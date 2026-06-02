@@ -1,0 +1,24 @@
+mavi i = 1
+
+jabtak i <= 5 {
+
+    mavi j = 1
+
+    jabtak j <= 5 {
+
+        mavi k = 1
+
+        jabtak k <= 5 {
+
+            bolo i
+            bolo j
+            bolo k
+
+            mavi k = k + 1
+        }
+
+        mavi j = j + 1
+    }
+
+    mavi i = i + 1
+}

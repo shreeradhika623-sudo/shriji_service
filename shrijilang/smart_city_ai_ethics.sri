@@ -1,0 +1,142 @@
+bolo "====== BUBU AI ETHICAL SYSTEM ======"
+
+bolo "BUBU ab sirf monitor nahi karta, sochta hai"
+
+mavi fund = 40000
+mavi patients = 170
+mavi beds = 100
+mavi power = 40
+mavi vehicles = 1200
+
+bolo "----- CURRENT STATE -----"
+
+bolo "Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "----- CRISIS ANALYSIS -----"
+
+mavi hospital_risk = 0
+mavi power_risk = 0
+mavi traffic_risk = 0
+
+agar patients > beds {
+    hospital_risk = 1
+    bolo "Hospital Critical"
+}
+
+agar power < 50 {
+    power_risk = 1
+    bolo "Power Critical"
+}
+
+agar vehicles > 1000 {
+    traffic_risk = 1
+    bolo "Traffic Critical"
+}
+
+bolo "----- AI DECISION ENGINE -----"
+
+bolo "BUBU soch raha hai..."
+
+agar hospital_risk == 1 {
+
+    bolo "Decision: Hospital Priority"
+
+    agar fund >= 10000 {
+
+        fund = fund - 10000
+        beds = beds + 50
+
+        bolo "Emergency Beds Added"
+        bolo "Fund Used: 10000"
+
+    }
+
+} warna {
+
+    agar power_risk == 1 {
+
+        bolo "Decision: Power Restore"
+
+        agar fund >= 8000 {
+
+            fund = fund - 8000
+            power = power + 30
+
+            bolo "Power Restored"
+        }
+
+    } warna {
+
+        agar traffic_risk == 1 {
+
+            bolo "Decision: Traffic Control"
+
+            agar fund >= 5000 {
+
+                fund = fund - 5000
+                vehicles = vehicles - 300
+
+                bolo "Traffic Reduced"
+            }
+        }
+    }
+}
+
+bolo "----- ETHICS CHECK -----"
+
+bolo "Rule: Pehle jaan, phir system"
+
+agar hospital_risk == 1 {
+    bolo "Human life prioritized"
+}
+
+bolo "----- PHYSICS SUPPORT -----"
+
+mavi m = 20
+mavi v = 10
+mavi ke = (m * v * v) / 2
+
+bolo "Helicopter KE:"
+bolo ke
+
+bolo "----- FINAL STATE -----"
+
+bolo "Fund:"
+bolo fund
+
+bolo "Patients:"
+bolo patients
+
+bolo "Beds:"
+bolo beds
+
+bolo "Power:"
+bolo power
+
+bolo "Vehicles:"
+bolo vehicles
+
+bolo "----- FINAL AI STATUS -----"
+
+agar fund < 20000 {
+    bolo "CITY AT RISK"
+} warna {
+    bolo "CITY STABLE"
+}
+
+bolo "----- MORAL -----"
+
+bolo "Sahi AI wahi hai jo insaan ko pehle rakhe"
+bolo "Decision me logic ke saath values bhi zaroori hain"
+
+bolo "====== SYSTEM END ======"

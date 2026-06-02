@@ -1,0 +1,8 @@
+mavi i = 1
+
+jabtak (i <= 3) {
+
+    bolo i
+
+    i = i + 1
+}

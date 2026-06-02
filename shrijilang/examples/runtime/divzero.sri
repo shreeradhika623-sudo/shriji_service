@@ -1,0 +1,6 @@
+mavi x = 10
+mavi y = 0
+
+bolo x / y
+
+bolo "after"

@@ -1,0 +1,13 @@
+rachna fib(n) {
+
+    agar (n <= 1) {
+
+        wapas n
+
+    }
+
+    wapas fib(n - 1) + fib(n - 2)
+
+}
+
+bolo fib(10)

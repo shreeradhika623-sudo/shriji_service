@@ -1,0 +1,6 @@
+mavi x = 1
+
+jabtak x > 0 {
+    mavi x = x + 1
+}
+

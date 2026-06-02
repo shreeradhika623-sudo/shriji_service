@@ -1,0 +1,17 @@
+bolo "==== BIG TEST 6 START ===="
+
+mavi x = 100
+
+agar x > 0 {
+
+    mavi x = 50
+
+    agar x > 10 {
+        mavi x = 20
+        bolo x
+    }
+
+    bolo x
+}
+
+bolo x

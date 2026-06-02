@@ -1,0 +1,21 @@
+rachna even(x) {
+
+    agar (x % 2 == 0) {
+        wapas sahi
+    }
+
+    wapas galat
+}
+
+mavi i = 0
+
+jabtak (i < 10) {
+
+    i = i + 1
+
+    agar (even(i)) {
+        chalu
+    }
+
+    bolo i
+}

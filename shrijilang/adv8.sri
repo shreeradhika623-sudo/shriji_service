@@ -1,0 +1,16 @@
+bolo "=== FILTER ==="
+
+mavi i = 1
+
+jabtak i <= 50 {
+
+    agar i % 2 == 0 {
+
+        agar i % 3 == 0 {
+            bolo i
+        }
+
+    }
+
+    i = i + 1
+}

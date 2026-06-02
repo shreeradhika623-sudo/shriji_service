@@ -1,0 +1,13 @@
+mavi x = sahi
+
+agar (x) {
+
+    bolo "PASS"
+
+}
+
+warna {
+
+    bolo "FAIL"
+
+}

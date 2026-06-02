@@ -1,0 +1,34 @@
+bolo "=== GUESS GAME ==="
+
+mavi secret = 7
+mavi guess = 1
+
+mavi attempts = 0
+
+jabtak attempts < 5 {
+
+    bolo "Try:"
+    bolo guess
+
+    agar guess == secret {
+
+        bolo "WIN"
+        rukja
+
+    } warna {
+
+        agar guess < secret {
+            bolo "Too Small"
+        } warna {
+            bolo "Too Big"
+        }
+
+    }
+
+    guess = guess + 2
+    attempts = attempts + 1
+}
+
+bolo "GAME OVER"
+bolo "Secret was:"
+bolo secret

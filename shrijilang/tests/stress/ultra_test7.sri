@@ -1,0 +1,11 @@
+mavi x = 10
+
+agar x > 5 {
+
+    mavi y = 0
+    mavi z = x / y
+
+    mavi a = b + 1
+
+    bolo z
+}

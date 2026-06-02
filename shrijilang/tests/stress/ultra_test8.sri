@@ -1,0 +1,8 @@
+mavi x = 10
+
+mavi y = 0
+mavi z = x / y
+
+mavi x = 999
+
+bolo x

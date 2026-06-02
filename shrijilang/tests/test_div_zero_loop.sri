@@ -1,0 +1,12 @@
+mavi x = 4
+
+jabtak x <= 6 {
+
+    agar x == 5 {
+        mavi y = 0
+        mavi z = x / y
+    }
+
+    bolo x
+    mavi x = x + 1
+}

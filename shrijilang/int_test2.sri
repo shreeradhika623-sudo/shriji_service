@@ -1,0 +1,7 @@
+bolo "=== INT vs FLOAT ==="
+
+mavi a = 10
+mavi b = 2.5
+
+bolo a + b
+bolo a * b

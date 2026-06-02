@@ -1,0 +1,15 @@
+rachna square(x) {
+
+    wapas x * x
+
+}
+
+mavi i = 1
+
+jabtak (i <= 5) {
+
+    bolo square(i)
+
+    i = i + 1
+
+}

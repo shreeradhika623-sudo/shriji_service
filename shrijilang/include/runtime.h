@@ -22,6 +22,10 @@ typedef struct {
 
     int call_depth;
 
+    char exports[256][64];
+    int export_count;
+    int module_mode;
+
     int error_flag;
     int printed;   /* 🌸 NEW: print control flag */
     int executed;

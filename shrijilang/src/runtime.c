@@ -28,6 +28,8 @@ void runtime_init(ShrijiRuntime *rt)
 
     rt->call_depth = 0;
 
+    rt->export_count = 0;
+    rt->module_mode = 0;
     rt->error_flag = 0;
 
     rt->printed = 0;
@@ -55,6 +57,8 @@ void runtime_reset(ShrijiRuntime *rt)
 
     rt->call_depth = 0;
 
+    rt->export_count = 0;
+    rt->module_mode = 0;
     rt->error_flag = 0;
 
     rt->printed = 0;

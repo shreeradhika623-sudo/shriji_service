@@ -1,0 +1,6 @@
+mavi age = 20
+mavi citizen = sahi
+
+agar (age >= 18 && citizen == sahi) {
+    bolo "ALLOWED"
+}

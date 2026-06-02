@@ -12,6 +12,7 @@
 typedef enum {
     VAL_NULL = 0,
     VAL_NUMBER,
+    VAL_INT,
     VAL_STRING,
     VAL_BOOL,
     VAL_LIST,
@@ -23,16 +24,19 @@ typedef struct Value {
     ValueType type;
 
     double number;
+    long long integer;
     char *string;
+
     int boolean;
-    /* ✅ list value */
+
+    /*  list value */
     struct Value *items;
     int count;
 
-    /* ✅ function value */
+    /*  function value */
     ASTNode *function;
 
-    /* ✅ dict value */
+    /*  dict value */
     struct Value *dict_keys;
     struct Value *dict_values;
     int dict_count;
@@ -48,6 +52,7 @@ static inline Value value_null(void)
     v.type = VAL_NULL;
 
     v.number = 0;
+    v.integer = 0;
     v.string = NULL;
 
     v.items = NULL;
@@ -67,6 +72,14 @@ static inline Value value_number(double n)
     Value v = value_null();
     v.type = VAL_NUMBER;
     v.number = n;
+    return v;
+}
+
+static inline Value value_int(long long x)
+{
+    Value v = value_null();
+    v.type = VAL_INT;
+    v.integer = x;
     return v;
 }
 
@@ -98,17 +111,20 @@ static inline Value value_bool(int b)
 
 static inline int value_is_truthy(Value v)
 {
-    switch (v.type) {
-        case VAL_BOOL:   return v.boolean;
-        case VAL_NUMBER: return v.number != 0;
-        case VAL_STRING: return v.string && v.string[0] != '\0';
-        case VAL_NULL:   return 0;
-        default:         return 1;  // list, dict, function → truthy
-    }
+
+  switch (v.type) {
+    case VAL_BOOL:   return v.boolean;
+    case VAL_NUMBER: return v.number != 0;
+    case VAL_INT:    return v.integer != 0;
+    case VAL_STRING: return v.string && v.string[0] != '\0';
+    case VAL_NULL:   return 0;
+    default:         return 1;
+ }
+
 }
 
 
-/* ✅ list constructor */
+/*  list constructor */
 static inline Value value_list(Value *items, int count)
 {
     Value v = value_null();
@@ -118,7 +134,7 @@ static inline Value value_list(Value *items, int count)
     return v;
 }
 
-/* ✅ function constructor */
+/*  function constructor */
 static inline Value value_function(ASTNode *fn)
 {
     Value v = value_null();
@@ -127,7 +143,7 @@ static inline Value value_function(ASTNode *fn)
     return v;
 }
 
-/* ✅ dict constructor */
+/*  dict constructor */
 static inline Value value_dict(Value *keys, Value *values, int count)
 {
     Value v = value_null();
@@ -151,6 +167,10 @@ static inline Value value_copy(Value src)
 
     if (src.type == VAL_NUMBER) {
         return value_number(src.number);
+    }
+
+    if (src.type == VAL_INT) {
+         return value_int(src.integer);
     }
 
     if (src.type == VAL_BOOL) {

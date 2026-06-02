@@ -1,0 +1,15 @@
+mavi a = sahi
+mavi b = galat
+mavi c = sahi
+
+agar (a && nahi b && c) {
+
+    bolo "LOGIC PASS"
+
+}
+
+warna {
+
+    bolo "LOGIC FAIL"
+
+}

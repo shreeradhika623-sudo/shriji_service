@@ -1,0 +1,10 @@
+rachna count(x) {
+
+    agar x > 0 {
+
+        count(x - 1)
+
+    }
+}
+
+count(2000)

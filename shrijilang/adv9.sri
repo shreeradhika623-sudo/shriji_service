@@ -1,0 +1,12 @@
+bolo "=== FAIL SAFE ==="
+
+mavi x = 10
+mavi y = 0
+
+agar x > 5 {
+
+    mavi z = x / y
+
+}
+
+bolo "SHOULD NOT PRINT"

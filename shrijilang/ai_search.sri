@@ -1,0 +1,17 @@
+bolo "AI SEARCH"
+
+mavi secret = 73
+mavi guess = 1
+
+jabtak (guess <= 100) {
+
+    agar (guess == secret) {
+
+        bolo "FOUND"
+        bolo guess
+        rukja
+
+    }
+
+    guess = guess + 1
+}

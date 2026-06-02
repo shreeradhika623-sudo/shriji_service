@@ -13,8 +13,12 @@ static void value_print_inner(Value v)
             printf("%g", v.number);
             break;
 
+        case VAL_INT:
+            printf("%lld", v.integer);
+            break;
+
         case VAL_STRING:
-            printf("\"%s\"", v.string ? v.string : "");
+            printf("%s", v.string ? v.string : "");
             break;
 
         case VAL_BOOL:
@@ -67,9 +71,7 @@ static void value_print_inner(Value v)
 
 void value_print(Value v)
 {
-    printf("OUTPUT:\n");
     value_print_inner(v);
-    printf("\n");
 }
 
 void debug_value_print(Value v)

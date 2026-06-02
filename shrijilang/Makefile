@@ -73,7 +73,7 @@ OBJ = $(SRC:.c=.o)
 # ============================================================
 
 $(OUT): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(OUT) -lreadline
+	$(CC) $(CFLAGS) $(OBJ) -o $(OUT) -lreadline -lm
 
 # ============================================================
 # OBJECT BUILD RULE

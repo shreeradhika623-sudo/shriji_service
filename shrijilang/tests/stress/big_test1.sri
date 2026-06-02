@@ -1,0 +1,41 @@
+bolo "==== BIG TEST 1 START ===="
+
+mavi balance = 2000
+mavi risk = 0
+mavi i = 1
+
+jabtak i <= 10 {
+
+    bolo "Step:"
+    bolo i
+
+    mavi amount = i * 300
+
+    agar amount > 800 {
+        bolo "FRAUD ALERT"
+        risk = risk + 1
+    }
+
+    agar amount <= balance {
+
+        balance = balance - amount
+
+        bolo "Withdraw:"
+        bolo amount
+        bolo "Balance:"
+        bolo balance
+
+    } warna {
+        bolo "FAIL"
+        risk = risk + 1
+    }
+
+    agar risk >= 3 {
+        bolo "ACCOUNT FREEZE"
+        rukja
+    }
+
+    i = i + 1
+}
+
+bolo "==== END ===="

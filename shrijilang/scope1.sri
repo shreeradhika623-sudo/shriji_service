@@ -1,0 +1,11 @@
+mavi x = 10
+
+agar (sahi) {
+
+    mavi x = 50
+
+    bolo x
+
+}
+
+bolo x
