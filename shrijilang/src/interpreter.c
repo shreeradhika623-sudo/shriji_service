@@ -1972,6 +1972,20 @@ import_depth++;
 
 case AST_EXPORT:
 {
+    Value v = env_get(env, node->name);
+
+    if (v.type == VAL_NULL)
+    {
+        shriji_error(
+            E_PARSE_02,
+            "export",
+            "jis naam ko export kar rahe hain woh mila nahi",
+            "pehle variable ya rachna banaiye"
+        );
+
+        return value_null();
+    }
+
     if (rt && rt->export_count < 256)
     {
         strncpy(
