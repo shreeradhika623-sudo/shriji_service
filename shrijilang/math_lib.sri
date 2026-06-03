@@ -2,6 +2,10 @@ rachna square(x) {
     wapas x * x
 }
 
+do square
+
 rachna cube(x) {
     wapas x * x * x
 }
+
+do cube

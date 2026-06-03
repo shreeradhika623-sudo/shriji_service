@@ -111,8 +111,8 @@ static GyaanRule GYAAN_RULES[] = {
 
 {E_PARSE_02,"system","multiple","general",
 "invalid usage",
-"Shri ne function ke liye alag number ke arguments expect kiye the.",
-"Sahi number ke arguments pass kijiye."},
+"Usage ya syntax expected format se alag hai.",
+"Syntax aur arguments check kijiye."},
 
 {E_RUNTIME_FUNCTION_NOT_FOUND,
  "runtime",
@@ -138,6 +138,21 @@ static GyaanRule GYAAN_RULES[] = {
  "function parameter ya argument format galat hai",
  "example: add(5, 6)"},
 
+{E_EXPORT_NAME_INVALID,
+ "parser",
+ "parser.c",
+ "parse_export",
+ "expected export name",
+ "export ke baad naam likhna zaroori hai",
+ "example: export add"},
+
+{E_IMPORT_PATH_INVALID,
+ "parser",
+ "parser.c",
+ "parse_import",
+ "expected import path",
+ "import ke baad file path likhna zaroori hai",
+ "example: import \"math.sri\""},
 
 /*──────────── DICT / MAP ────────────*/
 
