@@ -1,0 +1,23 @@
+mavi PI = 3.14
+
+export PI
+
+rachna square(x) {
+    wapas x * x
+}
+export square
+
+rachna cube(x) {
+    wapas x * x * x
+}
+export cube
+
+rachna double(x) {
+    wapas x + x
+}
+export double
+
+rachna half(x) {
+    wapas x / 2
+}
+export half

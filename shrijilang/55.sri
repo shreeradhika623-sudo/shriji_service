@@ -1,0 +1,8 @@
+mavi user = {
+    "naam": "Shri",
+    "age": 25
+}
+
+bolo maan(user)
+bolo values(user)
+bolo moolya(user)

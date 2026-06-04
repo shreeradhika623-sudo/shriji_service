@@ -1,0 +1,5 @@
+mavi names = ["Ram","Shyam","Mohan"]
+
+names = hatao(names, "Shyam")
+
+bolo names

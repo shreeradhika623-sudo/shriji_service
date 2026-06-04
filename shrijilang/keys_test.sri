@@ -1,0 +1,6 @@
+mavi user = {
+    "naam": "Shri",
+    "age": 25
+}
+
+bolo keys(user)

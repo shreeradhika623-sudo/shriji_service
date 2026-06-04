@@ -1,0 +1,8 @@
+mavi PI = 3.14
+
+rachna add() {
+    wapas 123
+}
+
+export PI
+export add

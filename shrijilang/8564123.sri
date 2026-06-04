@@ -1,0 +1,26 @@
+bolo "DIGIT DIVISION TEST"
+
+mavi original = 124
+mavi num = original
+mavi count = 0
+
+while num > 0 {
+
+    # make number integer
+    num = num - (num % 1)
+
+    mavi digit = num % 10
+
+    if digit != 0 {
+
+        if original % digit == 0 {
+            count = count + 1
+        }
+
+    }
+
+    num = num / 10
+}
+
+bolo "RESULT"
+bolo count

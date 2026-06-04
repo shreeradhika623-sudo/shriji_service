@@ -1,0 +1,9 @@
+rachna helper() {
+    wapas 999
+}
+
+rachna add() {
+    wapas 123
+}
+
+export add

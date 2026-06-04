@@ -1,0 +1,4 @@
+mavi public = 1
+mavi secret = 999
+
+export public

@@ -1,0 +1,19 @@
+import "std/math.sri"
+
+bolo PI
+
+bolo square(5)
+
+bolo cube(3)
+
+bolo double(7)
+
+bolo half(20)
+
+bolo floor(4.8)
+
+bolo ceil(4.1)
+
+bolo round(4.6)
+
+bolo abs(-99)

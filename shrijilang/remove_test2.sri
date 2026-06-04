@@ -1,0 +1,5 @@
+mavi nums = [10,20,30]
+
+nums = remove(nums, 10)
+
+bolo nums

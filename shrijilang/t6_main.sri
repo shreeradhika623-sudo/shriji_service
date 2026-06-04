@@ -1,0 +1,5 @@
+import "t6_a.sri"
+import "t6_b.sri"
+
+bolo A
+bolo B

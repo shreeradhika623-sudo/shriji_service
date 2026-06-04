@@ -1,0 +1,15 @@
+mavi nums = [10,20,30]
+
+bolo ginti(nums)
+bolo count(nums)
+
+mavi user = {
+    "naam":"Shri",
+    "age":25
+}
+
+bolo ginti(user)
+bolo count(user)
+
+bolo ginti("Shriji")
+bolo count("Shriji")

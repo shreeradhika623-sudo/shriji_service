@@ -1,0 +1,14 @@
+mavi nums = [10,20,30]
+
+bolo nums
+
+bolo nums[0]
+
+mavi user = {
+    "naam": "Shri",
+    "age": 25
+}
+
+bolo user["naam"]
+
+bolo user["age"]

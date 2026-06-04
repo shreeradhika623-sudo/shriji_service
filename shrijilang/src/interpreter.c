@@ -847,7 +847,7 @@ if (
     return value_int((int)round(n));
 }
 
- 
+
  if (
     strcmp(node->function_name, "abs") == 0 ||
     strcmp(node->function_name, "nirpeksh") == 0
@@ -902,6 +902,240 @@ return value_number(fabs(n));
 
 }
 
+
+/*──────────────────────────────────────────────
+  COUNT / GINTI
+──────────────────────────────────────────────*/
+if (
+    strcmp(node->function_name, "ginti") == 0 ||
+    strcmp(node->function_name, "count") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "ginti",
+            "1 argument required",
+            "use: ginti(value)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    /* list */
+    if (v.type == VAL_LIST) {
+
+        int n = v.count;
+
+        value_free(&v);
+
+        return value_int(n);
+    }
+
+    /* dictionary */
+    if (v.type == VAL_DICT) {
+
+        int n = v.dict_count;
+
+        value_free(&v);
+
+        return value_int(n);
+    }
+
+    /* string */
+    if (v.type == VAL_STRING && v.string) {
+
+        const char *s = strip_quotes(v.string);
+
+        int n = (int)strlen(s);
+
+        value_free(&v);
+
+        return value_int(n);
+    }
+
+    value_free(&v);
+
+    shriji_error(
+        E_PARSE_02,
+        "ginti",
+        "list, dictionary ya string required",
+        "use: ginti(list)"
+    );
+
+    return value_null();
+}
+
+
+/*──────────────────────────────────────────────
+  KEYS
+──────────────────────────────────────────────*/
+if (
+    strcmp(node->function_name, "keys") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "keys",
+            "keys ko ek shabdkosh chahiye",
+            "udaharan: keys(user)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    if (v.type != VAL_DICT) {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "keys",
+            "sirf shabdkosh ki keys nikali ja sakti hain",
+            "udaharan: keys(user)"
+        );
+
+        return value_null();
+    }
+
+    int n = v.dict_count;
+
+    Value *items = malloc(sizeof(Value) * n);
+
+    for (int i = 0; i < n; i++) {
+        items[i] = value_copy(v.dict_keys[i]);
+    }
+
+    value_free(&v);
+
+    return value_list(items, n);
+}
+
+/*──────────────────────────────────────────────
+  VALUES / MAAN / MOOLYA
+──────────────────────────────────────────────*/
+if (
+    strcmp(node->function_name, "maan") == 0 ||
+    strcmp(node->function_name, "moolya") == 0 ||
+    strcmp(node->function_name, "values") == 0
+)
+{
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "maan",
+            "maan ko ek shabdkosh chahiye",
+            "udaharan: maan(user)"
+        );
+
+        return value_null();
+    }
+
+    Value v = eval(node->args[0], env, rt);
+
+    if (v.type != VAL_DICT) {
+
+        value_free(&v);
+
+        shriji_error(
+            E_PARSE_02,
+            "maan",
+            "sirf shabdkosh ke maan nikale ja sakte hain",
+            "udaharan: maan(user)"
+        );
+
+        return value_null();
+    }
+
+    int n = v.dict_count;
+
+    Value *items = malloc(sizeof(Value) * n);
+
+    for (int i = 0; i < n; i++) {
+        items[i] = value_copy(v.dict_values[i]);
+    }
+
+    value_free(&v);
+
+    return value_list(items, n);
+}
+
+
+/*──────────────────────────────────────────────
+  HATAO / REMOVE
+──────────────────────────────────────────────*/
+if (
+    strcmp(node->function_name, "hatao") == 0 ||
+    strcmp(node->function_name, "remove") == 0
+)
+{
+    if (node->arg_count != 2) {
+
+        shriji_error(
+            E_PARSE_02,
+            "hatao",
+            "hatao ko 2 maan chahiye",
+            "udaharan: hatao(nums, 20)"
+        );
+
+        return value_null();
+    }
+
+    Value listv = eval(node->args[0], env, rt);
+    Value target = eval(node->args[1], env, rt);
+
+    if (listv.type != VAL_LIST) {
+
+        value_free(&listv);
+        value_free(&target);
+
+        shriji_error(
+            E_PARSE_02,
+            "hatao",
+            "sirf suchi se maan hata sakte hain",
+            "udaharan: hatao(nums, 20)"
+        );
+
+        return value_null();
+    }
+
+    int found = -1;
+
+    for (int i = 0; i < listv.count; i++) {
+
+        if (value_equals(listv.items[i], target)) {
+            found = i;
+            break;
+        }
+    }
+
+if (found == -1) {
+
+    value_free(&target);
+
+    return listv;
+}
+
+    value_free(&listv.items[found]);
+
+    for (int i = found; i < listv.count - 1; i++) {
+        listv.items[i] = listv.items[i + 1];
+    }
+
+    listv.count--;
+
+    value_free(&target);
+
+    return listv;
+}
 
    /*──────────────────────────────────────────────
       NORMAL FUNCTION CALL
@@ -1209,7 +1443,6 @@ return out;
 }
 
 case AST_INDEX_UPDATE: {
-
     if (node->index_target->type == AST_INDEX)
     {
         ASTNode *t = node->index_target;
@@ -1304,28 +1537,40 @@ case AST_INDEX_UPDATE: {
         value_free(&keyv);
     }
 
-    /*──────────────────────────────────────────────
-      LIST INDEX UPDATE: a[0] = value
-    ──────────────────────────────────────────────*/
-    if (tv.type == VAL_LIST) {
+/*──────────────────────────────────────────────
+  LIST INDEX UPDATE: a[0] = value
+──────────────────────────────────────────────*/
+if (tv.type == VAL_LIST) {
 
-        if (iv.type != VAL_NUMBER) goto cleanup;
+    if (
+        iv.type != VAL_NUMBER &&
+        iv.type != VAL_INT
+    )
+        goto cleanup;
 
-        long long idx = iv.number;
-        if (idx < 0 || idx >= tv.count) goto cleanup;
+    long long idx;
 
-        value_free(&tv.items[(int)idx]);
-        tv.items[(int)idx] = value_copy(vv);
+    if (iv.type == VAL_INT)
+        idx = iv.integer;
+    else
+        idx = (long long)iv.number;
 
-        /* WRITE BACK */
-       env_set(env, var_name, tv);
+    if (idx < 0 || idx >= tv.count)
+        goto cleanup;
 
-           value_free(&tv);
-           value_free(&iv);
-           value_free(&vv);
+    value_free(&tv.items[(int)idx]);
 
-           return value_null();
-    }
+    tv.items[(int)idx] = value_copy(vv);
+
+    /* WRITE BACK */
+    env_set(env, var_name, tv);
+
+    value_free(&tv);
+    value_free(&iv);
+    value_free(&vv);
+
+    return value_null();
+}
 
     /*──────────────────────────────────────────────
       DICT INDEX UPDATE: d["a"] = value

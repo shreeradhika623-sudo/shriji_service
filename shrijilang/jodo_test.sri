@@ -1,0 +1,5 @@
+mavi nums = [10,20]
+
+jodo(nums, 30)
+
+bolo nums

@@ -1,0 +1,5 @@
+mavi nums = [10,20,30]
+
+nums = hatao(nums, 999)
+
+bolo nums
