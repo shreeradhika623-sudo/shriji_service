@@ -1,0 +1,7 @@
+bolo naam("/home/ram/photo.jpg")
+bolo naam("photo.jpg")
+
+bolo vistar("photo.jpg")
+bolo vistar("archive.tar.gz")
+
+bolo vistar("README")

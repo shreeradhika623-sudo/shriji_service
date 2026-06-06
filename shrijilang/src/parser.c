@@ -559,14 +559,25 @@ static ASTNode *parse_if(void)
     ASTNode *node = new_if_node(cond, then_block);
 
     if (current.type == TOKEN_WARNA) {
-        advance(); /* consume warna */
-        skip_separators();
+
+    advance();
+    skip_separators();
+
+    if (current.type == TOKEN_AGAR) {
+
+        node->else_block = parse_if();
+
+    } else {
 
         node->else_block = parse_block();
-        if (!node->else_block) return NULL;
 
-        skip_separators();
     }
+
+    if (!node->else_block)
+        return NULL;
+
+    skip_separators();
+}
 
     return node;
 }

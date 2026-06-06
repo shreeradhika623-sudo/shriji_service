@@ -1,0 +1,11 @@
+mavi nums = [10, 20, 30, 40]
+
+bolo nums
+
+hatao(nums, 20)
+
+bolo nums
+
+remove(nums, 30)
+
+bolo nums

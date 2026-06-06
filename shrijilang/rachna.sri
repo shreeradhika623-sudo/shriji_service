@@ -1,0 +1,48 @@
+rachna average(nums)
+{
+    mavi total = 0
+    mavi i = 0
+
+    jabtak (i < ginti(nums)) {
+
+        total = total + nums[i]
+
+        i = i + 1
+
+    }
+
+    wapas total / ginti(nums)
+}
+
+rachna result(avg)
+{
+    agar (avg >= 90) {
+
+        wapas "A"
+
+    }
+
+    agar (avg >= 75) {
+
+        wapas "B"
+
+    }
+
+    agar (avg >= 60) {
+
+        wapas "C"
+
+    }
+
+    wapas "D"
+}
+
+mavi marks = [85, 92, 78, 95, 88]
+
+mavi avg = average(marks)
+
+bolo "Average:"
+bolo avg
+
+bolo "Grade:"
+bolo result(avg)

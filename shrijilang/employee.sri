@@ -1,0 +1,10 @@
+mavi employee = {
+
+    "naam": "Shyam",
+    "salary": 30000,
+    "department": "Sales"
+}
+
+bolo employee["naam"]
+bolo employee["salary"]
+bolo employee["department"]

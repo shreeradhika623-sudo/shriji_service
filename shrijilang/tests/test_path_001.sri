@@ -1,0 +1,5 @@
+bolo hai("README.md")
+bolo file_hai("README.md")
+
+bolo hai("src")
+bolo folder_hai("src")

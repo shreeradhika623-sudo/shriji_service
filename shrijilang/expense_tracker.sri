@@ -1,0 +1,14 @@
+mavi salary = 25000
+
+mavi rent = 8000
+mavi food = 4000
+mavi travel = 2000
+
+mavi total = rent + food + travel
+
+bolo "Total Expense:"
+bolo total
+
+bolo "Remaining:"
+
+bolo salary - total

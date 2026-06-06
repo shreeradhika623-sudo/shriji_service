@@ -1,0 +1,16 @@
+mavi total_days = 100
+mavi present = 82
+
+mavi percent = (present * 100) / total_days
+
+bolo percent
+
+agar (percent >= 75) {
+
+    bolo "Exam Allowed"
+
+} nahi_to {
+
+    bolo "Short Attendance"
+
+}

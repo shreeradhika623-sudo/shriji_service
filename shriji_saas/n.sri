@@ -1,0 +1,15 @@
+mavi x = 1
+
+jabtak x <= 10 {
+
+    mavi x = x + 1
+
+    agar x == 5 {
+
+        mavi y = 0
+
+        mavi x = x / y
+    }
+
+    bolo x
+}

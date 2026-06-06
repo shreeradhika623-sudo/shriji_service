@@ -1,0 +1,12 @@
+mavi contact = {
+
+    "naam": "Mohan",
+    "mobile": "9876543210",
+    "city": "Jaipur"
+}
+
+bolo contact["naam"]
+
+bolo keys(contact)
+
+bolo values(contact)

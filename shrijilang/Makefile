@@ -24,7 +24,18 @@ SRC = \
 	gyaan/core/gyaan_engine.c \
 	gyaan/data/gyaan_rules.c \
 	src/interpreter.c \
-	src/runtime.c \
+    src/stdlib/std_list.c \
+    src/stdlib/std_dict.c \
+    src/stdlib/std_math.c \
+    src/stdlib/std_file.c \
+    src/stdlib/std_string.c \
+    src/stdlib/std_time.c \
+    src/stdlib/std_random.c \
+    src/stdlib/std_path.c \
+    src/stdlib/std_os.c \
+    src/stdlib/std_env.c \
+    src/stdlib/std_json.c \
+  	src/runtime.c \
 	src/error.c \
 	src/state.c \
 	src/event.c \

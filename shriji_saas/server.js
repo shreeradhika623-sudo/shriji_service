@@ -52,6 +52,18 @@ exec(
 
     (error, stdout, stderr) => {
 
+console.log("========== RUN ==========");
+
+console.log("STDOUT:");
+console.log(stdout);
+
+console.log("STDERR:");
+console.log(stderr);
+
+console.log("ERROR:");
+console.log(error);
+
+
     fs.unlinkSync(tempFile);
 
     if (stderr)

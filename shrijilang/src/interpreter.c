@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-
 #include <stdlib.h>
 #include <math.h>
 
@@ -27,6 +26,48 @@ static int import_depth = 0;
 
 #include "../include/user_config.h"
 #include "../include/log_mode.h"
+
+#include "stdlib/std_list.h"
+#include "stdlib/std_dict.h"
+#include "stdlib/std_math.h"
+#include "stdlib/std_file.h"
+#include "stdlib/std_string.h"
+#include "stdlib/std_time.h"
+#include "stdlib/std_random.h"
+#include "stdlib/std_path.h"
+#include "stdlib/std_os.h"
+#include "stdlib/std_env.h"
+#include "stdlib/std_json.h"
+
+
+static const char *strip_quotes(const char *s)
+{
+    if (!s)
+        return "";
+
+    while (*s == ' ' || *s == '\t')
+        s++;
+
+    size_t len = strlen(s);
+
+    if (len >= 2 && s[0] == '"' && s[len - 1] == '"') {
+
+        static char buf[1024];
+
+        size_t n = len - 2;
+
+        if (n >= sizeof(buf))
+            n = sizeof(buf) - 1;
+
+        memcpy(buf, s + 1, n);
+
+        buf[n] = '\0';
+
+        return buf;
+    }
+
+    return s;
+}
 
 #ifdef SHRIJI_ENABLE_MASTER_TOKENS
 #include "lang/token_master.h"
@@ -213,28 +254,6 @@ static int value_equals(Value a, Value b)
 /*──────────────────────────────────────────────────────────────
  | Value → number helper
  *──────────────────────────────────────────────────────────────*/
-static const char *strip_quotes(const char *s)
-{
-    if (!s) return "";
-
-    while (*s == ' ' || *s == '\t')
-        s++;
-
-    size_t len = strlen(s);
-
-    if (len >= 2 && s[0] == '"' && s[len - 1] == '"') {
-        static char buf[1024];
-        size_t n = len - 2;
-        if (n >= sizeof(buf)) n = sizeof(buf) - 1;
-
-        memcpy(buf, s + 1, n);
-        buf[n] = '\0';
-        return buf;
-    }
-
-    return s;
-}
-
 static int is_import_active(const char *path)
 {
     for (int i = 0; i < import_depth; i++)
@@ -301,7 +320,7 @@ Value eval(ASTNode *node, Env *env, ShrijiRuntime *rt)
     if (!state_allows_execution(rt) || !node)
         return value_null();
 
-    /* 🧠 GLOBAL STEP COUNTER */
+    /*  GLOBAL STEP COUNTER */
     if (node->type != AST_WHILE &&
         node->type != AST_BREAK &&
         node->type != AST_CONTINUE &&
@@ -480,7 +499,6 @@ case AST_RACHNA: {
 }
 
 case AST_CALL: {
-
 /*────────────────────────────
   STACK GUARD (ENTRY)
 ────────────────────────────*/
@@ -500,641 +518,160 @@ if (rt->call_depth >= 500) {
 
 rt->call_depth++;
 
+int handled = 0;
 
-   /*──────────────────────────────────────────────
-      BUILT-IN FUNCTIONS (FILE I/O)
-      padho("file")                -> returns string
-      likho("file", "text")        -> overwrite write -> returns 1/0
-      jodo("file", "text")         -> append write   -> returns 1/0
+Value stdv = std_list_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-       polish:
-      - supports escape sequences: \n \t \r \\ \"
-    ──────────────────────────────────────────────*/
+if (handled) {
 
-    /* READ */
-    if (strcmp(node->function_name, "padho") == 0) {
+    rt->call_depth--;
 
-        if (node->arg_count != 1) {
-            shriji_error(
-                E_PARSE_02,
-                "padho",
-                "argument count mismatch",
-                "use: padho(\"file.txt\")"
-            );
-            return value_null();
-        }
-
-        Value pathv = eval(node->args[0], env, rt);
-
-        if (pathv.type != VAL_STRING || !pathv.string) {
-            value_free(&pathv);
-            shriji_error(
-                E_PARSE_02,
-                "padho",
-                "file path must be string",
-                "use: padho(\"file.txt\")"
-            );
-            return value_null();
-        }
-
-        const char *path = strip_quotes(pathv.string);
-
-FILE *fp = fopen(path, "rb");
-if (!fp) {
-    value_free(&pathv);
-
-    shriji_error(
-        E_PARSE_02,
-        "padho",
-        "file not found",
-        "check path or create file first"
-    );
-
-    return value_string("");
-}
-        fseek(fp, 0, SEEK_END);
-        long sz = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-
-        if (sz < 0) sz = 0;
-        if (sz > 1024 * 1024) sz = 1024 * 1024; /* 1MB limit v1 */
-
-        char *buf = (char *)malloc((size_t)sz + 1);
-        if (!buf) {
-            fclose(fp);
-            value_free(&pathv);
-           import_depth--;
-            return value_null();
-        }
-
-        size_t nread = fread(buf, 1, (size_t)sz, fp);
-        buf[nread] = '\0';
-
-        fclose(fp);
-        value_free(&pathv);
-
-        Value out = value_string(buf);
-        free(buf);
-        return out;
-    }
-
-    /* WRITE (overwrite) */
-    if (strcmp(node->function_name, "likho") == 0) {
-
-        if (node->arg_count != 2) {
-            shriji_error(
-                E_PARSE_02,
-                "likho",
-                "argument count mismatch",
-                "use: likho(\"file.txt\", \"data\")"
-            );
-            return value_null();
-        }
-
-        Value pathv = eval(node->args[0], env, rt);
-        Value datav = eval(node->args[1], env, rt);
-
-        if (pathv.type != VAL_STRING || !pathv.string) {
-            value_free(&pathv);
-            value_free(&datav);
-            shriji_error(
-                E_PARSE_02,
-                "likho",
-                "file path must be string",
-                "use: likho(\"file.txt\", \"data\")"
-            );
-            return value_null();
-        }
-
-        const char *path = strip_quotes(pathv.string);
-
-        const char *data = "";
-        char tmp[128];
-        tmp[0] = '\0';
-
-        char *tmp_data = NULL;
-
-        if (datav.type == VAL_STRING && datav.string) {
-            tmp_data = unescape_string(strip_quotes(datav.string));
-            data = tmp_data ? tmp_data : "";
-        } else if (datav.type == VAL_NUMBER) {
-            snprintf(tmp, sizeof(tmp), "%g", datav.number);
-            data = tmp;
-        }
-
-        FILE *fp = fopen(path, "wb");
-        if (!fp) {
-            if (tmp_data) free(tmp_data);
-            value_free(&pathv);
-            value_free(&datav);
-            return value_number(0);
-        }
-
-        fwrite(data, 1, strlen(data), fp);
-        fclose(fp);
-
-        if (tmp_data) free(tmp_data);
-
-        value_free(&pathv);
-        value_free(&datav);
-
-        return value_number(1);
-    }
-
-    /* APPEND */
-    if (strcmp(node->function_name, "jodo") == 0) {
-
-        if (node->arg_count != 2) {
-            shriji_error(
-                E_PARSE_02,
-                "jodo",
-                "argument count mismatch",
-                "use: jodo(\"file.txt\", \"data\")"
-            );
-            return value_null();
-        }
-
-        Value pathv = eval(node->args[0], env, rt);
-        Value datav = eval(node->args[1], env, rt);
-
-        if (pathv.type != VAL_STRING || !pathv.string) {
-            value_free(&pathv);
-            value_free(&datav);
-            shriji_error(
-                E_PARSE_02,
-                "jodo",
-                "file path must be string",
-                "use: jodo(\"file.txt\", \"data\")"
-            );
-            return value_null();
-        }
-
-        const char *path = strip_quotes(pathv.string);
-
-        const char *data = "";
-        char tmp[128];
-        tmp[0] = '\0';
-
-        char *tmp_data = NULL;
-
-        if (datav.type == VAL_STRING && datav.string) {
-            tmp_data = unescape_string(strip_quotes(datav.string));
-            data = tmp_data ? tmp_data : "";
-        } else if (datav.type == VAL_NUMBER) {
-            snprintf(tmp, sizeof(tmp), "%g", datav.number);
-            data = tmp;
-        }
-
-        FILE *fp = fopen(path, "ab");
-        if (!fp) {
-            if (tmp_data) free(tmp_data);
-            value_free(&pathv);
-            value_free(&datav);
-            return value_number(0);
-        }
-
-        fwrite(data, 1, strlen(data), fp);
-        fclose(fp);
-
-        if (tmp_data) free(tmp_data);
-
-        value_free(&pathv);
-        value_free(&datav);
-
-        return value_number(1);
-    }
-
-/*──────────────────────────────────────────────
-  MATH BUILTINS
-──────────────────────────────────────────────*/
-
-if (
-    strcmp(node->function_name, "floor") == 0 ||
-    strcmp(node->function_name, "purna") == 0
-)
-{
-    if (node->arg_count != 1) {
-
-        shriji_error(
-            E_PARSE_02,
-            "floor",
-            "1 argument required",
-            "use: floor(x)"
-        );
-
-        return value_null();
-    }
-
-    Value v = eval(node->args[0], env, rt);
-
-    double n = 0;
-
-    if (v.type == VAL_INT)
-        n = v.integer;
-
-    else if (v.type == VAL_NUMBER)
-        n = v.number;
-
-    else {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "floor",
-            "number required",
-            "use numeric value"
-        );
-
-        return value_null();
-    }
-
-    value_free(&v);
-
-    return value_int((int)floor(n));
+    return stdv;
 }
 
-if (
-    strcmp(node->function_name, "ceil") == 0 ||
-    strcmp(node->function_name, "upar") == 0
-)
-{
-    if (node->arg_count != 1) {
+Value dictv = std_dict_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-        shriji_error(
-            E_PARSE_02,
-            "ceil",
-            "1 argument required",
-            "use: ceil(x)"
-        );
+if (handled) {
 
-        return value_null();
-    }
+    rt->call_depth--;
 
-    Value v = eval(node->args[0], env, rt);
-
-    double n = 0;
-
-    if (v.type == VAL_INT)
-        n = v.integer;
-
-    else if (v.type == VAL_NUMBER)
-        n = v.number;
-
-    else {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "ceil",
-            "number required",
-            "use numeric value"
-        );
-
-        return value_null();
-    }
-
-    value_free(&v);
-
-    return value_int((int)ceil(n));
+    return dictv;
 }
 
+Value mathv = std_math_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-if (
-    strcmp(node->function_name, "round") == 0 ||
-    strcmp(node->function_name, "gol") == 0
-)
-{
-    if (node->arg_count != 1) {
+if (handled) {
 
-        shriji_error(
-            E_PARSE_02,
-            "round",
-            "1 argument required",
-            "use: round(x)"
-        );
+    rt->call_depth--;
 
-        return value_null();
-    }
-
-    Value v = eval(node->args[0], env, rt);
-
-    double n = 0;
-
-    if (v.type == VAL_INT)
-        n = v.integer;
-
-    else if (v.type == VAL_NUMBER)
-        n = v.number;
-
-    else {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "round",
-            "number required",
-            "use numeric value"
-        );
-
-        return value_null();
-    }
-
-    value_free(&v);
-
-    return value_int((int)round(n));
+    return mathv;
 }
 
+Value filev = std_file_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
- if (
-    strcmp(node->function_name, "abs") == 0 ||
-    strcmp(node->function_name, "nirpeksh") == 0
-)
-{
-    if (node->arg_count != 1) {
+if (handled) {
 
-        shriji_error(
-            E_PARSE_02,
-            "abs",
-            "1 argument required",
-            "use: abs(x)"
-        );
+    rt->call_depth--;
 
-        return value_null();
-    }
-
-    Value v = eval(node->args[0], env, rt);
-
-    double n = 0;
-
-    if (v.type == VAL_INT)
-        n = v.integer;
-
-    else if (v.type == VAL_NUMBER)
-        n = v.number;
-
-    else {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "abs",
-            "number required",
-            "use numeric value"
-        );
-
-        return value_null();
-    }
-
-  if (v.type == VAL_INT) {
-
-    value_free(&v);
-
-    return value_int((int)fabs(n));
+    return filev;
 }
 
-value_free(&v);
+Value stringv = std_string_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-return value_number(fabs(n));
+if (handled) {
 
+    rt->call_depth--;
+
+    return stringv;
 }
 
+Value timev = std_time_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-/*──────────────────────────────────────────────
-  COUNT / GINTI
-──────────────────────────────────────────────*/
-if (
-    strcmp(node->function_name, "ginti") == 0 ||
-    strcmp(node->function_name, "count") == 0
-)
-{
-    if (node->arg_count != 1) {
+if (handled) {
 
-        shriji_error(
-            E_PARSE_02,
-            "ginti",
-            "1 argument required",
-            "use: ginti(value)"
-        );
+    rt->call_depth--;
 
-        return value_null();
-    }
-
-    Value v = eval(node->args[0], env, rt);
-
-    /* list */
-    if (v.type == VAL_LIST) {
-
-        int n = v.count;
-
-        value_free(&v);
-
-        return value_int(n);
-    }
-
-    /* dictionary */
-    if (v.type == VAL_DICT) {
-
-        int n = v.dict_count;
-
-        value_free(&v);
-
-        return value_int(n);
-    }
-
-    /* string */
-    if (v.type == VAL_STRING && v.string) {
-
-        const char *s = strip_quotes(v.string);
-
-        int n = (int)strlen(s);
-
-        value_free(&v);
-
-        return value_int(n);
-    }
-
-    value_free(&v);
-
-    shriji_error(
-        E_PARSE_02,
-        "ginti",
-        "list, dictionary ya string required",
-        "use: ginti(list)"
-    );
-
-    return value_null();
+    return timev;
 }
 
+Value randomv = std_random_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-/*──────────────────────────────────────────────
-  KEYS
-──────────────────────────────────────────────*/
-if (
-    strcmp(node->function_name, "keys") == 0
-)
-{
-    if (node->arg_count != 1) {
+if (handled) {
 
-        shriji_error(
-            E_PARSE_02,
-            "keys",
-            "keys ko ek shabdkosh chahiye",
-            "udaharan: keys(user)"
-        );
+    rt->call_depth--;
 
-        return value_null();
-    }
-
-    Value v = eval(node->args[0], env, rt);
-
-    if (v.type != VAL_DICT) {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "keys",
-            "sirf shabdkosh ki keys nikali ja sakti hain",
-            "udaharan: keys(user)"
-        );
-
-        return value_null();
-    }
-
-    int n = v.dict_count;
-
-    Value *items = malloc(sizeof(Value) * n);
-
-    for (int i = 0; i < n; i++) {
-        items[i] = value_copy(v.dict_keys[i]);
-    }
-
-    value_free(&v);
-
-    return value_list(items, n);
+    return randomv;
 }
 
-/*──────────────────────────────────────────────
-  VALUES / MAAN / MOOLYA
-──────────────────────────────────────────────*/
-if (
-    strcmp(node->function_name, "maan") == 0 ||
-    strcmp(node->function_name, "moolya") == 0 ||
-    strcmp(node->function_name, "values") == 0
-)
-{
-    if (node->arg_count != 1) {
+Value pathv = std_path_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-        shriji_error(
-            E_PARSE_02,
-            "maan",
-            "maan ko ek shabdkosh chahiye",
-            "udaharan: maan(user)"
-        );
+if (handled) {
 
-        return value_null();
-    }
+    rt->call_depth--;
 
-    Value v = eval(node->args[0], env, rt);
-
-    if (v.type != VAL_DICT) {
-
-        value_free(&v);
-
-        shriji_error(
-            E_PARSE_02,
-            "maan",
-            "sirf shabdkosh ke maan nikale ja sakte hain",
-            "udaharan: maan(user)"
-        );
-
-        return value_null();
-    }
-
-    int n = v.dict_count;
-
-    Value *items = malloc(sizeof(Value) * n);
-
-    for (int i = 0; i < n; i++) {
-        items[i] = value_copy(v.dict_values[i]);
-    }
-
-    value_free(&v);
-
-    return value_list(items, n);
+    return pathv;
 }
 
+Value osv = std_os_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-/*──────────────────────────────────────────────
-  HATAO / REMOVE
-──────────────────────────────────────────────*/
-if (
-    strcmp(node->function_name, "hatao") == 0 ||
-    strcmp(node->function_name, "remove") == 0
-)
-{
-    if (node->arg_count != 2) {
+if (handled) {
 
-        shriji_error(
-            E_PARSE_02,
-            "hatao",
-            "hatao ko 2 maan chahiye",
-            "udaharan: hatao(nums, 20)"
-        );
+    rt->call_depth--;
 
-        return value_null();
-    }
-
-    Value listv = eval(node->args[0], env, rt);
-    Value target = eval(node->args[1], env, rt);
-
-    if (listv.type != VAL_LIST) {
-
-        value_free(&listv);
-        value_free(&target);
-
-        shriji_error(
-            E_PARSE_02,
-            "hatao",
-            "sirf suchi se maan hata sakte hain",
-            "udaharan: hatao(nums, 20)"
-        );
-
-        return value_null();
-    }
-
-    int found = -1;
-
-    for (int i = 0; i < listv.count; i++) {
-
-        if (value_equals(listv.items[i], target)) {
-            found = i;
-            break;
-        }
-    }
-
-if (found == -1) {
-
-    value_free(&target);
-
-    return listv;
+    return osv;
 }
 
-    value_free(&listv.items[found]);
+Value envv = std_env_call(
+    node,
+    env,
+    rt,
+    &handled
+);
 
-    for (int i = found; i < listv.count - 1; i++) {
-        listv.items[i] = listv.items[i + 1];
-    }
+if (handled) {
 
-    listv.count--;
+    rt->call_depth--;
 
-    value_free(&target);
+    return envv;
+}
 
-    return listv;
+Value jsonv = std_json_call(
+    node,
+    env,
+    rt,
+    &handled
+);
+
+if (handled) {
+
+    rt->call_depth--;
+
+    return jsonv;
 }
 
    /*──────────────────────────────────────────────

@@ -1,0 +1,23 @@
+mavi naam = "Radhe"
+mavi marks = 78
+
+bolo "Student: "
+bolo naam
+
+agar (marks >= 90) {
+
+    bolo "Grade A"
+
+} nahi_to agar (marks >= 75) {
+
+    bolo "Grade B"
+
+} nahi_to agar (marks >= 60) {
+
+    bolo "Grade C"
+
+} nahi_to {
+
+    bolo "Fail"
+
+}

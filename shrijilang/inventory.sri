@@ -1,0 +1,15 @@
+mavi items = [
+
+    "Laptop",
+    "Mouse",
+    "Keyboard",
+    "Printer"
+]
+
+bolo items
+
+bolo ginti(items)
+
+items = hatao(items, "Mouse")
+
+bolo items

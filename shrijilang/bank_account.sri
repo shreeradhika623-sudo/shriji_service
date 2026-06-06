@@ -1,0 +1,15 @@
+mavi balance = 5000
+
+mavi withdraw = 1500
+
+agar (withdraw <= balance) {
+
+    balance = balance - withdraw
+
+    bolo balance
+
+} nahi_to {
+
+    bolo "Insufficient Balance"
+
+}

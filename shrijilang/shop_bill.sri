@@ -1,0 +1,14 @@
+mavi item1 = 120
+mavi item2 = 80
+mavi item3 = 250
+
+mavi total = item1 + item2 + item3
+
+bolo "Bill Amount"
+bolo total
+
+agar (total > 400) {
+
+    bolo "Discount Applied"
+
+}

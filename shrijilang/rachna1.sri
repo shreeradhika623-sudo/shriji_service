@@ -1,0 +1,53 @@
+rachna factorial(n)
+{
+    agar (n <= 1) {
+
+        wapas 1
+
+    }
+
+    wapas n * factorial(n - 1)
+}
+
+rachna is_even(n)
+{
+    agar (n % 2 == 0) {
+
+        wapas sahi
+
+    }
+
+    wapas galat
+}
+
+rachna print_report(nums)
+{
+    mavi i = 0
+
+    jabtak (i < ginti(nums)) {
+
+        bolo "Number:"
+        bolo nums[i]
+
+        bolo "Factorial:"
+        bolo factorial(nums[i])
+
+        agar (is_even(nums[i])) {
+
+            bolo "Even"
+
+        } warna {
+
+            bolo "Odd"
+
+        }
+
+        bolo "-----"
+
+        i = i + 1
+    }
+}
+
+mavi data = [1, 2, 3, 4, 5]
+
+print_report(data)
