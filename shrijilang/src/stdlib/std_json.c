@@ -5,6 +5,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 static void json_append(
     char **buf,
@@ -109,18 +110,18 @@ static void json_stringify_value(
 
             return;
 
-        case VAL_BOOL:
+       case VAL_BOOL:
 
-            json_append(
-                buf,
-                len,
-                cap,
-                v.boolean
-                    ? "true"
-                    : "false"
-            );
+    json_append(
+        buf,
+        len,
+        cap,
+        v.boolean
+            ? "true"
+            : "false"
+    );
 
-            return;
+    return;
 
         case VAL_INT:
 
@@ -320,6 +321,73 @@ case VAL_DICT:
 
             return;
     }
+}
+
+static char *json_trim(char *s)
+{
+    while (
+        *s &&
+        isspace((unsigned char)*s)
+    )
+    {
+        s++;
+    }
+
+    size_t len = strlen(s);
+
+    while (
+        len > 0 &&
+        isspace(
+            (unsigned char)s[len - 1]
+        )
+    )
+    {
+        s[--len] = '\0';
+    }
+
+    return s;
+}
+
+static int is_json_number(
+    const char *s
+)
+{
+    if (!s || !*s)
+        return 0;
+
+    int dot = 0;
+
+    int i = 0;
+
+    if (
+        s[0] == '-' ||
+        s[0] == '+'
+    )
+    {
+        i++;
+    }
+
+    for (; s[i]; i++)
+    {
+        if (s[i] == '.')
+        {
+            if (dot)
+                return 0;
+
+            dot = 1;
+
+            continue;
+        }
+
+        if (!isdigit(
+                (unsigned char)s[i]
+            ))
+        {
+            return 0;
+        }
+    }
+
+    return 1;
 }
 
 Value std_json_call(
@@ -554,6 +622,456 @@ if (
     value_free(&pathv);
 
     return out;
+}
+
+if (
+    strcmp(node->function_name, "json_parse") == 0
+)
+{
+    *handled = 1;
+
+    if (node->arg_count != 1) {
+
+        shriji_error(
+            E_PARSE_02,
+            "json_parse",
+            "1 cheez deni hogi",
+            "example: json_parse(\"123\")"
+        );
+
+        return value_null();
+    }
+
+    Value textv =
+        eval(node->args[0], env, rt);
+
+    if (
+        textv.type != VAL_STRING ||
+        !textv.string
+    ) {
+        value_free(&textv);
+        return value_null();
+    }
+
+    char *s =
+        textv.string;
+
+    if (
+        strcmp(s, "true") == 0
+    ) {
+        value_free(&textv);
+        return value_bool(1);
+    }
+
+    if (
+        strcmp(s, "false") == 0
+    ) {
+        value_free(&textv);
+        return value_bool(0);
+    }
+
+    if (
+       strcmp(s, "null") == 0
+    ) {
+        value_free(&textv);
+        return value_null();
+    }
+
+    if (
+        is_json_number(s)
+    )
+    {
+        if (strchr(s, '.'))
+        {
+            double n =
+                atof(s);
+
+            value_free(&textv);
+
+            return value_number(n);
+        }
+
+        long long n =
+            atoll(s);
+
+        value_free(&textv);
+
+        return value_int(n);
+    }
+
+    size_t len =
+        strlen(s);
+
+    if (
+        len >= 2 &&
+        s[0] == '"' &&
+        s[len - 1] == '"'
+    )
+    {
+        char *tmp =
+            malloc(len - 1);
+
+        if (!tmp) {
+
+            value_free(&textv);
+
+            return value_null();
+        }
+
+        memcpy(
+            tmp,
+            s + 1,
+            len - 2
+        );
+
+        tmp[len - 2] = '\0';
+
+        Value out =
+            value_string(tmp);
+
+        free(tmp);
+
+        value_free(&textv);
+
+        return out;
+    }
+
+if (
+    len >= 2 &&
+    s[0] == '[' &&
+    s[len - 1] == ']'
+)
+{
+    char *inner =
+        malloc(len - 1);
+
+    if (!inner) {
+
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    memcpy(
+        inner,
+        s + 1,
+        len - 2
+    );
+
+    inner[len - 2] = '\0';
+
+    int count = 1;
+
+    for (char *p = inner; *p; p++)
+    {
+        if (*p == ',')
+            count++;
+    }
+
+    Value *items =
+        malloc(sizeof(Value) * count);
+
+    if (!items) {
+
+        free(inner);
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    int idx = 0;
+
+    char *start = inner;
+
+    for (char *p = inner;; p++)
+    {
+        if (*p == ',' || *p == '\0')
+        {
+            char old = *p;
+                  *p = '\0';
+
+             char *token =
+                   json_trim(start);
+
+            if (is_json_number(token))
+            {
+                if (strchr(token, '.'))
+                    items[idx++] =
+                        value_number(
+                         atof(token)
+                        );
+                else
+                    items[idx++] =
+                        value_int(
+                          atoll(token)
+                        );
+            }
+
+else if (
+     strcmp(token, "true") == 0
+)
+{
+    items[idx++] =
+        value_bool(1);
+}
+else if (
+    strcmp(token, "false") == 0
+)
+{
+    items[idx++] =
+        value_bool(0);
+}
+else if (
+    strcmp(token, "null") == 0
+)
+{
+    items[idx++] =
+        value_null();
+}
+
+else
+{
+
+     size_t token_len =
+    strlen(token);
+
+if (
+    token_len >= 2 &&
+    token[0] == '"' &&
+    token[token_len - 1] == '"'
+)
+{
+    char *tmp =
+        malloc(token_len - 1);
+
+    if (tmp)
+    {
+        memcpy(
+            tmp,
+            token + 1,
+            token_len - 2
+        );
+
+        tmp[token_len - 2] =
+            '\0';
+
+        items[idx++] =
+            value_string(tmp);
+
+        free(tmp);
+    }
+}
+
+}
+
+            *p = old;
+
+            if (old == '\0')
+                break;
+
+            start = p + 1;
+        }
+    }
+
+    free(inner);
+    value_free(&textv);
+
+    return value_list(
+        items,
+        idx
+    );
+}
+
+if (
+    len >= 2 &&
+    s[0] == '{' &&
+    s[len - 1] == '}'
+)
+{
+    char *inner =
+        malloc(len - 1);
+
+    if (!inner) {
+
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    memcpy(
+        inner,
+        s + 1,
+        len - 2
+    );
+
+    inner[len - 2] = '\0';
+
+    char *colon =
+        strchr(inner, ':');
+
+    if (!colon)
+    {
+        free(inner);
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    *colon = '\0';
+
+    char *key =
+        json_trim(inner);
+
+    char *val =
+        json_trim(colon + 1);
+
+    size_t key_len =
+        strlen(key);
+
+    if (
+        key_len < 2 ||
+        key[0] != '"' ||
+        key[key_len - 1] != '"'
+    )
+    {
+        free(inner);
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    Value *keys =
+        malloc(sizeof(Value));
+
+    Value *vals =
+        malloc(sizeof(Value));
+
+    if (!keys || !vals)
+    {
+        if (keys) free(keys);
+        if (vals) free(vals);
+
+        free(inner);
+        value_free(&textv);
+
+        return value_null();
+    }
+
+    char keybuf[256];
+
+    memcpy(
+        keybuf,
+        key + 1,
+        key_len - 2
+    );
+
+    keybuf[key_len - 2] =
+        '\0';
+
+    keys[0] =
+        value_string(keybuf);
+
+if (
+    is_json_number(val)
+)
+{
+    if (strchr(val, '.'))
+    {
+        vals[0] =
+            value_number(
+                atof(val)
+            );
+    }
+    else
+    {
+        vals[0] =
+            value_int(
+                atoll(val)
+            );
+    }
+}
+else if (
+    strcmp(val, "true") == 0
+)
+{
+    vals[0] =
+        value_bool(1);
+}
+else if (
+    strcmp(val, "false") == 0
+)
+{
+    vals[0] =
+        value_bool(0);
+}
+else if (
+    strcmp(val, "null") == 0
+)
+{
+    vals[0] =
+        value_null();
+}
+else
+{
+
+    size_t val_len =
+        strlen(val);
+
+    if (
+        val_len >= 2 &&
+        val[0] == '"' &&
+        val[val_len - 1] == '"'
+    )
+    {
+        char *tmp =
+            malloc(val_len - 1);
+
+        memcpy(
+            tmp,
+            val + 1,
+            val_len - 2
+        );
+
+        tmp[val_len - 2] =
+            '\0';
+
+        vals[0] =
+            value_string(tmp);
+
+        free(tmp);
+    }
+    else
+    {
+        free(inner);
+        free(keys);
+        free(vals);
+        value_free(&textv);
+
+        return value_null();
+    }
+}
+
+free(inner);
+value_free(&textv);
+
+return value_dict(
+    keys,
+    vals,
+    1
+);
+}
+
+value_free(&textv);
+
+shriji_error(
+    E_PARSE_02,
+    "json_parse",
+    "invalid json",
+    "example: json_parse(\"123\")"
+);
+
+return value_null();
+
 }
 
     return value_null();
