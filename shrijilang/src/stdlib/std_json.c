@@ -758,15 +758,15 @@ if (
         len - 2
     );
 
-    inner[len - 2] = '\0';
+ inner[len - 2] = '\0';
 
-    int count = 1;
+int count = 1;
 
-    for (char *p = inner; *p; p++)
-    {
-        if (*p == ',')
-            count++;
-    }
+for (char *p = inner; *p; p++)
+{
+    if (*p == ',')
+        count++;
+}
 
     Value *items =
         malloc(sizeof(Value) * count);
@@ -898,16 +898,24 @@ if (
         return value_null();
     }
 
-    memcpy(
-        inner,
-        s + 1,
-        len - 2
-    );
+memcpy(
+    inner,
+    s + 1,
+    len - 2
+);
 
-    inner[len - 2] = '\0';
+inner[len - 2] = '\0';
 
-    char *colon =
-        strchr(inner, ':');
+int count = 1;
+
+for (char *p = inner; *p; p++)
+{
+    if (*p == ',')
+        count++;
+}
+
+char *colon =
+    strchr(inner, ':');
 
     if (!colon)
     {
@@ -940,11 +948,11 @@ if (
         return value_null();
     }
 
-    Value *keys =
-        malloc(sizeof(Value));
+   Value *keys =
+    malloc(sizeof(Value) * count);
 
-    Value *vals =
-        malloc(sizeof(Value));
+Value *vals =
+    malloc(sizeof(Value) * count);
 
     if (!keys || !vals)
     {
