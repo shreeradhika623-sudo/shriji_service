@@ -390,6 +390,187 @@ static int is_json_number(
     return 1;
 }
 
+static char *
+find_top_level_comma(
+    char *s
+)
+{
+    char *start = s;
+
+    int obj_depth = 0;
+    int arr_depth = 0;
+    int in_string = 0;
+
+    for (; *s; s++)
+    {
+        if (
+            *s == '"' &&
+            (
+                s == start ||
+                s[-1] != '\\'
+            )
+        )
+        {
+            in_string =
+                !in_string;
+
+            continue;
+        }
+
+        if (in_string)
+            continue;
+
+        if (*s == '{')
+            obj_depth++;
+        else if (*s == '}')
+            obj_depth--;
+        else if (*s == '[')
+            arr_depth++;
+        else if (*s == ']')
+            arr_depth--;
+        else if (
+            *s == ',' &&
+            obj_depth == 0 &&
+            arr_depth == 0
+        )
+        {
+            return s;
+        }
+    }
+
+    return NULL;
+}
+
+static char *
+find_top_level_colon(
+    char *s
+)
+{
+    char *start = s;
+
+    int obj_depth = 0;
+    int arr_depth = 0;
+    int in_string = 0;
+
+    for (; *s; s++)
+    {
+        if (
+            *s == '"' &&
+            (
+                s == start ||
+                s[-1] != '\\'
+            )
+        )
+        {
+            in_string =
+                !in_string;
+
+            continue;
+        }
+
+        if (in_string)
+            continue;
+
+        if (*s == '{')
+            obj_depth++;
+        else if (*s == '}')
+            obj_depth--;
+        else if (*s == '[')
+            arr_depth++;
+        else if (*s == ']')
+            arr_depth--;
+        else if (
+            *s == ':' &&
+            obj_depth == 0 &&
+            arr_depth == 0
+        )
+        {
+            return s;
+        }
+    }
+
+    return NULL;
+}
+
+static Value
+parse_json_value(
+    char *s
+)
+{
+    if (
+        strcmp(s, "true") == 0
+    )
+    {
+        return value_bool(1);
+    }
+
+    if (
+        strcmp(s, "false") == 0
+    )
+    {
+        return value_bool(0);
+    }
+
+    if (
+        strcmp(s, "null") == 0
+    )
+    {
+        return value_null();
+    }
+
+    if (
+        is_json_number(s)
+    )
+    {
+        if (strchr(s, '.'))
+        {
+            return value_number(
+                atof(s)
+            );
+        }
+
+        return value_int(
+            atoll(s)
+        );
+    }
+
+    size_t len =
+        strlen(s);
+
+    if (
+        len >= 2 &&
+        s[0] == '"' &&
+        s[len - 1] == '"'
+    )
+    {
+        char *tmp =
+            malloc(len - 1);
+
+        if (!tmp)
+        {
+            return value_null();
+        }
+
+        memcpy(
+            tmp,
+            s + 1,
+            len - 2
+        );
+
+        tmp[len - 2] =
+            '\0';
+
+        Value out =
+            value_string(tmp);
+
+        free(tmp);
+
+        return out;
+    }
+
+    return value_null();
+}
+
 Value std_json_call(
     ASTNode *node,
     Env *env,
@@ -656,90 +837,29 @@ if (
     char *s =
         textv.string;
 
-    if (
-        strcmp(s, "true") == 0
-    ) {
-        value_free(&textv);
-        return value_bool(1);
-    }
+Value primitive =
+    parse_json_value(s);
 
-    if (
-        strcmp(s, "false") == 0
-    ) {
-        value_free(&textv);
-        return value_bool(0);
-    }
+if (
+    primitive.type != VAL_NULL
+)
+{
+    value_free(&textv);
+    return primitive;
+}
 
-    if (
-       strcmp(s, "null") == 0
-    ) {
-        value_free(&textv);
-        return value_null();
-    }
-
-    if (
-        is_json_number(s)
-    )
-    {
-        if (strchr(s, '.'))
-        {
-            double n =
-                atof(s);
-
-            value_free(&textv);
-
-            return value_number(n);
-        }
-
-        long long n =
-            atoll(s);
-
-        value_free(&textv);
-
-        return value_int(n);
-    }
-
-    size_t len =
-        strlen(s);
-
-    if (
-        len >= 2 &&
-        s[0] == '"' &&
-        s[len - 1] == '"'
-    )
-    {
-        char *tmp =
-            malloc(len - 1);
-
-        if (!tmp) {
-
-            value_free(&textv);
-
-            return value_null();
-        }
-
-        memcpy(
-            tmp,
-            s + 1,
-            len - 2
-        );
-
-        tmp[len - 2] = '\0';
-
-        Value out =
-            value_string(tmp);
-
-        free(tmp);
-
-        value_free(&textv);
-
-        return out;
-    }
+size_t len =
+    strlen(s);
 
 if (
     len >= 2 &&
     s[0] == '[' &&
     s[len - 1] == ']'
+)
+
+if (
+    len >= 2 &&
+    s[0] == '['
 )
 {
     char *inner =
@@ -793,76 +913,11 @@ for (char *p = inner; *p; p++)
              char *token =
                    json_trim(start);
 
-            if (is_json_number(token))
-            {
-                if (strchr(token, '.'))
-                    items[idx++] =
-                        value_number(
-                         atof(token)
-                        );
-                else
-                    items[idx++] =
-                        value_int(
-                          atoll(token)
-                        );
-            }
+     Value parsed =
+    parse_json_value(token);
 
-else if (
-     strcmp(token, "true") == 0
-)
-{
-    items[idx++] =
-        value_bool(1);
-}
-else if (
-    strcmp(token, "false") == 0
-)
-{
-    items[idx++] =
-        value_bool(0);
-}
-else if (
-    strcmp(token, "null") == 0
-)
-{
-    items[idx++] =
-        value_null();
-}
-
-else
-{
-
-     size_t token_len =
-    strlen(token);
-
-if (
-    token_len >= 2 &&
-    token[0] == '"' &&
-    token[token_len - 1] == '"'
-)
-{
-    char *tmp =
-        malloc(token_len - 1);
-
-    if (tmp)
-    {
-        memcpy(
-            tmp,
-            token + 1,
-            token_len - 2
-        );
-
-        tmp[token_len - 2] =
-            '\0';
-
-        items[idx++] =
-            value_string(tmp);
-
-        free(tmp);
-    }
-}
-
-}
+      items[idx++] =
+            parsed;
 
             *p = old;
 
@@ -914,41 +969,9 @@ for (char *p = inner; *p; p++)
         count++;
 }
 
-char *colon =
-    strchr(inner, ':');
+char *pair = inner;
 
-    if (!colon)
-    {
-        free(inner);
-        value_free(&textv);
-
-        return value_null();
-    }
-
-    *colon = '\0';
-
-    char *key =
-        json_trim(inner);
-
-    char *val =
-        json_trim(colon + 1);
-
-    size_t key_len =
-        strlen(key);
-
-    if (
-        key_len < 2 ||
-        key[0] != '"' ||
-        key[key_len - 1] != '"'
-    )
-    {
-        free(inner);
-        value_free(&textv);
-
-        return value_null();
-    }
-
-   Value *keys =
+    Value *keys =
     malloc(sizeof(Value) * count);
 
 Value *vals =
@@ -965,6 +988,60 @@ Value *vals =
         return value_null();
     }
 
+   int idx = 0;
+
+   for (;;)
+{
+
+char *colon =
+    find_top_level_colon(
+        pair
+    );
+
+if (!colon)
+{
+    free(inner);
+    value_free(&textv);
+
+    return value_null();
+}
+
+*colon = '\0';
+
+char *key =
+    json_trim(pair);
+
+char *comma =
+    find_top_level_comma(
+        colon + 1
+    );
+
+char *next_pair = NULL;
+
+if (comma)
+{
+    next_pair = comma + 1;
+    *comma = '\0';
+}
+
+char *val =
+    json_trim(colon + 1);
+
+size_t key_len =
+    strlen(key);
+
+if (
+    key_len < 2 ||
+    key[0] != '"' ||
+    key[key_len - 1] != '"'
+)
+{
+    free(inner);
+    value_free(&textv);
+
+    return value_null();
+}
+
     char keybuf[256];
 
     memcpy(
@@ -976,87 +1053,35 @@ Value *vals =
     keybuf[key_len - 2] =
         '\0';
 
-    keys[0] =
-        value_string(keybuf);
+    keys[idx] =
+    value_string(keybuf);
+
+Value parsed =
+    parse_json_value(val);
 
 if (
-    is_json_number(val)
+    parsed.type == VAL_NULL &&
+    strcmp(val, "null") != 0
 )
 {
-    if (strchr(val, '.'))
-    {
-        vals[0] =
-            value_number(
-                atof(val)
-            );
-    }
-    else
-    {
-        vals[0] =
-            value_int(
-                atoll(val)
-            );
-    }
+    free(inner);
+    free(keys);
+    free(vals);
+    value_free(&textv);
+
+    return value_null();
 }
-else if (
-    strcmp(val, "true") == 0
-)
-{
-    vals[0] =
-        value_bool(1);
-}
-else if (
-    strcmp(val, "false") == 0
-)
-{
-    vals[0] =
-        value_bool(0);
-}
-else if (
-    strcmp(val, "null") == 0
-)
-{
-    vals[0] =
-        value_null();
-}
-else
-{
 
-    size_t val_len =
-        strlen(val);
+vals[idx] =
+    parsed;
 
-    if (
-        val_len >= 2 &&
-        val[0] == '"' &&
-        val[val_len - 1] == '"'
-    )
-    {
-        char *tmp =
-            malloc(val_len - 1);
+idx++;
 
-        memcpy(
-            tmp,
-            val + 1,
-            val_len - 2
-        );
+if (!next_pair)
+    break;
 
-        tmp[val_len - 2] =
-            '\0';
+pair = next_pair;
 
-        vals[0] =
-            value_string(tmp);
-
-        free(tmp);
-    }
-    else
-    {
-        free(inner);
-        free(keys);
-        free(vals);
-        value_free(&textv);
-
-        return value_null();
-    }
 }
 
 free(inner);
@@ -1065,8 +1090,10 @@ value_free(&textv);
 return value_dict(
     keys,
     vals,
-    1
+    idx
 );
+
+
 }
 
 value_free(&textv);
