@@ -565,11 +565,36 @@ parse_json_value(
 
         free(tmp);
 
-        return out;
-    }
-
-    return value_null();
+ return out;
 }
+
+if (
+    len >= 2 &&
+    s[0] == '{' &&
+    s[len - 1] == '}'
+)
+{
+    printf(
+        "OBJECT DETECTED: %s\n",
+        s
+    );
+}
+
+if (
+    len >= 2 &&
+    s[0] == '[' &&
+    s[len - 1] == ']'
+)
+{
+    printf(
+        "ARRAY DETECTED: %s\n",
+        s
+    );
+}
+
+return value_null();
+}
+
 
 Value std_json_call(
     ASTNode *node,
