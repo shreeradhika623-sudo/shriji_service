@@ -568,30 +568,6 @@ parse_json_value(
  return out;
 }
 
-if (
-    len >= 2 &&
-    s[0] == '{' &&
-    s[len - 1] == '}'
-)
-{
-    printf(
-        "OBJECT DETECTED: %s\n",
-        s
-    );
-}
-
-if (
-    len >= 2 &&
-    s[0] == '[' &&
-    s[len - 1] == ']'
-)
-{
-    printf(
-        "ARRAY DETECTED: %s\n",
-        s
-    );
-}
-
 return value_null();
 }
 
@@ -986,6 +962,17 @@ memcpy(
 
 inner[len - 2] = '\0';
 
+if (inner[0] == '\0')
+{
+    free(inner);
+
+    return value_dict(
+        NULL,
+        NULL,
+        0
+    );
+}
+
 int count = 1;
 
 for (char *p = inner; *p; p++)
@@ -1008,7 +995,6 @@ Value *vals =
         if (vals) free(vals);
 
         free(inner);
-        value_free(&textv);
 
         return value_null();
     }
@@ -1026,7 +1012,6 @@ char *colon =
 if (!colon)
 {
     free(inner);
-    value_free(&textv);
 
     return value_null();
 }
@@ -1062,7 +1047,6 @@ if (
 )
 {
     free(inner);
-    value_free(&textv);
 
     return value_null();
 }
@@ -1092,7 +1076,6 @@ if (
     free(inner);
     free(keys);
     free(vals);
-    value_free(&textv);
 
     return value_null();
 }
@@ -1110,7 +1093,6 @@ pair = next_pair;
 }
 
 free(inner);
-value_free(&textv);
 
 return value_dict(
     keys,
