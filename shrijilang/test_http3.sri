@@ -1,0 +1,3 @@
+bolo "START"
+
+bolo http_get("http://example.com")

@@ -1,0 +1,7 @@
+bolo "START"
+
+mavi x = 123
+
+bolo "AFTER"
+
+bolo x

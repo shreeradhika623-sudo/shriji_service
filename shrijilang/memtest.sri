@@ -1,0 +1,13 @@
+mavi h = {
+    "User-Agent": "ShrijiLang/1.0",
+    "X-Test": "Hello"
+}
+
+mavi r =
+    http_get(
+        "http://example.com",
+        h
+    )
+
+bolo r["status"]
+bolo r["headers"]

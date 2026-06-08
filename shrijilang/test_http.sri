@@ -1,0 +1,10 @@
+bolo "START"
+
+mavi r =
+    http_get(
+        "http://example.com"
+    )
+
+bolo "AFTER HTTP"
+
+bolo r["status"]

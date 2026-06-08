@@ -12,6 +12,112 @@
 #include <netdb.h>
 #include <unistd.h>
 
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+#include <openssl/crypto.h>
+
+typedef struct
+{
+    int is_https;
+
+    char host[256];
+
+    int port;
+
+    char path[512];
+
+} ParsedURL;
+
+static int parse_url_v2(
+    const char *url,
+    ParsedURL *out
+)
+{
+    if (!url || !out)
+        return 0;
+
+    memset(
+        out,
+        0,
+        sizeof(*out)
+    );
+
+    const char *p = url;
+
+    if (
+        strncmp(
+            p,
+            "https://",
+            8
+        ) == 0
+    ) {
+        out->is_https = 1;
+        out->port = 443;
+        p += 8;
+    }
+    else if (
+        strncmp(
+            p,
+            "http://",
+            7
+        ) == 0
+    ) {
+        out->is_https = 0;
+        out->port = 80;
+        p += 7;
+    }
+    else {
+        return 0;
+    }
+
+    const char *slash =
+        strchr(
+            p,
+            '/'
+        );
+
+    if (slash)
+    {
+        size_t host_len =
+            slash - p;
+
+        if (
+            host_len >=
+            sizeof(out->host)
+        )
+            return 0;
+
+        memcpy(
+            out->host,
+            p,
+            host_len
+        );
+
+        out->host[host_len] =
+            '\0';
+
+        strncpy(
+            out->path,
+            slash,
+            sizeof(out->path) - 1
+        );
+    }
+    else
+    {
+        strncpy(
+            out->host,
+            p,
+            sizeof(out->host) - 1
+        );
+
+        strcpy(
+            out->path,
+            "/"
+        );
+    }
+    return 1;
+}
+
 static int parse_url(
     const char *url,
     char *host,
@@ -25,16 +131,15 @@ static int parse_url(
 
     const char *p = url;
 
-    if (strncmp(p, "http://", 7) == 0) {
+    if (strncmp(p, "http://", 7) == 0)
         p += 7;
-    } else {
+    else
         return 0;
-    }
 
     const char *slash = strchr(p, '/');
 
-    if (!slash) {
-
+    if (!slash)
+    {
         snprintf(
             host,
             host_size,
@@ -77,6 +182,7 @@ static int parse_url(
 
 static int test_dns(const char *host)
 {
+
     struct addrinfo hints;
     struct addrinfo *result = NULL;
 
@@ -123,31 +229,31 @@ static int test_connect(const char *host)
 
     int connected = 0;
 
-    for (rp = result; rp != NULL; rp = rp->ai_next)
-    {
-        int sockfd = socket(
-            rp->ai_family,
-            rp->ai_socktype,
-            rp->ai_protocol
-        );
+for (rp = result; rp != NULL; rp = rp->ai_next)
+{
+    int sockfd = socket(
+        rp->ai_family,
+        rp->ai_socktype,
+        rp->ai_protocol
+    );
 
-        if (sockfd < 0)
-            continue;
+    if (sockfd < 0)
+        continue;
 
-        if (
-            connect(
-                sockfd,
-                rp->ai_addr,
-                rp->ai_addrlen
-            ) == 0
-        ) {
-            connected = 1;
-            close(sockfd);
-            break;
-        }
-
+    if (
+        connect(
+            sockfd,
+            rp->ai_addr,
+            rp->ai_addrlen
+        ) == 0
+    ) {
+        connected = 1;
         close(sockfd);
+        break;
     }
+
+    close(sockfd);
+}
 
     freeaddrinfo(result);
 
@@ -258,10 +364,10 @@ static char *extract_headers(
 
 static char *send_http_get(
     const char *host,
+    int port,
     const char *path,
     Value *headers
 )
-
 {
     struct addrinfo hints;
     struct addrinfo *result = NULL;
@@ -272,12 +378,21 @@ static char *send_http_get(
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    int rc = getaddrinfo(
-        host,
-        "80",
-        &hints,
-        &result
-    );
+     char port_str[16];
+
+snprintf(
+    port_str,
+    sizeof(port_str),
+      "%d",
+        port
+   );
+
+int rc = getaddrinfo(
+    host,
+    port_str,
+    &hints,
+    &result
+);
 
     if (rc != 0)
         return NULL;
@@ -310,6 +425,46 @@ static char *send_http_get(
     }
 
     freeaddrinfo(result);
+
+    SSL_CTX *ctx = NULL;
+    SSL *ssl = NULL;
+
+ctx = SSL_CTX_new(
+    TLS_client_method()
+);
+
+if (!ctx)
+    return NULL;
+
+ssl = SSL_new(ctx);
+
+if (!ssl)
+{
+    SSL_CTX_free(ctx);
+    return NULL;
+}
+SSL_set_tlsext_host_name(
+    ssl,
+    host
+);
+
+SSL_set_fd(
+    ssl,
+    sockfd
+);
+
+if (
+    SSL_connect(
+        ssl
+    ) <= 0
+)
+{
+
+    SSL_free(ssl);
+    SSL_CTX_free(ctx);
+    close(sockfd);
+    return NULL;
+}
 
     if (sockfd < 0)
         return NULL;
@@ -362,11 +517,28 @@ if (
         }
     }
 }
-    char request[2048];
 
-   snprintf(
+size_t request_size =
+    strlen(path) +
+    strlen(host) +
+    strlen(extra_headers) +
+    64;
+
+char *request =
+    malloc(
+        request_size
+    );
+
+if (!request) {
+
+    close(sockfd);
+
+    return NULL;
+}
+
+snprintf(
     request,
-    sizeof(request),
+    request_size,
     "GET %s HTTP/1.0\r\n"
     "Host: %s\r\n"
     "%s"
@@ -376,12 +548,13 @@ if (
     extra_headers
 );
 
-    send(
-        sockfd,
-        request,
-        strlen(request),
-        0
-    );
+SSL_write(
+    ssl,
+    request,
+    strlen(request)
+);
+
+free(request);
 
     char *response = malloc(65536);
 
@@ -394,12 +567,12 @@ if (
 
     while (1)
     {
-        int n = recv(
-            sockfd,
-            response + total,
-            65535 - total,
-            0
-        );
+
+       int n = SSL_read(
+    ssl,
+    response + total,
+    65535 - total
+);
 
         if (n <= 0)
             break;
@@ -485,13 +658,12 @@ static char *send_http_head(
         host
     );
 
-    send(
-        sockfd,
-        request,
-        strlen(request),
-        0
-    );
-
+send(
+    sockfd,
+    request,
+    strlen(request),
+    0
+);
     char *response = malloc(65536);
 
     if (!response) {
@@ -655,6 +827,7 @@ Value std_http_call(
     ──────────────────────────────────────────────*/
     if (strcmp(node->function_name, "http_get") == 0)
     {
+
         *handled = 1;
 
         if (
@@ -691,7 +864,6 @@ if (node->arg_count == 2)
         );
 }
 
-
         if (
             urlv.type != VAL_STRING ||
             !urlv.string
@@ -708,31 +880,27 @@ if (node->arg_count == 2)
             return value_null();
         }
 
-        char host[256];
-        char path[512];
+      ParsedURL parsed;
 
-        if (
-            !parse_url(
-                urlv.string,
-                host,
-                sizeof(host),
-                path,
-                sizeof(path)
-            )
-        ) {
-            value_free(&urlv);
-            value_free(&headersv);
-            shriji_error(
-                E_PARSE_02,
-                "http_get",
-                "sirf http:// URL support hai",
-                "udaharan: http_get(\"http://example.com\")"
-            );
+if (
+    !parse_url_v2(
+        urlv.string,
+        &parsed
+    )
+) {
+    value_free(&urlv);
+    value_free(&headersv);
+    shriji_error(
+        E_PARSE_02,
+        "http_get",
+        "sirf http:// URL support hai",
+        "udaharan: http_get(\"http://example.com\")"
+    );
 
-            return value_null();
-        }
+    return value_null();
+}
 
-        if (!test_dns(host)) {
+        if (!test_dns(parsed.host)) {
 
             value_free(&urlv);
            value_free(&headersv);
@@ -740,13 +908,13 @@ if (node->arg_count == 2)
                 E_RUNTIME_01,
                 "http_get",
                 "DNS lookup fail hua",
-                host
+                parsed.host
             );
 
             return value_null();
         }
 
-        if (!test_connect(host)) {
+        if (!test_connect(parsed.host)) {
 
             value_free(&urlv);
            value_free(&headersv);
@@ -754,7 +922,7 @@ if (node->arg_count == 2)
                 E_RUNTIME_01,
                 "http_get",
                 "server se connection nahi hua",
-                host
+                parsed.host
             );
 
 
@@ -763,10 +931,11 @@ if (node->arg_count == 2)
 
 char *response =
     send_http_get(
-    host,
-    path,
-    &headersv
-);
+        parsed.host,
+        parsed.port,
+        parsed.path,
+        &headersv
+    );
 
 value_free(&urlv);
 value_free(&headersv);
@@ -777,7 +946,7 @@ if (!response) {
         E_RUNTIME_01,
         "http_get",
         "HTTP request fail hui",
-        host
+        parsed.host
     );
 
     return value_null();
