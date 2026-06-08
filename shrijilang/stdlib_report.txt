@@ -1,0 +1,292 @@
+==============================
+STDLIB FILES
+==============================
+std_dict.c
+std_dict.o
+std_env.c
+std_env.o
+std_file.c
+std_file.o
+std_json.c
+std_json.c.bak_multi
+std_json.c.bak_obj
+std_json.o
+std_list.c
+std_list.o
+std_math.c
+std_math.o
+std_os.c
+std_os.o
+std_path.c
+std_path.o
+std_random.c
+std_random.o
+std_string.c
+std_string.o
+std_time.c
+std_time.o
+
+==============================
+FUNCTION COUNT PER MODULE
+==============================
+11
+
+==============================
+ALL STDLIB FUNCTIONS
+==============================
+        strcmp(node->function_name, "keys") == 0
+    strcmp(node->function_name, "maan") == 0 ||
+    strcmp(node->function_name, "moolya") == 0 ||
+    strcmp(node->function_name, "values") == 0
+    strcmp(node->function_name, "hai_key") == 0 ||
+    strcmp(node->function_name, "has_key") == 0
+        strcmp(node->function_name, "getenv") == 0 ||
+        strcmp(node->function_name, "mahaul_lo") == 0
+        strcmp(node->function_name, "setenv") == 0 ||
+        strcmp(node->function_name, "mahaul_rakho") == 0
+    if (strcmp(node->function_name, "padho") == 0) {
+    if (strcmp(node->function_name, "likho") == 0) {
+    if (strcmp(node->function_name, "jodo") == 0) {
+    strcmp(node->function_name, "json_stringify") == 0 ||
+    strcmp(node->function_name, "json_banao") == 0
+    strcmp(node->function_name, "json_write") == 0 ||
+    strcmp(node->function_name, "json_file_likho") == 0
+    strcmp(node->function_name, "json_read") == 0 ||
+    strcmp(node->function_name, "json_padho") == 0
+    strcmp(node->function_name, "json_parse") == 0
+        strcmp(node->function_name, "ginti") == 0 ||
+        strcmp(node->function_name, "count") == 0
+    strcmp(node->function_name, "join") == 0 ||
+    strcmp(node->function_name, "jodo") == 0
+    strcmp(node->function_name, "remove") == 0 ||
+    strcmp(node->function_name, "hatao") == 0
+        strcmp(node->function_name, "floor") == 0 ||
+        strcmp(node->function_name, "purna") == 0
+        strcmp(node->function_name, "ceil") == 0 ||
+        strcmp(node->function_name, "upar") == 0
+        strcmp(node->function_name, "round") == 0 ||
+        strcmp(node->function_name, "gol") == 0
+        strcmp(node->function_name, "abs") == 0 ||
+        strcmp(node->function_name, "nirpeksh") == 0
+        strcmp(node->function_name, "mkdir") == 0 ||
+        strcmp(node->function_name, "folder_banao") == 0
+        strcmp(node->function_name, "rmdir") == 0 ||
+        strcmp(node->function_name, "folder_hatao") == 0
+        strcmp(node->function_name, "cwd") == 0 ||
+        strcmp(node->function_name, "yahi") == 0
+        strcmp(node->function_name, "system") == 0 ||
+        strcmp(node->function_name, "chalao") == 0
+        strcmp(node->function_name, "exists") == 0 ||
+        strcmp(node->function_name, "hai") == 0
+        strcmp(node->function_name, "is_file") == 0 ||
+        strcmp(node->function_name, "file_hai") == 0
+        strcmp(node->function_name, "is_dir") == 0 ||
+        strcmp(node->function_name, "folder_hai") == 0
+        strcmp(node->function_name, "basename") == 0 ||
+        strcmp(node->function_name, "naam") == 0
+        strcmp(node->function_name, "extension") == 0 ||
+        strcmp(node->function_name, "vistar") == 0
+        strcmp(node->function_name, "random") == 0 ||
+        strcmp(node->function_name, "koi_bhi") == 0
+        strcmp(node->function_name, "randint") == 0 ||
+        strcmp(node->function_name, "koi_bhi_ank") == 0
+        strcmp(node->function_name, "lower") == 0 ||
+        strcmp(node->function_name, "chhota") == 0
+        strcmp(node->function_name, "upper") == 0 ||
+        strcmp(node->function_name, "bada") == 0
+        strcmp(node->function_name, "trim") == 0 ||
+        strcmp(node->function_name, "saaf") == 0
+         strcmp(node->function_name, "split") == 0 ||
+         strcmp(node->function_name, "baanto") == 0
+         strcmp(node->function_name, "replace") == 0 ||
+         strcmp(node->function_name, "badlo") == 0
+        strcmp(node->function_name, "startswith") == 0 ||
+        strcmp(node->function_name, "shuru_hota_hai") == 0
+        strcmp(node->function_name, "endswith") == 0 ||
+        strcmp(node->function_name, "khatam_hota_hai") == 0
+        strcmp(node->function_name, "timestamp") == 0 ||
+        strcmp(node->function_name, "samay_mudra") == 0
+        strcmp(node->function_name, "date") == 0 ||
+        strcmp(node->function_name, "dinank") == 0
+        strcmp(node->function_name, "time") == 0 ||
+        strcmp(node->function_name, "samay") == 0
+
+==============================
+JSON FUNCTIONS
+==============================
+10:static void json_append(
+17:static void json_append_char(
+24:static void json_stringify_value(
+31:static void json_append(
+67:static void json_append_char(
+91:static void json_stringify_value(
+104:            json_append(
+115:    json_append(
+135:            json_append(
+153:            json_append(
+164:            json_append_char(
+171:            json_append(
+180:            json_append_char(
+191:    json_append_char(
+202:            json_append_char(
+210:        json_stringify_value(
+218:    json_append_char(
+230:    json_append_char(
+241:            json_append_char(
+257:            json_append_char(
+264:            json_append(
+271:            json_append_char(
+280:            json_append(
+288:        json_append_char(
+295:        json_stringify_value(
+303:    json_append_char(
+315:            json_append(
+326:static char *json_trim(char *s)
+351:static int is_json_number(
+496:parse_json_value(
+501:parse_json_object(
+604:        json_trim(pair);
+620:        json_trim(colon + 1);
+653:        parse_json_value(val);
+689:json_parse_array(
+769:    json_trim(start);
+780:    parse_json_value(token);
+802:parse_json_value(
+806:s = json_trim(s);
+829:        is_json_number(s)
+884:    return parse_json_object(s);
+893:    return json_parse_array(s);
+900:Value std_json_call(
+914:    strcmp(node->function_name, "json_stringify") == 0 ||
+915:    strcmp(node->function_name, "json_banao") == 0
+924:            "json_stringify",
+926:            "example: json_banao(data)"
+950:    json_stringify_value(
+968:    strcmp(node->function_name, "json_write") == 0 ||
+969:    strcmp(node->function_name, "json_file_likho") == 0
+978:            "json_write",
+980:            "example: json_file_likho(\"data.json\", data)"
+1018:    json_stringify_value(
+1056:    strcmp(node->function_name, "json_read") == 0 ||
+1057:    strcmp(node->function_name, "json_padho") == 0
+1066:            "json_read",
+1068:            "example: json_padho(\"data.json\")"
+1135:    strcmp(node->function_name, "json_parse") == 0
+1144:            "json_parse",
+1146:            "example: json_parse(\"123\")"
+1167:    parse_json_value(s);
+1188:    return json_parse_array(s);
+1199:    return parse_json_object(s);
+1265:    json_trim(start);
+1277:    parse_json_value(token);
+1304:    "json_parse",
+1306:    "example: json_parse(\"123\")"
+
+==============================
+STRING FUNCTIONS
+==============================
+21:        strcmp(node->function_name, "lower") == 0 ||
+22:        strcmp(node->function_name, "chhota") == 0
+87:        strcmp(node->function_name, "upper") == 0 ||
+88:        strcmp(node->function_name, "bada") == 0
+152:        strcmp(node->function_name, "trim") == 0 ||
+153:        strcmp(node->function_name, "saaf") == 0
+225:         strcmp(node->function_name, "split") == 0 ||
+226:         strcmp(node->function_name, "baanto") == 0
+338:         strcmp(node->function_name, "replace") == 0 ||
+339:         strcmp(node->function_name, "badlo") == 0
+462:        strcmp(node->function_name, "startswith") == 0 ||
+463:        strcmp(node->function_name, "shuru_hota_hai") == 0
+527:        strcmp(node->function_name, "endswith") == 0 ||
+528:        strcmp(node->function_name, "khatam_hota_hai") == 0
+
+==============================
+LIST FUNCTIONS
+==============================
+17:        strcmp(node->function_name, "ginti") == 0 ||
+18:        strcmp(node->function_name, "count") == 0
+83:    strcmp(node->function_name, "join") == 0 ||
+84:    strcmp(node->function_name, "jodo") == 0
+141:    strcmp(node->function_name, "remove") == 0 ||
+142:    strcmp(node->function_name, "hatao") == 0
+
+==============================
+DICT FUNCTIONS
+==============================
+21:        strcmp(node->function_name, "keys") == 0
+71:    strcmp(node->function_name, "maan") == 0 ||
+72:    strcmp(node->function_name, "moolya") == 0 ||
+73:    strcmp(node->function_name, "values") == 0
+123:    strcmp(node->function_name, "hai_key") == 0 ||
+124:    strcmp(node->function_name, "has_key") == 0
+
+==============================
+FILE FUNCTIONS
+==============================
+108:    if (strcmp(node->function_name, "padho") == 0) {
+189:    if (strcmp(node->function_name, "likho") == 0) {
+261:    if (strcmp(node->function_name, "jodo") == 0) {
+
+==============================
+MATH FUNCTIONS
+==============================
+20:        strcmp(node->function_name, "floor") == 0 ||
+21:        strcmp(node->function_name, "purna") == 0
+50:        strcmp(node->function_name, "ceil") == 0 ||
+51:        strcmp(node->function_name, "upar") == 0
+100:        strcmp(node->function_name, "round") == 0 ||
+101:        strcmp(node->function_name, "gol") == 0
+150:        strcmp(node->function_name, "abs") == 0 ||
+151:        strcmp(node->function_name, "nirpeksh") == 0
+
+==============================
+TIME FUNCTIONS
+==============================
+21:        strcmp(node->function_name, "timestamp") == 0 ||
+22:        strcmp(node->function_name, "samay_mudra") == 0
+48:        strcmp(node->function_name, "date") == 0 ||
+49:        strcmp(node->function_name, "dinank") == 0
+89:        strcmp(node->function_name, "time") == 0 ||
+90:        strcmp(node->function_name, "samay") == 0
+
+==============================
+PATH FUNCTIONS
+==============================
+23:        strcmp(node->function_name, "exists") == 0 ||
+24:        strcmp(node->function_name, "hai") == 0
+72:        strcmp(node->function_name, "is_file") == 0 ||
+73:        strcmp(node->function_name, "file_hai") == 0
+122:        strcmp(node->function_name, "is_dir") == 0 ||
+123:        strcmp(node->function_name, "folder_hai") == 0
+173:        strcmp(node->function_name, "basename") == 0 ||
+174:        strcmp(node->function_name, "naam") == 0
+226:        strcmp(node->function_name, "extension") == 0 ||
+227:        strcmp(node->function_name, "vistar") == 0
+
+==============================
+OS FUNCTIONS
+==============================
+30:        strcmp(node->function_name, "mkdir") == 0 ||
+31:        strcmp(node->function_name, "folder_banao") == 0
+93:        strcmp(node->function_name, "rmdir") == 0 ||
+94:        strcmp(node->function_name, "folder_hatao") == 0
+139:        strcmp(node->function_name, "cwd") == 0 ||
+140:        strcmp(node->function_name, "yahi") == 0
+169:        strcmp(node->function_name, "system") == 0 ||
+170:        strcmp(node->function_name, "chalao") == 0
+
+==============================
+ENV FUNCTIONS
+==============================
+22:        strcmp(node->function_name, "getenv") == 0 ||
+23:        strcmp(node->function_name, "mahaul_lo") == 0
+75:        strcmp(node->function_name, "setenv") == 0 ||
+76:        strcmp(node->function_name, "mahaul_rakho") == 0
+
+==============================
+RANDOM FUNCTIONS
+==============================
+36:        strcmp(node->function_name, "random") == 0 ||
+37:        strcmp(node->function_name, "koi_bhi") == 0
+66:        strcmp(node->function_name, "randint") == 0 ||
+67:        strcmp(node->function_name, "koi_bhi_ank") == 0

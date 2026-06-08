@@ -69,6 +69,8 @@ static const char *strip_quotes(const char *s)
     return s;
 }
 
+#include "stdlib/std_http.h"
+
 #ifdef SHRIJI_ENABLE_MASTER_TOKENS
 #include "lang/token_master.h"
 #endif
@@ -674,6 +676,19 @@ if (handled) {
     return jsonv;
 }
 
+Value httpv = std_http_call(
+    node,
+    env,
+    rt,
+    &handled
+);
+
+if (handled) {
+
+    rt->call_depth--;
+
+    return httpv;
+}
    /*──────────────────────────────────────────────
       NORMAL FUNCTION CALL
     ──────────────────────────────────────────────*/
@@ -814,7 +829,22 @@ case AST_NUMBER:
     return value_number(node->number_value);
 
 case AST_STRING:
-    return value_string(node->string_value);
+{
+    char *tmp =
+        unescape_string(
+            node->string_value
+        );
+
+    if (!tmp)
+        return value_null();
+
+    Value out =
+        value_string(tmp);
+
+    free(tmp);
+
+    return out;
+}
 
 case AST_BOOL:
     return value_bool(node->bool_value);

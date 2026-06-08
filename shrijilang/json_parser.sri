@@ -1,0 +1,6 @@
+bolo json_parse("{\"naam\":\"Ram\"}")
+bolo json_parse("{\"active\":true}")
+bolo json_parse("{\"x\":null}")
+bolo json_parse("{\"umar\":20}")
+bolo json_parse("{\"pi\":3.14}")
+bolo json_parse("{\"neg\":-10}")

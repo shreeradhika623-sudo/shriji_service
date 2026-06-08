@@ -1,0 +1,16 @@
+include/parser.h:45://      gauri_list x = "[1,2,3]"
+include/parser.h:46://      gauri_push x 50
+include/parser.h:47://      gauri_pop x
+include/parser.h:48://      gauri_get x 2
+include/parser.h:49://      gauri_set x 2 99
+include/parser.h:50://      gauri_sum x
+include/parser.h:51://      gauri_sort x
+include/parser.h:52://      gauri_reverse x
+include/parser.h:54:ASTNode* parse_gauri_list();
+include/parser.h:55:ASTNode* parse_gauri_push();
+include/parser.h:56:ASTNode* parse_gauri_pop();
+include/parser.h:57:ASTNode* parse_gauri_get();
+include/parser.h:58:ASTNode* parse_gauri_set();
+include/parser.h:59:ASTNode* parse_gauri_sum();
+include/parser.h:60:ASTNode* parse_gauri_sort();
+include/parser.h:61:ASTNode* parse_gauri_reverse();

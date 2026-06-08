@@ -238,7 +238,21 @@ static Token string(void)
 {
     const char *start = &source[current - 1];
 
-    while (peek() != '"' && peek() != '\0') {
+    while (peek() != '\0')
+    {
+        if (peek() == '\\')
+        {
+            advance();
+
+            if (peek() != '\0')
+                advance();
+
+            continue;
+        }
+
+        if (peek() == '"')
+            break;
+
         advance();
     }
 
@@ -249,7 +263,12 @@ static Token string(void)
     advance();
 
     int length = &source[current] - start;
-    return make_token(TOKEN_STRING, start, length);
+
+    return make_token(
+        TOKEN_STRING,
+        start,
+        length
+    );
 }
 
 /*──────────────────────────────────────────────
