@@ -5,6 +5,44 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+static int hex_value(char c)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+
+    if (c >= 'a' && c <= 'f')
+        return 10 + (c - 'a');
+
+    if (c >= 'A' && c <= 'F')
+        return 10 + (c - 'A');
+
+    return -1;
+}
+
+static int utf8_encode(
+    unsigned int cp,
+    char *out
+)
+{
+    if (cp <= 0x7F) {
+        out[0] = cp;
+        return 1;
+    }
+
+    if (cp <= 0x7FF) {
+        out[0] = 0xC0 | (cp >> 6);
+        out[1] = 0x80 | (cp & 0x3F);
+        return 2;
+    }
+
+    out[0] = 0xE0 | (cp >> 12);
+    out[1] = 0x80 | ((cp >> 6) & 0x3F);
+    out[2] = 0x80 | (cp & 0x3F);
+
+    return 3;
+}
+
 #include <ctype.h>
 
 static void json_append(
@@ -495,8 +533,315 @@ find_top_level_colon(
 static Value
 parse_json_value(
     char *s
+);
+
+static Value
+parse_json_object(
+    char *s
 )
 {
+
+    size_t len =
+        strlen(s);
+
+    if (
+        len < 2 ||
+        s[0] != '{' ||
+        s[len - 1] != '}'
+    )
+    {
+        return value_null();
+    }
+
+    if (
+        strcmp(s, "{}") == 0
+    )
+    {
+        return value_dict(
+            NULL,
+            NULL,
+            0
+        );
+    }
+
+    char *inner =
+        malloc(len - 1);
+
+    if (!inner)
+    {
+        return value_null();
+    }
+
+    memcpy(
+        inner,
+        s + 1,
+        len - 2
+    );
+
+    inner[len - 2] =
+        '\0';
+
+if (inner[0] == '\0')
+{
+    free(inner);
+
+    return value_dict(
+        NULL,
+        NULL,
+        0
+    );
+}
+
+int count = 1;
+
+for (char *p = inner; *p; p++)
+{
+    if (*p == ',')
+        count++;
+}
+
+Value *keys =
+    malloc(sizeof(Value) * count);
+
+Value *vals =
+    malloc(sizeof(Value) * count);
+
+if (!keys || !vals)
+{
+    if (keys) free(keys);
+    if (vals) free(vals);
+
+    free(inner);
+
+    return value_null();
+}
+
+char *pair = inner;
+
+int idx = 0;
+
+for (;;)
+{
+    char *colon =
+        find_top_level_colon(
+            pair
+        );
+
+    if (!colon)
+    {
+        free(inner);
+        free(keys);
+        free(vals);
+
+        return value_null();
+    }
+
+    *colon = '\0';
+
+    char *key =
+        json_trim(pair);
+
+    char *comma =
+        find_top_level_comma(
+            colon + 1
+        );
+
+    char *next_pair = NULL;
+
+    if (comma)
+    {
+        next_pair = comma + 1;
+        *comma = '\0';
+    }
+
+    char *val =
+        json_trim(colon + 1);
+
+    size_t key_len =
+        strlen(key);
+
+    if (
+        key_len < 2 ||
+        key[0] != '"' ||
+        key[key_len - 1] != '"'
+    )
+    {
+        free(inner);
+        free(keys);
+        free(vals);
+
+        return value_null();
+    }
+
+    char keybuf[256];
+
+    memcpy(
+        keybuf,
+        key + 1,
+        key_len - 2
+    );
+
+    keybuf[key_len - 2] =
+        '\0';
+
+    keys[idx] =
+        value_string(keybuf);
+
+    Value parsed =
+        parse_json_value(val);
+
+    if (
+        parsed.type == VAL_NULL &&
+        strcmp(val, "null") != 0
+    )
+    {
+        free(inner);
+        free(keys);
+        free(vals);
+
+        return value_null();
+    }
+
+    vals[idx] =
+        parsed;
+
+    idx++;
+
+    if (!next_pair)
+        break;
+
+    pair = next_pair;
+}
+
+free(inner);
+
+return value_dict(
+    keys,
+    vals,
+    idx
+);
+
+}
+
+static Value
+json_parse_array(
+    char *s
+)
+{
+    size_t len =
+        strlen(s);
+
+    if (
+        len < 2 ||
+        s[0] != '[' ||
+        s[len - 1] != ']'
+    )
+    {
+        return value_null();
+    }
+
+    char *inner =
+        malloc(len - 1);
+
+    if (!inner)
+    {
+        return value_null();
+    }
+
+    memcpy(
+        inner,
+        s + 1,
+        len - 2
+    );
+
+    inner[len - 2] =
+        '\0';
+
+if (inner[0] == '\0')
+{
+    free(inner);
+
+    return value_list(
+        NULL,
+        0
+    );
+}
+
+    int count = 1;
+
+    for (char *p = inner; *p; p++)
+    {
+        if (*p == ',')
+            count++;
+    }
+
+    Value *items =
+        malloc(sizeof(Value) * count);
+
+    if (!items)
+    {
+        free(inner);
+        return value_null();
+    }
+
+    int idx = 0;
+
+char *start = inner;
+
+for (;;)
+{
+    char *comma =
+        find_top_level_comma(
+            start
+        );
+
+    char *end =
+        comma
+            ? comma
+            : start + strlen(start);
+
+    char old = *end;
+    *end = '\0';
+
+char *token =
+    json_trim(start);
+
+if (token[0] == '\0')
+{
+    free(inner);
+    free(items);
+
+    return value_null();
+}
+
+Value parsed =
+    parse_json_value(token);
+
+items[idx++] =
+    parsed;
+
+    *end = old;
+
+    if (!comma)
+        break;
+
+    start = comma + 1;
+}
+
+    free(inner);
+
+    return value_list(
+        items,
+        idx
+    );
+}
+
+static Value
+parse_json_value(
+    char *s
+)
+{
+s = json_trim(s);
     if (
         strcmp(s, "true") == 0
     )
@@ -560,12 +905,97 @@ parse_json_value(
         tmp[len - 2] =
             '\0';
 
-        Value out =
-            value_string(tmp);
+char decoded[1024];
+int di = 0;
 
-        free(tmp);
+for (
+    int si = 0;
+    tmp[si] != '\0' &&
+    di < (int)sizeof(decoded) - 1;
+    si++
+)
+{
+    if (
+        tmp[si] == '\\' &&
+        tmp[si + 1] == 'u'
+    )
+    {
+        int h1 =
+            hex_value(tmp[si + 2]);
+        int h2 =
+            hex_value(tmp[si + 3]);
+        int h3 =
+            hex_value(tmp[si + 4]);
+        int h4 =
+            hex_value(tmp[si + 5]);
 
- return out;
+        if (
+            h1 >= 0 &&
+            h2 >= 0 &&
+            h3 >= 0 &&
+            h4 >= 0
+        )
+        {
+            unsigned int cp =
+                (h1 << 12) |
+                (h2 << 8)  |
+                (h3 << 4)  |
+                h4;
+
+            char utf8[4];
+
+            int bytes =
+                utf8_encode(
+                    cp,
+                    utf8
+                );
+
+            for (
+                int k = 0;
+                k < bytes;
+                k++
+            )
+            {
+                decoded[di++] =
+                    utf8[k];
+            }
+
+            si += 5;
+            continue;
+        }
+    }
+
+    decoded[di++] =
+        tmp[si];
+}
+
+decoded[di] = '\0';
+
+Value out =
+    value_string(decoded);
+
+free(tmp);
+
+return out;
+
+}
+
+if (
+    len >= 2 &&
+    s[0] == '{' &&
+    s[len - 1] == '}'
+)
+{
+    return parse_json_object(s);
+}
+
+if (
+    len >= 2 &&
+    s[0] == '[' &&
+    s[len - 1] == ']'
+)
+{
+    return json_parse_array(s);
 }
 
 return value_null();
@@ -857,12 +1287,30 @@ if (
     s[0] == '[' &&
     s[len - 1] == ']'
 )
+{
+    value_free(&textv);
+
+    return json_parse_array(s);
+}
 
 if (
     len >= 2 &&
-    s[0] == '['
+    s[0] == '{' &&
+    s[len - 1] == '}'
 )
 {
+    value_free(&textv);
+
+    return parse_json_object(s);
+}
+
+if (
+    len >= 2 &&
+    s[0] == '[' &&
+    s[len - 1] == ']'
+)
+{
+
     char *inner =
         malloc(len - 1);
 
@@ -883,10 +1331,17 @@ if (
 
 int count = 1;
 
-for (char *p = inner; *p; p++)
+for (char *p = inner;;)
 {
-    if (*p == ',')
-        count++;
+    char *comma =
+        find_top_level_comma(p);
+
+    if (!comma)
+        break;
+
+    count++;
+
+    p = comma + 1;
 }
 
     Value *items =
@@ -911,10 +1366,19 @@ for (char *p = inner; *p; p++)
             char old = *p;
                   *p = '\0';
 
-             char *token =
-                   json_trim(start);
+       char *token =
+    json_trim(start);
 
-     Value parsed =
+
+if (token[0] == '\0')
+{
+    free(inner);
+    free(items);
+
+    return value_null();
+}
+
+Value parsed =
     parse_json_value(token);
 
       items[idx++] =
@@ -936,171 +1400,6 @@ for (char *p = inner; *p; p++)
         items,
         idx
     );
-}
-
-if (
-    len >= 2 &&
-    s[0] == '{' &&
-    s[len - 1] == '}'
-)
-{
-    char *inner =
-        malloc(len - 1);
-
-    if (!inner) {
-
-        value_free(&textv);
-
-        return value_null();
-    }
-
-memcpy(
-    inner,
-    s + 1,
-    len - 2
-);
-
-inner[len - 2] = '\0';
-
-if (inner[0] == '\0')
-{
-    free(inner);
-
-    return value_dict(
-        NULL,
-        NULL,
-        0
-    );
-}
-
-int count = 1;
-
-for (char *p = inner; *p; p++)
-{
-    if (*p == ',')
-        count++;
-}
-
-char *pair = inner;
-
-    Value *keys =
-    malloc(sizeof(Value) * count);
-
-Value *vals =
-    malloc(sizeof(Value) * count);
-
-    if (!keys || !vals)
-    {
-        if (keys) free(keys);
-        if (vals) free(vals);
-
-        free(inner);
-
-        return value_null();
-    }
-
-   int idx = 0;
-
-   for (;;)
-{
-
-char *colon =
-    find_top_level_colon(
-        pair
-    );
-
-if (!colon)
-{
-    free(inner);
-
-    return value_null();
-}
-
-*colon = '\0';
-
-char *key =
-    json_trim(pair);
-
-char *comma =
-    find_top_level_comma(
-        colon + 1
-    );
-
-char *next_pair = NULL;
-
-if (comma)
-{
-    next_pair = comma + 1;
-    *comma = '\0';
-}
-
-char *val =
-    json_trim(colon + 1);
-
-size_t key_len =
-    strlen(key);
-
-if (
-    key_len < 2 ||
-    key[0] != '"' ||
-    key[key_len - 1] != '"'
-)
-{
-    free(inner);
-
-    return value_null();
-}
-
-    char keybuf[256];
-
-    memcpy(
-        keybuf,
-        key + 1,
-        key_len - 2
-    );
-
-    keybuf[key_len - 2] =
-        '\0';
-
-    keys[idx] =
-    value_string(keybuf);
-
-Value parsed =
-    parse_json_value(val);
-
-if (
-    parsed.type == VAL_NULL &&
-    strcmp(val, "null") != 0
-)
-{
-    free(inner);
-    free(keys);
-    free(vals);
-
-    return value_null();
-}
-
-vals[idx] =
-    parsed;
-
-idx++;
-
-if (!next_pair)
-    break;
-
-pair = next_pair;
-
-}
-
-free(inner);
-
-return value_dict(
-    keys,
-    vals,
-    idx
-);
-
-
 }
 
 value_free(&textv);

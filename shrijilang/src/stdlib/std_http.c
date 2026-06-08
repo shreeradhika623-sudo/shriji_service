@@ -1,0 +1,399 @@
+#define _POSIX_C_SOURCE 200112L
+#include "stdlib/std_http.h"
+#include "interpreter.h"
+#include "error.h"
+
+#include <string.h>
+
+#include <stdio.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <unistd.h>
+
+static int parse_url(
+    const char *url,
+    char *host,
+    size_t host_size,
+    char *path,
+    size_t path_size
+)
+{
+    if (!url)
+        return 0;
+
+    const char *p = url;
+
+    if (strncmp(p, "http://", 7) == 0) {
+        p += 7;
+    } else {
+        return 0;
+    }
+
+    const char *slash = strchr(p, '/');
+
+    if (!slash) {
+
+        snprintf(
+            host,
+            host_size,
+            "%s",
+            p
+        );
+
+        snprintf(
+            path,
+            path_size,
+            "/"
+        );
+
+        return 1;
+    }
+
+    size_t host_len =
+        (size_t)(slash - p);
+
+    if (host_len >= host_size)
+        host_len = host_size - 1;
+
+    memcpy(
+        host,
+        p,
+        host_len
+    );
+
+    host[host_len] = '\0';
+
+    snprintf(
+        path,
+        path_size,
+        "%s",
+        slash
+    );
+
+    return 1;
+}
+
+static int test_dns(const char *host)
+{
+    struct addrinfo hints;
+    struct addrinfo *result = NULL;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    int rc = getaddrinfo(
+        host,
+        "80",
+        &hints,
+        &result
+    );
+
+    if (rc != 0)
+        return 0;
+
+    freeaddrinfo(result);
+
+    return 1;
+}
+
+static int test_connect(const char *host)
+{
+    struct addrinfo hints;
+    struct addrinfo *result = NULL;
+    struct addrinfo *rp;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    int rc = getaddrinfo(
+        host,
+        "80",
+        &hints,
+        &result
+    );
+
+    if (rc != 0)
+        return 0;
+
+    int connected = 0;
+
+    for (rp = result; rp != NULL; rp = rp->ai_next)
+    {
+        int sockfd = socket(
+            rp->ai_family,
+            rp->ai_socktype,
+            rp->ai_protocol
+        );
+
+        if (sockfd < 0)
+            continue;
+
+        if (
+            connect(
+                sockfd,
+                rp->ai_addr,
+                rp->ai_addrlen
+            ) == 0
+        ) {
+            connected = 1;
+            close(sockfd);
+            break;
+        }
+
+        close(sockfd);
+    }
+
+    freeaddrinfo(result);
+
+    return connected;
+}
+
+static char *send_http_get(
+    const char *host,
+    const char *path
+)
+{
+    struct addrinfo hints;
+    struct addrinfo *result = NULL;
+    struct addrinfo *rp;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    int rc = getaddrinfo(
+        host,
+        "80",
+        &hints,
+        &result
+    );
+
+    if (rc != 0)
+        return NULL;
+
+    int sockfd = -1;
+
+    for (rp = result; rp != NULL; rp = rp->ai_next)
+    {
+        sockfd = socket(
+            rp->ai_family,
+            rp->ai_socktype,
+            rp->ai_protocol
+        );
+
+        if (sockfd < 0)
+            continue;
+
+        if (
+            connect(
+                sockfd,
+                rp->ai_addr,
+                rp->ai_addrlen
+            ) == 0
+        ) {
+            break;
+        }
+
+        close(sockfd);
+        sockfd = -1;
+    }
+
+    freeaddrinfo(result);
+
+    if (sockfd < 0)
+        return NULL;
+
+    char request[2048];
+
+    snprintf(
+        request,
+        sizeof(request),
+        "GET %s HTTP/1.0\r\n"
+        "Host: %s\r\n"
+        "\r\n",
+        path,
+        host
+    );
+
+    send(
+        sockfd,
+        request,
+        strlen(request),
+        0
+    );
+
+    char *response = malloc(65536);
+
+    if (!response) {
+        close(sockfd);
+        return NULL;
+    }
+
+    int total = 0;
+
+    while (1)
+    {
+        int n = recv(
+            sockfd,
+            response + total,
+            65535 - total,
+            0
+        );
+
+        if (n <= 0)
+            break;
+
+        total += n;
+
+        if (total >= 65535)
+            break;
+    }
+
+    response[total] = '\0';
+
+    close(sockfd);
+
+    return response;
+}
+
+Value std_http_call(
+    ASTNode *node,
+    Env *env,
+    ShrijiRuntime *rt,
+    int *handled
+)
+{
+    *handled = 0;
+
+    /*──────────────────────────────────────────────
+      HTTP_GET
+    ──────────────────────────────────────────────*/
+    if (strcmp(node->function_name, "http_get") == 0)
+    {
+        *handled = 1;
+
+        if (node->arg_count != 1) {
+
+            shriji_error(
+                E_PARSE_02,
+                "http_get",
+                "http_get ko ek URL chahiye",
+                "udaharan: http_get(\"http://example.com\")"
+            );
+
+            return value_null();
+        }
+
+        Value urlv = eval(
+            node->args[0],
+            env,
+            rt
+        );
+
+        if (
+            urlv.type != VAL_STRING ||
+            !urlv.string
+        ) {
+            value_free(&urlv);
+
+            shriji_error(
+                E_PARSE_02,
+                "http_get",
+                "URL string hona chahiye",
+                "udaharan: http_get(\"http://example.com\")"
+            );
+
+            return value_null();
+        }
+
+        char host[256];
+        char path[512];
+
+        if (
+            !parse_url(
+                urlv.string,
+                host,
+                sizeof(host),
+                path,
+                sizeof(path)
+            )
+        ) {
+            value_free(&urlv);
+
+            shriji_error(
+                E_PARSE_02,
+                "http_get",
+                "sirf http:// URL support hai",
+                "udaharan: http_get(\"http://example.com\")"
+            );
+
+            return value_null();
+        }
+
+        if (!test_dns(host)) {
+
+            value_free(&urlv);
+
+            shriji_error(
+                E_RUNTIME_01,
+                "http_get",
+                "DNS lookup fail hua",
+                host
+            );
+
+            return value_null();
+        }
+
+        if (!test_connect(host)) {
+
+            value_free(&urlv);
+
+            shriji_error(
+                E_RUNTIME_01,
+                "http_get",
+                "server se connection nahi hua",
+                host
+            );
+
+            return value_null();
+        }
+
+char *response =
+    send_http_get(
+        host,
+        path
+    );
+
+value_free(&urlv);
+
+if (!response) {
+
+    shriji_error(
+        E_RUNTIME_01,
+        "http_get",
+        "HTTP request fail hui",
+        host
+    );
+
+    return value_null();
+}
+
+Value out =
+    value_string(response);
+
+free(response);
+
+return out;
+
+
+    }
+
+    return value_null();
+}

@@ -132,6 +132,56 @@ static int is_expression_start(TokenType t)
             return 0;
     }
 }
+static int hex_value(char c)
+{
+    if (c >= '0' && c <= '9')
+        return c - '0';
+
+    if (c >= 'a' && c <= 'f')
+        return 10 + (c - 'a');
+
+    if (c >= 'A' && c <= 'F')
+        return 10 + (c - 'A');
+
+    return -1;
+}
+
+static int utf8_encode(
+    unsigned int cp,
+    char *out
+)
+{
+    if (cp <= 0x7F) {
+
+        out[0] = cp;
+        return 1;
+    }
+
+    if (cp <= 0x7FF) {
+
+        out[0] = 0xC0 | (cp >> 6);
+        out[1] = 0x80 | (cp & 0x3F);
+
+        return 2;
+    }
+
+    if (cp <= 0xFFFF) {
+
+        out[0] = 0xE0 | (cp >> 12);
+        out[1] = 0x80 | ((cp >> 6) & 0x3F);
+        out[2] = 0x80 | (cp & 0x3F);
+
+        return 3;
+    }
+
+    out[0] = 0xF0 | (cp >> 18);
+    out[1] = 0x80 | ((cp >> 12) & 0x3F);
+    out[2] = 0x80 | ((cp >> 6) & 0x3F);
+    out[3] = 0x80 | (cp & 0x3F);
+
+    return 4;
+}
+
 
 static void unescape_into(char *out, int outcap, const char *in, int inlen)
 {
@@ -150,6 +200,57 @@ static void unescape_into(char *out, int outcap, const char *in, int inlen)
                 case 'r':  out[oi++] = '\r'; break;
                 case '"':  out[oi++] = '"';  break;
                 case '\\': out[oi++] = '\\'; break;
+
+                case 'u':
+{
+    if (i + 4 < inlen)
+    {
+        int h1 = hex_value(in[i + 1]);
+        int h2 = hex_value(in[i + 2]);
+        int h3 = hex_value(in[i + 3]);
+        int h4 = hex_value(in[i + 4]);
+
+        if (
+            h1 >= 0 &&
+            h2 >= 0 &&
+            h3 >= 0 &&
+            h4 >= 0
+        )
+        {
+            unsigned int cp =
+                (h1 << 12) |
+                (h2 << 8)  |
+                (h3 << 4)  |
+                h4;
+
+            char utf8[4];
+
+            int bytes =
+                utf8_encode(
+                    cp,
+                    utf8
+                );
+
+            for (
+                int k = 0;
+                k < bytes &&
+                oi < outcap - 1;
+                k++
+            )
+            {
+                out[oi++] =
+                    utf8[k];
+            }
+
+            i += 4;
+            break;
+        }
+    }
+
+    out[oi++] = 'u';
+    break;
+}
+
                 default:
                     out[oi++] = n;
                     break;

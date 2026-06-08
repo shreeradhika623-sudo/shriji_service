@@ -35,6 +35,7 @@ SRC = \
     src/stdlib/std_os.c \
     src/stdlib/std_env.c \
     src/stdlib/std_json.c \
+    src/stdlib/std_http.c \
   	src/runtime.c \
 	src/error.c \
 	src/state.c \
