@@ -258,8 +258,10 @@ static char *extract_headers(
 
 static char *send_http_get(
     const char *host,
-    const char *path
+    const char *path,
+    Value *headers
 )
+
 {
     struct addrinfo hints;
     struct addrinfo *result = NULL;
@@ -312,17 +314,67 @@ static char *send_http_get(
     if (sockfd < 0)
         return NULL;
 
+char extra_headers[2048];
+
+extra_headers[0] = '\0';
+
+if (
+    headers &&
+    headers->type == VAL_DICT
+)
+{
+    for (
+        int i = 0;
+        i < headers->dict_count;
+        i++
+    )
+    {
+        Value key =
+            headers->dict_keys[i];
+
+        Value val =
+            headers->dict_values[i];
+
+        if (
+            key.type == VAL_STRING &&
+            val.type == VAL_STRING
+        )
+        {
+            strcat(
+                extra_headers,
+                key.string
+            );
+
+            strcat(
+                extra_headers,
+                ": "
+            );
+
+            strcat(
+                extra_headers,
+                val.string
+            );
+
+            strcat(
+                extra_headers,
+                "\r\n"
+            );
+        }
+    }
+}
     char request[2048];
 
-    snprintf(
-        request,
-        sizeof(request),
-        "GET %s HTTP/1.0\r\n"
-        "Host: %s\r\n"
-        "\r\n",
-        path,
-        host
-    );
+   snprintf(
+    request,
+    sizeof(request),
+    "GET %s HTTP/1.0\r\n"
+    "Host: %s\r\n"
+    "%s"
+    "\r\n",
+    path,
+    host,
+    extra_headers
+);
 
     send(
         sockfd,
@@ -605,7 +657,10 @@ Value std_http_call(
     {
         *handled = 1;
 
-        if (node->arg_count != 1) {
+        if (
+         node->arg_count != 1 &&
+         node->arg_count != 2
+       ) {
 
             shriji_error(
                 E_PARSE_02,
@@ -623,12 +678,26 @@ Value std_http_call(
             rt
         );
 
+      Value headersv =
+    value_null();
+
+if (node->arg_count == 2)
+{
+    headersv =
+        eval(
+            node->args[1],
+            env,
+            rt
+        );
+}
+
+
         if (
             urlv.type != VAL_STRING ||
             !urlv.string
         ) {
             value_free(&urlv);
-
+            value_free(&headersv);
             shriji_error(
                 E_PARSE_02,
                 "http_get",
@@ -652,7 +721,7 @@ Value std_http_call(
             )
         ) {
             value_free(&urlv);
-
+            value_free(&headersv);
             shriji_error(
                 E_PARSE_02,
                 "http_get",
@@ -666,7 +735,7 @@ Value std_http_call(
         if (!test_dns(host)) {
 
             value_free(&urlv);
-
+           value_free(&headersv);
             shriji_error(
                 E_RUNTIME_01,
                 "http_get",
@@ -680,7 +749,7 @@ Value std_http_call(
         if (!test_connect(host)) {
 
             value_free(&urlv);
-
+           value_free(&headersv);
             shriji_error(
                 E_RUNTIME_01,
                 "http_get",
@@ -694,11 +763,13 @@ Value std_http_call(
 
 char *response =
     send_http_get(
-        host,
-        path
-    );
+    host,
+    path,
+    &headersv
+);
 
 value_free(&urlv);
+value_free(&headersv);
 
 if (!response) {
 
@@ -815,6 +886,7 @@ if (strcmp(node->function_name, "http_head") == 0)
         urlv.type != VAL_STRING ||
         !urlv.string
     ) {
+
         value_free(&urlv);
         return value_null();
     }
