@@ -365,6 +365,115 @@ static char *send_http_get(
     return response;
 }
 
+static char *send_http_head(
+    const char *host,
+    const char *path
+)
+{
+    struct addrinfo hints;
+    struct addrinfo *result = NULL;
+    struct addrinfo *rp;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+
+    int rc = getaddrinfo(
+        host,
+        "80",
+        &hints,
+        &result
+    );
+
+    if (rc != 0)
+        return NULL;
+
+    int sockfd = -1;
+
+    for (rp = result; rp != NULL; rp = rp->ai_next)
+    {
+        sockfd = socket(
+            rp->ai_family,
+            rp->ai_socktype,
+            rp->ai_protocol
+        );
+
+        if (sockfd < 0)
+            continue;
+
+        if (
+            connect(
+                sockfd,
+                rp->ai_addr,
+                rp->ai_addrlen
+            ) == 0
+        ) {
+            break;
+        }
+
+        close(sockfd);
+        sockfd = -1;
+    }
+
+    freeaddrinfo(result);
+
+    if (sockfd < 0)
+        return NULL;
+
+    char request[2048];
+
+    snprintf(
+        request,
+        sizeof(request),
+        "HEAD %s HTTP/1.0\r\n"
+        "Host: %s\r\n"
+        "\r\n",
+        path,
+        host
+    );
+
+    send(
+        sockfd,
+        request,
+        strlen(request),
+        0
+    );
+
+    char *response = malloc(65536);
+
+    if (!response) {
+        close(sockfd);
+        return NULL;
+    }
+
+    int total = 0;
+
+    while (1)
+    {
+        int n = recv(
+            sockfd,
+            response + total,
+            65535 - total,
+            0
+        );
+
+        if (n <= 0)
+            break;
+
+        total += n;
+
+        if (total >= 65535)
+            break;
+    }
+
+    response[total] = '\0';
+
+    close(sockfd);
+
+    return response;
+}
+
 static char *send_http_post(
     const char *host,
     const char *path,
@@ -613,14 +722,19 @@ char *body =
         response
     );
 
+char *headers =
+    extract_headers(
+        response
+    );
+
 Value *keys =
     malloc(
-        sizeof(Value) * 2
+       sizeof(Value) * 3
     );
 
 Value *values =
     malloc(
-        sizeof(Value) * 2
+        sizeof(Value) * 3
     );
 
 if (!keys || !values) {
@@ -659,18 +773,115 @@ values[1] =
         body ? body : ""
     );
 
+keys[2] =
+    value_string(
+        "headers"
+    );
+
+values[2] =
+    value_string(
+        headers
+            ? headers
+            : ""
+    );
+
 if (body)
     free(body);
+
+if (headers)
+    free(headers);
 
 free(response);
 
 return value_dict(
     keys,
     values,
-    2
+    3
 );
 
     }
+
+if (strcmp(node->function_name, "http_head") == 0)
+{
+    *handled = 1;
+
+    if (node->arg_count != 1)
+        return value_null();
+
+    Value urlv =
+        eval(node->args[0], env, rt);
+
+    if (
+        urlv.type != VAL_STRING ||
+        !urlv.string
+    ) {
+        value_free(&urlv);
+        return value_null();
+    }
+
+    char host[256];
+    char path[512];
+
+    if (
+        !parse_url(
+            urlv.string,
+            host,
+            sizeof(host),
+            path,
+            sizeof(path)
+        )
+    ) {
+        value_free(&urlv);
+        return value_null();
+    }
+
+    char *response =
+        send_http_head(
+            host,
+            path
+        );
+
+    value_free(&urlv);
+
+    if (!response)
+        return value_null();
+
+    int status =
+        extract_status_code(
+            response
+        );
+
+    char *headers =
+        extract_headers(
+            response
+        );
+
+    Value *keys =
+        malloc(sizeof(Value) * 2);
+
+    Value *values =
+        malloc(sizeof(Value) * 2);
+
+    keys[0] = value_string("status");
+    values[0] = value_int(status);
+
+    keys[1] = value_string("headers");
+    values[1] =
+        value_string(
+            headers ? headers : ""
+        );
+
+    if (headers)
+        free(headers);
+
+    free(response);
+
+    return value_dict(
+        keys,
+        values,
+        2
+    );
+}
 
 if (strcmp(node->function_name, "http_post") == 0)
 {
