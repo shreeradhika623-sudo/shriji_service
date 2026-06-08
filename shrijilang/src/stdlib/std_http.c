@@ -154,6 +154,61 @@ static int test_connect(const char *host)
     return connected;
 }
 
+
+
+static int extract_status_code(
+    const char *response
+)
+{
+    if (!response)
+        return 0;
+
+    int status = 0;
+
+    if (
+        sscanf(
+            response,
+            "HTTP/%*s %d",
+            &status
+        ) != 1
+    ) {
+        return 0;
+    }
+
+    return status;
+}
+
+static char *extract_body(
+    const char *response
+)
+{
+    if (!response)
+        return NULL;
+
+    const char *body =
+        strstr(
+            response,
+            "\r\n\r\n"
+        );
+
+    if (!body)
+        return NULL;
+
+    body += 4;
+
+    char *out =
+        malloc(
+            strlen(body) + 1
+        );
+
+    if (!out)
+        return NULL;
+
+    strcpy(out, body);
+
+    return out;
+}
+
 static char *send_http_get(
     const char *host,
     const char *path
@@ -385,13 +440,72 @@ if (!response) {
     return value_null();
 }
 
-Value out =
-    value_string(response);
+int status =
+    extract_status_code(
+        response
+    );
+
+char *body =
+    extract_body(
+        response
+    );
+
+Value *keys =
+    malloc(
+        sizeof(Value) * 2
+    );
+
+Value *values =
+    malloc(
+        sizeof(Value) * 2
+    );
+
+if (!keys || !values) {
+
+    if (keys)
+        free(keys);
+
+    if (values)
+        free(values);
+
+    if (body)
+        free(body);
+
+    free(response);
+
+    return value_null();
+}
+
+keys[0] =
+    value_string(
+        "status"
+    );
+
+values[0] =
+    value_int(
+        status
+    );
+
+keys[1] =
+    value_string(
+        "body"
+    );
+
+values[1] =
+    value_string(
+        body ? body : ""
+    );
+
+if (body)
+    free(body);
 
 free(response);
 
-return out;
-
+return value_dict(
+    keys,
+    values,
+    2
+);
 
     }
 
