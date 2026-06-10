@@ -642,11 +642,14 @@ free(request);
             break;
     }
 
-    response[total] = '\0';
+response[total] = '\0';
 
-    close(sockfd);
+SSL_free(ssl);
+SSL_CTX_free(ctx);
 
-    return response;
+close(sockfd);
+
+return response;
 }
 
 static char *send_http_head(
