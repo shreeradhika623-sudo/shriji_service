@@ -1024,12 +1024,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "json_stringify",
-            "1 cheez deni hogi",
-            "example: json_banao(data)"
-        );
+shriji_arg_count_error(
+    "json_stringify",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -1078,12 +1077,11 @@ if (
 
     if (node->arg_count != 2) {
 
-        shriji_error(
-            E_PARSE_02,
-            "json_write",
-            "2 cheez deni hogi",
-            "example: json_file_likho(\"data.json\", data)"
-        );
+shriji_arg_count_error(
+    "json_write",
+    2,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -1166,12 +1164,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "json_read",
-            "1 cheez deni hogi",
-            "example: json_padho(\"data.json\")"
-        );
+shriji_arg_count_error(
+    "json_read",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -1244,12 +1241,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "json_parse",
-            "1 cheez deni hogi",
-            "example: json_parse(\"123\")"
-        );
+shriji_arg_count_error(
+    "json_parse",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }

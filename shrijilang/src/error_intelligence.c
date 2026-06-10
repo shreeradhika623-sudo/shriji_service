@@ -184,6 +184,32 @@ void shriji_error_intelligence(
      // pointer handled by mira layer
          return;
     }
+
+/* ===== ARGUMENT HELP ===== */
+
+if (err->code == E_ARG_COUNT_MISMATCH)
+{
+    printf("\nArgument Error\n");
+    printf("Function : %s\n", err->function);
+    printf("Expected : %s arguments\n", err->expected);
+    printf("Received : %s arguments\n", err->received);
+
+    avastha->stop_execution = 1;
+    avastha->has_correction = 0;
+    return;
+}
+
+if (err->code == E_ARG_TYPE_MISMATCH)
+{
+    printf("\nType Error\n");
+    printf("Function : %s\n", err->function);
+    printf("Expected Type : %s\n", err->expected);
+
+    avastha->stop_execution = 1;
+    avastha->has_correction = 0;
+    return;
+}
+
     /* ===== RULE BASED FIX ===== */
 
     FixRule *rule = shriji_get_rule_for_error(err->code);

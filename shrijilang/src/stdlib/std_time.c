@@ -26,12 +26,11 @@ Value std_time_call(
 
         if (node->arg_count != 0) {
 
-            shriji_error(
-                E_PARSE_02,
-                "timestamp",
-                "koi input nahi dena hai",
-                "example: timestamp()"
-            );
+shriji_arg_count_error(
+    "timestamp",
+    0,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -53,12 +52,11 @@ Value std_time_call(
 
         if (node->arg_count != 0) {
 
-            shriji_error(
-                E_PARSE_02,
-                "date",
-                "koi input nahi dena hai",
-                "udaharan: date()"
-            );
+shriji_arg_count_error(
+    "date",
+    0,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -94,12 +92,11 @@ Value std_time_call(
 
         if (node->arg_count != 0) {
 
-            shriji_error(
-                E_PARSE_02,
-                "time",
-                "koi input nahi dena hai",
-                "example: time()"
-            );
+shriji_arg_count_error(
+    "time",
+    0,
+    node->arg_count
+);
 
             return value_null();
         }

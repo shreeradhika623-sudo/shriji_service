@@ -365,6 +365,7 @@ static char *extract_headers(
 static char *send_http_get(
     const char *host,
     int port,
+    int is_https,
     const char *path,
     Value *headers
 )
@@ -425,6 +426,64 @@ int rc = getaddrinfo(
     }
 
     freeaddrinfo(result);
+
+if (!is_https)
+{
+    char request[2048];
+
+    snprintf(
+        request,
+        sizeof(request),
+        "GET %s HTTP/1.0\r\n"
+        "Host: %s\r\n"
+        "\r\n",
+        path,
+        host
+    );
+
+    send(
+        sockfd,
+        request,
+        strlen(request),
+        0
+    );
+
+    char *response =
+        malloc(65536);
+
+    if (!response) {
+
+        close(sockfd);
+
+        return NULL;
+    }
+
+    int total = 0;
+
+    while (1)
+    {
+        int n = recv(
+            sockfd,
+            response + total,
+            65535 - total,
+            0
+        );
+
+        if (n <= 0)
+            break;
+
+        total += n;
+
+        if (total >= 65535)
+            break;
+    }
+
+    response[total] = '\0';
+
+    close(sockfd);
+
+    return response;
+}
 
     SSL_CTX *ctx = NULL;
     SSL *ssl = NULL;
@@ -835,12 +894,11 @@ Value std_http_call(
          node->arg_count != 2
        ) {
 
-            shriji_error(
-                E_PARSE_02,
-                "http_get",
-                "http_get ko ek URL chahiye",
-                "udaharan: http_get(\"http://example.com\")"
-            );
+shriji_arg_count_error(
+    "http_get",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -870,12 +928,11 @@ if (node->arg_count == 2)
         ) {
             value_free(&urlv);
             value_free(&headersv);
-            shriji_error(
-                E_PARSE_02,
-                "http_get",
-                "URL string hona chahiye",
-                "udaharan: http_get(\"http://example.com\")"
-            );
+
+shriji_arg_type_error(
+    "http_get",
+    "string"
+);
 
             return value_null();
         }
@@ -933,6 +990,7 @@ char *response =
     send_http_get(
         parsed.host,
         parsed.port,
+        parsed.is_https,
         parsed.path,
         &headersv
     );
@@ -1130,12 +1188,11 @@ if (strcmp(node->function_name, "http_post") == 0)
 
     if (node->arg_count != 2) {
 
-        shriji_error(
-            E_PARSE_02,
-            "http_post",
-            "http_post ko URL aur data chahiye",
-            "udaharan: http_post(url, data)"
-        );
+shriji_arg_count_error(
+    "http_post",
+    2,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -1154,12 +1211,10 @@ if (strcmp(node->function_name, "http_post") == 0)
         value_free(&urlv);
         value_free(&datav);
 
-        shriji_error(
-            E_PARSE_02,
-            "http_post",
-            "URL aur data string hone chahiye",
-            "http_post(url, data)"
-        );
+    shriji_arg_type_error(
+    "http_post",
+    "string"
+);
 
         return value_null();
     }

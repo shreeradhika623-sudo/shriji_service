@@ -112,14 +112,17 @@ static const char *error_code_str(ShrijiErrorCode code)
         case E_PARSE_01: return "E_PARSE_01";
         case E_PARSE_02: return "E_PARSE_02";
         case E_PARSE_EXTRA_OPERATOR: return "E_PARSE_EXTRA_OPERATOR";
+
         case E_PARSE_MISSING_OPERATOR: return "E_PARSE_MISSING_OPERATOR";
         case E_PARSE_DOUBLE_OPERATOR: return "E_PARSE_DOUBLE_OPERATOR";
         case E_PARSE_OPERATOR_START: return "E_PARSE_OPERATOR_START";
+
         case E_PARSE_OPERATOR_END: return "E_PARSE_OPERATOR_END";
         case E_PARSE_OPERATOR_CHAIN: return "E_PARSE_OPERATOR_CHAIN";
         case E_PARSE_MISSING_OPERAND: return "E_PARSE_MISSING_OPERAND";
 
         case E_PARSE_UNMATCHED_PAREN: return "E_PARSE_UNMATCHED_PAREN";
+
         case E_PARSE_BRACKET_MISSING: return "E_PARSE_BRACKET_MISSING";
         case E_PARSE_BRACKET_EXTRA: return "E_PARSE_BRACKET_EXTRA";
         case E_PARSE_INVALID_TOKEN: return "E_PARSE_INVALID_TOKEN";
@@ -129,9 +132,13 @@ static const char *error_code_str(ShrijiErrorCode code)
         case E_RUNTIME_01: return "E_RUNTIME_01";
         case E_RUNTIME_DIV_ZERO: return "E_RUNTIME_DIV_ZERO";
         case E_RUNTIME_TYPE_MISMATCH: return "E_RUNTIME_TYPE_MISMATCH";
+
         case E_RUNTIME_LOOP_LIMIT: return "E_RUNTIME_LOOP_LIMIT";
         case E_RUNTIME_INDEX_ERROR: return "E_RUNTIME_INDEX_ERROR";
         case E_RUNTIME_UNDEFINED_VAR: return "E_RUNTIME_UNDEFINED_VAR";
+
+        case E_ARG_COUNT_MISMATCH: return "E_ARG_COUNT_MISMATCH";
+        case E_ARG_TYPE_MISMATCH: return "E_ARG_TYPE_MISMATCH";
         case E_RUNTIME_FUNCTION_NOT_FOUND: return "E_RUNTIME_FUNCTION_NOT_FOUND";
 
         default: return "E_UNKNOWN";
@@ -159,6 +166,12 @@ static const char *error_message_for_code(ShrijiErrorCode code)
 
         case E_PARSE_MISSING_OPERAND:
             return "Operator ke liye value missing hai.";
+
+        case E_ARG_COUNT_MISMATCH:
+             return "Argument count mismatch.";
+
+        case E_ARG_TYPE_MISMATCH:
+             return "Argument type mismatch.";
 
         default:
             return NULL;
@@ -216,6 +229,9 @@ void shriji_error(
 
 LAST_ERROR.code = code;
 
+LAST_ERROR.expected[0] = '\0';
+LAST_ERROR.received[0] = '\0';
+
 snprintf(LAST_ERROR.context, sizeof(LAST_ERROR.context), "%s", context ? context : "");
 snprintf(LAST_ERROR.message, sizeof(LAST_ERROR.message), "%s", message ? message : "");
 snprintf(LAST_ERROR.hint, sizeof(LAST_ERROR.hint), "%s", hint ? hint : "");
@@ -226,6 +242,68 @@ snprintf(LAST_ERROR.function, sizeof(LAST_ERROR.function), "%s", "runtime");
     if (CURRENT_ERROR_MODE == ERROR_MODE_COLLECT) {
         store_error(code, context, message, hint, 0, 0);
     }
+}
+
+void shriji_arg_count_error(
+    const char *function_name,
+    int expected,
+    int actual
+)
+{
+    shriji_error(
+        E_ARG_COUNT_MISMATCH,
+        function_name,
+        NULL,
+        NULL
+    );
+
+    snprintf(
+        LAST_ERROR.expected,
+        sizeof(LAST_ERROR.expected),
+        "%d",
+        expected
+    );
+
+    snprintf(
+        LAST_ERROR.received,
+        sizeof(LAST_ERROR.received),
+        "%d",
+        actual
+    );
+
+    snprintf(
+        LAST_ERROR.function,
+        sizeof(LAST_ERROR.function),
+        "%s",
+        function_name
+    );
+}
+
+void shriji_arg_type_error(
+    const char *function_name,
+    const char *expected_type
+)
+{
+    shriji_error(
+        E_ARG_TYPE_MISMATCH,
+        function_name,
+        NULL,
+        NULL
+    );
+
+    snprintf(
+        LAST_ERROR.expected,
+        sizeof(LAST_ERROR.expected),
+        "%s",
+        expected_type
+    );
+
+    snprintf(
+        LAST_ERROR.function,
+        sizeof(LAST_ERROR.function),
+        "%s",
+        function_name
+    );
 }
 
 /*──────────────────────────────────────────────*/
@@ -262,8 +340,8 @@ void shriji_error_at_full(
     snprintf(LAST_ERROR.function, sizeof(LAST_ERROR.function), "%s", function ? function : "");
 
 /*  NEW INTELLIGENCE FIELDS */
-snprintf(LAST_ERROR.expected, sizeof(LAST_ERROR.expected), "%s", "unknown");
-snprintf(LAST_ERROR.received, sizeof(LAST_ERROR.received), "%s", "unknown");
+LAST_ERROR.expected[0] = '\0';
+LAST_ERROR.received[0] = '\0';
 
     LAST_ERROR.has_location = 1;
     LAST_ERROR.line = tok.line;

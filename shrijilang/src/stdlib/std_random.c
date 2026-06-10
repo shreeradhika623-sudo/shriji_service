@@ -41,12 +41,11 @@ Value std_random_call(
 
         if (node->arg_count != 0) {
 
-            shriji_error(
-                E_PARSE_02,
-                "random",
-                "koi input nahi dena hai",
-                "example: random()"
-            );
+shriji_arg_count_error(
+    "random",
+    0,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -71,12 +70,11 @@ Value std_random_call(
 
         if (node->arg_count != 2) {
 
-            shriji_error(
-                E_PARSE_02,
-                "randint",
-                "2 cheeze deni hongi",
-                "example: randint(1, 10)"
-            );
+shriji_arg_count_error(
+    "randint",
+    2,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -93,12 +91,10 @@ Value std_random_call(
             value_free(&minv);
             value_free(&maxv);
 
-            shriji_error(
-                E_PARSE_02,
-                "randint",
-                "ank dena hoga",
-                "example: randint(1, 10)"
-            );
+shriji_arg_type_error(
+    "randint",
+    "number"
+);
 
             return value_null();
         }
@@ -109,13 +105,10 @@ Value std_random_call(
             value_free(&minv);
             value_free(&maxv);
 
-            shriji_error(
-                E_PARSE_02,
-                "randint",
-                "ank dena hoga",
-                "example: randint(1, 10)"
-            );
-
+shriji_arg_type_error(
+    "randint",
+    "number"
+);
             return value_null();
         }
 

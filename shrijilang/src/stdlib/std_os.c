@@ -35,12 +35,11 @@ Value std_os_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "mkdir",
-                "1 cheez deni hogi",
-                "udaharan: folder_banao(\"data\")"
-            );
+shriji_arg_count_error(
+    "mkdir",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -53,12 +52,10 @@ Value std_os_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "mkdir",
-                "text dena hoga",
-                "udaharan: folder_banao(\"data\")"
-            );
+shriji_arg_type_error(
+    "mkdir",
+    "string"
+);
 
             return value_null();
         }
@@ -98,12 +95,11 @@ Value std_os_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "rmdir",
-                "1 cheez deni hogi",
-                "udaharan: folder_hatao(\"data\")"
-            );
+shriji_arg_count_error(
+    "rmdir",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -116,12 +112,10 @@ Value std_os_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "rmdir",
-                "text dena hoga",
-                "udaharan: folder_hatao(\"data\")"
-            );
+shriji_arg_type_error(
+    "rmdir",
+    "string"
+);
 
             return value_null();
         }
@@ -144,12 +138,11 @@ Value std_os_call(
 
         if (node->arg_count != 0) {
 
-            shriji_error(
-                E_PARSE_02,
-                "cwd",
-                "koi input nahi dena hai",
-                "udaharan: yahi()"
-            );
+shriji_arg_count_error(
+    "cwd",
+    0,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -174,12 +167,11 @@ Value std_os_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "system",
-                "1 command deni hogi",
-                "udaharan: chalao(\"ls\")"
-            );
+shriji_arg_count_error(
+    "system",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -192,12 +184,10 @@ Value std_os_call(
         ) {
             value_free(&cmdv);
 
-            shriji_error(
-                E_PARSE_02,
-                "system",
-                "text dena hoga",
-                "udaharan: chalao(\"ls\")"
-            );
+shriji_arg_type_error(
+    "system",
+    "string"
+);
 
             return value_null();
         }

@@ -24,32 +24,29 @@ Value std_string_call(
     {
         *handled = 1;
 
-        if (node->arg_count != 1) {
+if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "lower",
-                "1 argument required",
-                "use: lower(\"TEXT\")"
-            );
+    shriji_arg_count_error(
+        "lower",
+        1,
+        node->arg_count
+    );
 
-            return value_null();
-        }
+    return value_null();
+}
 
-        Value v = eval(node->args[0], env, rt);
+   Value v = eval(node->args[0], env, rt);
 
-        if (v.type != VAL_STRING || !v.string) {
+    if (v.type != VAL_STRING || !v.string) {
 
-            value_free(&v);
+    value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "lower",
-                "string required",
-                "use: lower(\"TEXT\")"
-            );
+shriji_arg_type_error(
+    "lower",
+    "string"
+);
 
-            return value_null();
+        return value_null();
         }
 
         size_t len = strlen(v.string);
@@ -92,31 +89,29 @@ Value std_string_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "upper",
-                "1 argument required",
-                "use: upper(\"TEXT\")"
-            );
+shriji_arg_count_error(
+    "upper",
+    1,
+    node->arg_count
+);
 
-            return value_null();
+      return value_null();
+      }
+
+   Value v = eval(node->args[0], env, rt);
+
+   if (v.type != VAL_STRING || !v.string) {
+
+    value_free(&v);
+
+shriji_arg_type_error(
+    "upper",
+    "string"
+);
+
+        return value_null();
         }
 
-        Value v = eval(node->args[0], env, rt);
-
-        if (v.type != VAL_STRING || !v.string) {
-
-            value_free(&v);
-
-            shriji_error(
-                E_PARSE_02,
-                "upper",
-                "string required",
-                "use: upper(\"TEXT\")"
-            );
-
-            return value_null();
-        }
 
         size_t len = strlen(v.string);
 
@@ -155,32 +150,29 @@ Value std_string_call(
     {
         *handled = 1;
 
-        if (node->arg_count != 1) {
+if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "trim",
-                "1 argument required",
-                "use: trim(\"TEXT\")"
-            );
+    shriji_arg_count_error(
+        "trim",
+        1,
+        node->arg_count
+    );
 
-            return value_null();
-        }
+    return value_null();
+}
 
-        Value v = eval(node->args[0], env, rt);
+   Value v = eval(node->args[0], env, rt);
 
-        if (v.type != VAL_STRING || !v.string) {
+   if (v.type != VAL_STRING || !v.string) {
 
-            value_free(&v);
+    value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "trim",
-                "string required",
-                "use: trim(\"TEXT\")"
-            );
+shriji_arg_type_error(
+    "trim",
+    "string"
+);
 
-            return value_null();
+        return value_null();
         }
 
         const char *s = v.string;
@@ -228,17 +220,16 @@ Value std_string_call(
     {
         *handled = 1;
 
-        if (node->arg_count != 2) {
+         if (node->arg_count != 2) {
 
-            shriji_error(
-                E_PARSE_02,
-                "split",
-                "2 arguments required",
-                "use: split(\"TEXT\", \",\")"
-            );
+shriji_arg_count_error(
+    "split",
+    2,
+    node->arg_count
+);
 
-            return value_null();
-        }
+      return value_null();
+      }
 
         Value textv = eval(node->args[0], env, rt);
         Value sepv  = eval(node->args[1], env, rt);
@@ -253,12 +244,10 @@ Value std_string_call(
             value_free(&textv);
             value_free(&sepv);
 
-            shriji_error(
-                E_PARSE_02,
-                "split",
-                "string required",
-                "use: split(\"TEXT\", \",\")"
-            );
+shriji_arg_type_error(
+    "split",
+    "string"
+);
 
             return value_null();
         }
@@ -344,12 +333,11 @@ Value std_string_call(
 
         if (node->arg_count != 3) {
 
-            shriji_error(
-                E_PARSE_02,
-                "replace",
-                "3 arguments required",
-                "use: replace(\"TEXT\", \"OLD\", \"NEW\")"
-            );
+shriji_arg_count_error(
+    "replace",
+    3,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -368,12 +356,10 @@ Value std_string_call(
             value_free(&oldv);
             value_free(&newv);
 
-            shriji_error(
-                E_PARSE_02,
-                "replace",
-                "string required",
-                "use: replace(\"TEXT\", \"OLD\", \"NEW\")"
-            );
+shriji_arg_type_error(
+    "replace",
+    "string"
+);
 
             return value_null();
         }
@@ -467,12 +453,11 @@ Value std_string_call(
 
         if (node->arg_count != 2) {
 
-            shriji_error(
-                E_PARSE_02,
-                "startswith",
-                "2 cheeze deni hongi",
-                "example: startswith(\"Jai Shriji\", \"Jai\")"
-            );
+shriji_arg_count_error(
+    "startswith",
+    2,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -490,12 +475,10 @@ Value std_string_call(
             value_free(&textv);
             value_free(&prefixv);
 
-            shriji_error(
-                E_PARSE_02,
-                "startswith",
-                "text dena hoga",
-                "example: startswith(\"Jai Shriji\", \"Jai\")"
-            );
+shriji_arg_type_error(
+    "startswith",
+    "string"
+);
 
             return value_null();
         }
@@ -532,12 +515,11 @@ Value std_string_call(
 
         if (node->arg_count != 2) {
 
-            shriji_error(
-                E_PARSE_02,
-                "endswith",
-                "2 cheeze deni hongi",
-                "example: endswith(\"photo.jpg\", \".jpg\")"
-            );
+shriji_arg_count_error(
+    "endswith",
+    2,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -555,12 +537,10 @@ Value std_string_call(
             value_free(&textv);
             value_free(&suffixv);
 
-            shriji_error(
-                E_PARSE_02,
-                "endswith",
-                "text dena hoga",
-                "example: endswith(\"photo.jpg\", \".jpg\")"
-            );
+shriji_arg_type_error(
+    "endswith",
+    "string"
+);
 
             return value_null();
         }

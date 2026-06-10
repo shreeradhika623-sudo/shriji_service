@@ -28,12 +28,11 @@ Value std_path_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "exists",
-                "1 cheez deni hogi",
-                "example: exists(\"file.txt\")"
-            );
+shriji_arg_count_error(
+    "exists",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -46,12 +45,10 @@ Value std_path_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "exists",
-                "text dena hoga",
-                "example: exists(\"file.txt\")"
-            );
+shriji_arg_type_error(
+    "exists",
+    "string"
+);
 
             return value_null();
         }
@@ -77,12 +74,11 @@ Value std_path_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "is_file",
-                "1 cheez deni hogi",
-                "example: is_file(\"photo.jpg\")"
-            );
+shriji_arg_count_error(
+    "is_file",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -95,12 +91,10 @@ Value std_path_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "is_file",
-                "text dena hoga",
-                "example: is_file(\"photo.jpg\")"
-            );
+shriji_arg_type_error(
+    "is_file",
+    "string"
+);
 
             return value_null();
         }
@@ -127,12 +121,11 @@ Value std_path_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "is_dir",
-                "1 cheez deni hogi",
-                "example: is_dir(\"docs\")"
-            );
+shriji_arg_count_error(
+    "is_dir",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -145,12 +138,10 @@ Value std_path_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "is_dir",
-                "text dena hoga",
-                "example: is_dir(\"docs\")"
-            );
+shriji_arg_type_error(
+    "is_dir",
+    "string"
+);
 
             return value_null();
         }
@@ -178,12 +169,11 @@ Value std_path_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "basename",
-                "1 cheez deni hogi",
-                "example: naam(\"photo.jpg\")"
-            );
+shriji_arg_count_error(
+    "basename",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -196,12 +186,10 @@ Value std_path_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "basename",
-                "text dena hoga",
-                "example: naam(\"photo.jpg\")"
-            );
+shriji_arg_type_error(
+    "basename",
+    "string"
+);
 
             return value_null();
         }
@@ -231,12 +219,11 @@ Value std_path_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "extension",
-                "1 cheez deni hogi",
-                "example: vistar(\"photo.jpg\")"
-            );
+shriji_arg_count_error(
+    "extension",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -249,12 +236,10 @@ Value std_path_call(
         ) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "extension",
-                "text dena hoga",
-                "example: vistar(\"photo.jpg\")"
-            );
+shriji_arg_type_error(
+    "extension",
+    "string"
+);
 
             return value_null();
         }

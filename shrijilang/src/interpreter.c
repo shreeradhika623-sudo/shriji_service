@@ -334,7 +334,7 @@ Value eval(ASTNode *node, Env *env, ShrijiRuntime *rt)
 
     if (rt->state.steps_used > rt->state.max_steps) {
         shriji_error(
-            E_PARSE_02,
+           E_RUNTIME_LOOP_LIMIT,
             "runtime",
             "execution limit exceeded",
             "possible infinite loop detected"
@@ -730,30 +730,11 @@ else if (fn->type == AST_FUNCTION)
 
 if (expected_args != node->arg_count) {
 
-    char err[256];
-    char hint[256];
-
-    snprintf(
-        err,
-        sizeof(err),
-        "'%s' ko %d arguments chahiye the, lekin %d mile.",
-        node->function_name,
-        expected_args,
-        node->arg_count
-    );
-
-    snprintf(
-        hint,
-        sizeof(hint),
-        "Sahi number ke arguments pass kijiye."
-    );
-
-    shriji_error(
-        E_PARSE_02,
-        node->function_name,
-        err,
-        hint
-    );
+shriji_arg_count_error(
+    node->function_name,
+    expected_args,
+    node->arg_count
+);
 
     rt->call_depth--;
 
@@ -1491,7 +1472,7 @@ if (Lv.type == VAL_INT && Rv.type == VAL_INT) {
     value_free(&Rv);
 
     shriji_error(
-        E_PARSE_02,
+      E_RUNTIME_TYPE_MISMATCH,
         "binary",
         "ye operation is type ke liye allowed nahi hai",
         "sirf number ya string supported hai"

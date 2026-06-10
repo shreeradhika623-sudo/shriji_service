@@ -22,12 +22,11 @@ Value std_list_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "ginti",
-                "1 argument required",
-                "use: ginti(value)"
-            );
+        shriji_arg_count_error(
+    "ginti",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -63,12 +62,10 @@ Value std_list_call(
 
         value_free(&v);
 
-        shriji_error(
-            E_PARSE_02,
-            "ginti",
-            "list, dictionary ya string required",
-            "use: ginti(list)"
-        );
+shriji_arg_type_error(
+    "ginti",
+    "list/dictionary/string"
+);
 
         return value_null();
     }
@@ -88,12 +85,11 @@ if (
 
     if (node->arg_count != 2) {
 
-      shriji_error(
-    E_PARSE_02,
+shriji_arg_count_error(
     "join",
-    "2 argument chahiye",
-    "udaharan: join(list, value)"
-   );
+    2,
+    node->arg_count
+);
         return value_null();
     }
 
@@ -105,12 +101,10 @@ if (
         value_free(&listv);
         value_free(&item);
 
-       shriji_error(
-    E_PARSE_02,
+shriji_arg_type_error(
     "join",
-    "pehla argument list hona chahiye",
-    "udaharan: join(list, value)"
-   );
+    "list"
+);
 
         return value_null();
     }
@@ -146,12 +140,12 @@ if (
 
     if (node->arg_count != 2) {
 
-     shriji_error(
-    E_PARSE_02,
+shriji_arg_count_error(
     "remove",
-    "2 argument chahiye",
-    "udaharan: remove(list, value)"
+    2,
+    node->arg_count
 );
+
         return value_null();
     }
 
@@ -163,12 +157,11 @@ if (
         value_free(&listv);
         value_free(&target);
 
-       shriji_error(
-    E_PARSE_02,
+shriji_arg_type_error(
     "remove",
-    "pehla argument list hona chahiye",
-    "udaharan: remove(list, value)"
-   );
+    "list"
+);
+
         return value_null();
     }
 
@@ -312,12 +305,11 @@ if (
 
     if (node->arg_count != 2) {
 
-        shriji_error(
-            E_PARSE_02,
-            "contains",
-            "2 argument chahiye",
-            "udaharan: contains(list, value)"
-        );
+shriji_arg_count_error(
+    "contains",
+    2,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -419,12 +411,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "pop",
-            "1 argument chahiye",
-            "udaharan: pop(list)"
-        );
+shriji_arg_count_error(
+    "pop",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -436,12 +427,10 @@ if (
 
         value_free(&listv);
 
-        shriji_error(
-            E_PARSE_02,
-            "pop",
-            "list chahiye",
-            "udaharan: pop(list)"
-        );
+shriji_arg_type_error(
+    "pop",
+    "list"
+);
 
         return value_null();
     }
@@ -500,12 +489,12 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "reverse",
-            "1 argument chahiye",
-            "udaharan: reverse(list)"
-        );
+shriji_arg_count_error(
+    "reverse",
+    1,
+    node->arg_count
+);
+
 
         return value_null();
     }
@@ -517,12 +506,10 @@ if (
 
         value_free(&listv);
 
-        shriji_error(
-            E_PARSE_02,
-            "reverse",
-            "list chahiye",
-            "udaharan: reverse(list)"
-        );
+shriji_arg_type_error(
+    "reverse",
+    "list"
+);
 
         return value_null();
     }
@@ -579,12 +566,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "sort",
-            "1 argument chahiye",
-            "udaharan: sort(list)"
-        );
+shriji_arg_count_error(
+    "sort",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -596,12 +582,10 @@ if (
 
         value_free(&listv);
 
-        shriji_error(
-            E_PARSE_02,
-            "sort",
-            "list chahiye",
-            "udaharan: sort(list)"
-        );
+shriji_arg_type_error(
+    "sort",
+    "list"
+);
 
         return value_null();
     }

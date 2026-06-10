@@ -110,12 +110,13 @@ Value std_file_call(
         *handled = 1;
 
         if (node->arg_count != 1) {
-            shriji_error(
-                E_PARSE_02,
-                "padho",
-                "argument count mismatch",
-                "use: padho(\"file.txt\")"
-            );
+
+shriji_arg_count_error(
+    "padho",
+    1,
+    node->arg_count
+);
+
             return value_null();
         }
 
@@ -124,12 +125,10 @@ Value std_file_call(
         if (pathv.type != VAL_STRING || !pathv.string) {
             value_free(&pathv);
 
-            shriji_error(
-                E_PARSE_02,
-                "padho",
-                "file path must be string",
-                "use: padho(\"file.txt\")"
-            );
+shriji_arg_type_error(
+    "padho",
+    "string"
+);
 
             return value_null();
         }

@@ -51,6 +51,9 @@ typedef enum {
     E_RUNTIME_UNDEFINED_VAR,
     E_RUNTIME_FUNCTION_NOT_FOUND,
 
+    E_ARG_COUNT_MISMATCH,
+    E_ARG_TYPE_MISMATCH,
+
 } ShrijiErrorCode;
 
 
@@ -119,4 +122,14 @@ void shriji_error(
     const char *hint
 );
 
+void shriji_arg_count_error(
+    const char *function_name,
+    int expected,
+    int actual
+);
+
+void shriji_arg_type_error(
+    const char *function_name,
+    const char *expected_type
+);
 #endif

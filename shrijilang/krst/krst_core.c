@@ -8,6 +8,7 @@
 #include "../include/error.h"
 #include "../include/fix_engine.h"
 #include "../include/fix_rules.h"
+#include "../include/error_policy.h"
 
 #include "../include/nirman.h"
 #include "../include/parser.h"
@@ -39,74 +40,11 @@ static int session_confidence = 100;
 static int session_risk = 4;
 static int success_streak = 0;
 
-#define MAX_ERROR_TYPES 50
-
-typedef struct {
-    int code;
-    int count;
-} ErrorMemory;
-
-static ErrorMemory error_memory[MAX_ERROR_TYPES];
-static int error_memory_size = 0;
-
-/* ================= LABEL ================= */
-
-static int update_error_memory(int code)
-{
-    for (int i = 0; i < error_memory_size; i++)
-    {
-        if (error_memory[i].code == code)
-        {
-            error_memory[i].count++;
-            return error_memory[i].count;
-        }
-    }
-
-    /* 🔻 MEMORY FULL → RESET */
-    if (error_memory_size >= MAX_ERROR_TYPES)
-    {
-        error_memory_size = 0;
-    }
-
-    error_memory[error_memory_size].code = code;
-    error_memory[error_memory_size].count = 1;
-    error_memory_size++;
-
-    return 1;
-}
-
 /*──────────────────────────────────────────────
    KRST RESPONSE DECISION
 ──────────────────────────────────────────────*/
-static KRSTResponseType krst_decide_response_type(
-    int repeat,
-    const FixRule *rule
-)
-{
-    /* CRITICAL */
-    if (repeat >= 10)
-    {
-        return KRST_RESPONSE_CRITICAL;
-    }
 
-    /* WARNING */
-    if (repeat >= 7)
-    {
-        return KRST_RESPONSE_WARNING;
-    }
 
-    /* AUTO FIX */
-    if (repeat >= 3)
-    {
-        if (rule != NULL)
-        {
-            return KRST_RESPONSE_AUTO_FIX;
-        }
-    }
-
-    /* DEFAULT */
-    return KRST_RESPONSE_ERROR;
-}
 
 /*──────────────────────────────────────────────
    FULL ERROR HANDLER (CENTRALIZED)
@@ -338,66 +276,44 @@ if (err_ptr)
     ShrijiErrorInfo err_safe = *err_ptr;
     error_reported = 0;
 
-int repeat = update_error_memory(err_safe.code);
+int repeat = shriji_update_error_memory(err_safe.code);
 
 /* FIX RULE LOOKUP */
 FixRule *rule =
     shriji_get_rule_for_error(err_safe.code);
 
 /* RESPONSE TYPE DECISION */
-KRSTResponseType response_type =
-    krst_decide_response_type(repeat, rule);
+ErrorPolicyDecision policy =
+    shriji_error_policy_decide(
+        repeat,
+        rule != NULL
+    );
 
-/* 🔻 ADD THIS BLOCK BELOW */
+KRSTResponseType response_type =
+    policy.response_type;
+
+avastha->teach_level =
+    policy.teach_level;
+
+avastha->risk =
+    policy.risk;
+
+avastha->allow_auto_fix =
+    policy.allow_auto_fix;
+
 session_confidence -= 10;
 
 if (session_confidence < 0)
-    session_confidence = 0;
-
-switch (response_type)
 {
-    case KRST_RESPONSE_ERROR:
-
-        avastha->teach_level = KRST_TEACH_EXPLAIN;
-        avastha->risk = 20;
-        avastha->allow_auto_fix = 0;
-
-        break;
-
-    case KRST_RESPONSE_WARNING:
-
-        avastha->teach_level = KRST_TEACH_DEEP;
-        avastha->risk = 50;
-        avastha->allow_auto_fix = 0;
-
-        break;
-
-    case KRST_RESPONSE_AUTO_FIX:
-
-        avastha->teach_level = KRST_TEACH_DEEP;
-        avastha->risk = 50;
-        avastha->allow_auto_fix = 1;
-
-        break;
-
-    case KRST_RESPONSE_CRITICAL:
-
-        avastha->teach_level = KRST_TEACH_TRAIN;
-        avastha->risk = 80;
-        avastha->allow_auto_fix = 0;
-
-        break;
-
-    default:
-        break;
+    session_confidence = 0;
 }
 
-    /* CENTRAL ERROR HANDLER */
-    handle_error(
-     avastha,
-     &err_safe,
-     response_type
-   );
+/* CENTRAL ERROR HANDLER */
+handle_error(
+    avastha,
+    &err_safe,
+    response_type
+);
 
     /*  FIX ENGINE RE-EXECUTION */
 if (avastha->has_correction && avastha->allow_auto_fix)
@@ -437,7 +353,6 @@ if (engine_res.status == ENGINE_OK)
     /* 🔻 RESET ONLY AFTER STRONG PROOF */
     if (success_streak >= 5)
     {
-        error_memory_size = 0;
         session_confidence = 100;
 
         avastha->risk = 5;

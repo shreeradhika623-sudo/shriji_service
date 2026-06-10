@@ -23,8 +23,16 @@ Value std_math_call(
     {
         *handled = 1;
 
-        if (node->arg_count != 1)
-            return value_null();
+       if (node->arg_count != 1) {
+
+    shriji_arg_count_error(
+        "floor",
+        1,
+        node->arg_count
+    );
+
+    return value_null();
+    }
 
         Value v = eval(node->args[0], env, rt);
 
@@ -32,17 +40,25 @@ Value std_math_call(
 
         if (v.type == VAL_INT)
             n = v.integer;
+
         else if (v.type == VAL_NUMBER)
             n = v.number;
+
         else {
-            value_free(&v);
+
+    value_free(&v);
+
+      shriji_arg_type_error(
+        "floor",
+        "number"
+       );
+
             return value_null();
-        }
+       }
+             value_free(&v);
 
-        value_free(&v);
-
-        return value_int((int)floor(n));
-    }
+            return value_int((int)floor(n));
+       }
 
     /* CEIL */
 
@@ -55,12 +71,11 @@ Value std_math_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "ceil",
-                "1 argument required",
-                "use: ceil(x)"
-            );
+      shriji_arg_count_error(
+       "ceil",
+        1,
+        node->arg_count
+        );
 
             return value_null();
         }
@@ -75,18 +90,16 @@ Value std_math_call(
         else if (v.type == VAL_NUMBER)
             n = v.number;
 
-        else {
+         else {
 
-            value_free(&v);
+      value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "ceil",
-                "number required",
-                "use numeric value"
-            );
+    shriji_arg_type_error(
+      "ceil",
+      "number"
+       );
 
-            return value_null();
+        return value_null();
         }
 
         value_free(&v);
@@ -105,15 +118,14 @@ Value std_math_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "round",
-                "1 argument required",
-                "use: round(x)"
-            );
+    shriji_arg_count_error(
+     "round",
+      1,
+      node->arg_count
+       );
 
-            return value_null();
-        }
+       return value_null();
+       }
 
         Value v = eval(node->args[0], env, rt);
 
@@ -127,17 +139,15 @@ Value std_math_call(
 
         else {
 
-            value_free(&v);
+    value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "round",
-                "number required",
-                "use numeric value"
-            );
+    shriji_arg_type_error(
+     "round",
+     "number"
+      );
 
-            return value_null();
-        }
+      return value_null();
+      }
 
         value_free(&v);
 
@@ -155,12 +165,11 @@ Value std_math_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "abs",
-                "1 argument required",
-                "use: abs(x)"
-            );
+     shriji_arg_count_error(
+      "abs",
+       1,
+       node->arg_count
+        );
 
             return value_null();
         }
@@ -179,12 +188,10 @@ Value std_math_call(
 
             value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "abs",
-                "number required",
-                "use numeric value"
-            );
+      shriji_arg_type_error(
+       "abs",
+       "number"
+        );
 
             return value_null();
         }

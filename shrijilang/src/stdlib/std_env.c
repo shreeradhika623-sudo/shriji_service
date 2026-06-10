@@ -27,12 +27,11 @@ Value std_env_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "getenv",
-                "1 cheez deni hogi",
-                "udaharan: getenv(\"HOME\")"
-            );
+ shriji_arg_count_error(
+    "getenv",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -45,12 +44,10 @@ Value std_env_call(
         ) {
             value_free(&keyv);
 
-            shriji_error(
-                E_PARSE_02,
-                "getenv",
-                "text dena hoga",
-                "udaharan: getenv(\"HOME\")"
-            );
+shriji_arg_type_error(
+    "getenv",
+    "string"
+);
 
             return value_null();
         }
@@ -80,12 +77,11 @@ Value std_env_call(
 
         if (node->arg_count != 2) {
 
-            shriji_error(
-                E_PARSE_02,
-                "setenv",
-                "2 cheeze deni hongi",
-                "udaharan: setenv(\"APP\", \"Shriji\")"
-            );
+shriji_arg_count_error(
+    "setenv",
+    2,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -100,12 +96,10 @@ Value std_env_call(
             value_free(&keyv);
             value_free(&valv);
 
-            shriji_error(
-                E_PARSE_02,
-                "setenv",
-                "pehli cheez text honi chahiye",
-                "udaharan: setenv(\"APP\", \"Shriji\")"
-            );
+shriji_arg_type_error(
+    "setenv",
+    "string"
+);
 
             return value_null();
         }
@@ -117,12 +111,10 @@ Value std_env_call(
             value_free(&keyv);
             value_free(&valv);
 
-            shriji_error(
-                E_PARSE_02,
-                "setenv",
-                "dusri cheez text honi chahiye",
-                "udaharan: setenv(\"APP\", \"Shriji\")"
-            );
+shriji_arg_type_error(
+    "setenv",
+    "string"
+);
 
             return value_null();
         }

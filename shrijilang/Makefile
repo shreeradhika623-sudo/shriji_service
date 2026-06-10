@@ -65,6 +65,7 @@ SRC = \
 	src/fix_engine.c \
 	src/fix_rules.c \
 	src/fix_interactive.c \
+    src/error_policy.c \
 	src/typo_engine.c \
 	src/error_intelligence.c \
 	src/decision_engine.c \

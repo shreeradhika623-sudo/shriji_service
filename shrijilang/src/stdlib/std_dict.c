@@ -25,12 +25,11 @@ Value std_dict_call(
 
         if (node->arg_count != 1) {
 
-            shriji_error(
-                E_PARSE_02,
-                "keys",
-                "keys ko ek shabdkosh chahiye",
-                "udaharan: keys(user)"
-            );
+shriji_arg_count_error(
+    "keys",
+    1,
+    node->arg_count
+);
 
             return value_null();
         }
@@ -41,12 +40,10 @@ Value std_dict_call(
 
             value_free(&v);
 
-            shriji_error(
-                E_PARSE_02,
-                "keys",
-                "sirf shabdkosh ki keys nikali ja sakti hain",
-                "udaharan: keys(user)"
-            );
+shriji_arg_type_error(
+    "keys",
+    "dictionary"
+);
 
             return value_null();
         }
@@ -77,12 +74,11 @@ if (
 
     if (node->arg_count != 1) {
 
-        shriji_error(
-            E_PARSE_02,
-            "maan",
-            "maan ko ek shabdkosh chahiye",
-            "udaharan: maan(user)"
-        );
+shriji_arg_count_error(
+    "maan",
+    1,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -93,12 +89,10 @@ if (
 
         value_free(&v);
 
-        shriji_error(
-            E_PARSE_02,
-            "maan",
-            "sirf shabdkosh ke maan nikale ja sakte hain",
-            "udaharan: maan(user)"
-        );
+shriji_arg_type_error(
+    "maan",
+    "dictionary"
+);
 
         return value_null();
     }
@@ -128,12 +122,11 @@ if (
 
     if (node->arg_count != 2) {
 
-        shriji_error(
-            E_PARSE_02,
-            "has_key",
-            "has_key ko 2 maan chahiye",
-            "udaharan: has_key(user, \"naam\")"
-        );
+shriji_arg_count_error(
+    "has_key",
+    2,
+    node->arg_count
+);
 
         return value_null();
     }
@@ -146,12 +139,10 @@ if (
         value_free(&dictv);
         value_free(&keyv);
 
-        shriji_error(
-            E_PARSE_02,
-            "has_key",
-            "pehla maan dictionary hona chahiye",
-            "udaharan: has_key(user, \"naam\")"
-        );
+shriji_arg_type_error(
+    "has_key",
+    "dictionary"
+);
 
         return value_null();
     }
@@ -161,12 +152,10 @@ if (
         value_free(&dictv);
         value_free(&keyv);
 
-        shriji_error(
-            E_PARSE_02,
-            "has_key",
-            "key string honi chahiye",
-            "udaharan: has_key(user, \"naam\")"
-        );
+shriji_arg_type_error(
+    "has_key",
+    "string"
+);
 
         return value_null();
     }
