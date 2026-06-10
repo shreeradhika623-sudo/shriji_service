@@ -762,10 +762,14 @@ send(
 
 static char *send_http_post(
     const char *host,
+    int port,
+    int is_https,
     const char *path,
     const char *data
 )
+
 {
+
     struct addrinfo hints;
     struct addrinfo *result = NULL;
     struct addrinfo *rp;
@@ -775,9 +779,18 @@ static char *send_http_post(
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
+    char port_str[16];
+
+    snprintf(
+        port_str,
+        sizeof(port_str),
+        "%d",
+        port
+    );
+
     int rc = getaddrinfo(
         host,
-        "80",
+        port_str,
         &hints,
         &result
     );
@@ -1222,31 +1235,29 @@ shriji_arg_count_error(
         return value_null();
     }
 
-    char host[256];
-    char path[512];
+ParsedURL parsed;
 
-    if (
-        !parse_url(
-            urlv.string,
-            host,
-            sizeof(host),
-            path,
-            sizeof(path)
-        )
-    ) {
+if (
+    !parse_url_v2(
+        urlv.string,
+        &parsed
+    )
+)
+{
+    value_free(&urlv);
+    value_free(&datav);
 
-        value_free(&urlv);
-        value_free(&datav);
+    return value_null();
+}
 
-        return value_null();
-    }
-
-    char *response =
-        send_http_post(
-            host,
-            path,
-            datav.string
-        );
+char *response =
+    send_http_post(
+        parsed.host,
+        parsed.port,
+        parsed.is_https,
+        parsed.path,
+        datav.string
+    );
 
     value_free(&urlv);
     value_free(&datav);
